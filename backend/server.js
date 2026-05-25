@@ -20,7 +20,15 @@ config()
 
 const app = exp()
 
-app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://mealora-app.vercel.app",
+    ],
+    credentials: true,
+  })
+);
 
 // ================= MIDDLEWARE =================
 app.use(exp.json())

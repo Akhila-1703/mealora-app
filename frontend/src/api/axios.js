@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:4000",
+  baseURL: import.meta.env.MODE === "development" ? "http://localhost:4000" : "https://mealora-app.onrender.com",
   withCredentials: true, // 🔥 REQUIRED for cookie auth
   headers: {
     "Content-Type": "application/json",
