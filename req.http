@@ -1,0 +1,167 @@
+### REGISTER USER
+POST http://localhost:4000/auth-api/register
+Content-Type: application/json
+
+{
+  "firstName": "test",
+  "lastName": "user1",
+  "username": "testuser1",
+  "email": "testuser1@mail.com",
+  "password": "testuser1",
+  "mobile": "9876543211"
+}
+
+### LOGIN
+POST http://localhost:4000/auth-api/login
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "admin"
+}
+
+### LOGOUT
+POST http://localhost:4000/auth-api/logout
+
+
+### CHANGE PASSWORD
+PUT http://localhost:4000/auth-api/change-password
+Content-Type: application/json
+
+{
+  "currentPassword": "testuser12",
+  "newPassword": "testuser"
+}
+
+
+###
+PATCH http://localhost:4000/auth-api/deactivate
+
+###get user detials
+GET http://localhost:4000/auth-api/me
+
+### USER DASHBOARD
+GET http://localhost:4000/user-api/dashboard
+
+
+### UPDATE PROFILE
+PUT http://localhost:4000/user-api/update-profile
+Content-Type: application/json
+
+{
+  "firstName": "Akhila",
+  "lastName": "Updated",
+  "username": "akhila_new",
+  "mobile": "9999999999"
+}
+
+### CREATE SUBSCRIPTION
+POST http://localhost:4000/subscription-api/create
+Content-Type: application/json
+
+{
+  "address": "Hyderabad",
+  "city": "Hyderabad",
+  "pincode": "500001"
+}
+
+### GET SUBSCRIPTION
+GET http://localhost:4000/subscription-api/my
+
+### UPDATE SUBSCRIPTION
+PUT http://localhost:4000/subscription-api/update
+Content-Type: application/json
+
+{
+  "address": "Updated Address",
+  "city": "Hyderabad",
+  "pincode": "500002"
+}
+
+### UPDATE STATUS
+PATCH http://localhost:4000/subscription-api/status
+Content-Type: application/json
+
+{
+  "status": "ACTIVE"
+}
+
+### GET TODAY MENU
+GET http://localhost:4000/menu-api/today
+
+### GET WEEK MENU
+GET http://localhost:4000/menu-api/week
+
+### ADD MENU (ADMIN)
+POST http://localhost:4000/menu-api
+Content-Type: application/json
+
+{
+  "day": "Sunday",
+  "lunchMenu": "Rice, Dal, Aloo Fry"
+}
+
+### UPDATE MENU (ADMIN)
+PUT http://localhost:4000/menu-api/Monday
+Content-Type: application/json
+
+{
+  "lunchMenu": "Rice, Sambar"
+}
+
+### GET WALLET BALANCE
+GET http://localhost:4000/wallet-api/balance
+
+### GET WALLET STATUS
+GET http://localhost:4000/wallet-api/status
+
+### ADD MONEY
+POST http://localhost:4000/wallet-api/add-money
+Content-Type: application/json
+
+{
+  "amount": 3000,
+  "paymentMethod": "UPI"
+}
+
+### GET TRANSACTIONS
+GET http://localhost:4000/wallet-api/transactions
+
+### SKIP MEALS
+POST http://localhost:4000/skipmeal-api
+Content-Type: application/json
+
+{
+  "dates": ["2026-04-15", "2026-04-16"]
+}
+
+### GET ALL SKIPS
+GET http://localhost:4000/skipmeal-api
+
+### GET TODAY SKIP STATUS
+GET http://localhost:4000/skipmeal-api/today
+
+### CANCEL SKIP
+DELETE http://localhost:4000/skipmeal-api/2026-04-16
+
+### ADMIN DASHBOARD
+GET http://localhost:4000/admin-api/dashboard
+
+### TODAY MEALS
+GET http://localhost:4000/admin-api/meals/today
+
+
+### GET USERS
+GET http://localhost:4000/admin-api/users
+
+### UPDATE USER STATUS
+PATCH http://localhost:4000/admin-api/user/69da1936eaabe11b1a5e37bd/status
+Content-Type: application/json
+
+{
+  "isActive": false
+}
+
+### PROCESS MEALS
+POST http://localhost:4000/admin-api/process-meals
+

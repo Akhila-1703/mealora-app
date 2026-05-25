@@ -1,0 +1,450 @@
+import React, { useEffect, useState } from "react";
+import useAdmin from "../../hooks/useAdmin";
+import { 
+  Search, ChevronDown, Download, Filter, Pencil, Ban, UserCheck, 
+  ArrowUpRight, ArrowDownRight, Ticket, ChevronLeft, ChevronRight 
+} from "lucide-react";
+import Loader from "../../components/common/Loader";
+
+const Users = () => {
+  const {
+    users,
+    loading,
+    fetchUsers,
+    toggleUserStatus,
+  } = useAdmin();
+
+  // 🔥 LOCAL STATES
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [planFilter, setPlanFilter] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [activeUserId, setActiveUserId] = useState(null);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  // 🔥 SAFE TOGGLE
+  const handleToggle = async (id, isActive) => {
+    try {
+      setActiveUserId(id);
+      await toggleUserStatus(id, isActive);
+      await fetchUsers();
+    } finally {
+      setActiveUserId(null);
+    }
+  };
+
+  const getInitials = (firstName, lastName) => {
+    return `${firstName?.charAt(0) || ""}${lastName?.charAt(0) || ""}`.toUpperCase() || "U";
+  };
+
+  // Metrics calculations
+  const totalUsersCount = users?.length || 0;
+  const activeSubsCount = users?.filter(u => u.isActive).length || 0;
+  const pausedSubsCount = users?.filter(u => !u.isActive).length || 0;
+  
+  // Approximate a revenue mock (e.g. active users * Rs. 100/meal * 30 days)
+  const totalRevenue = activeSubsCount * 3000;
+
+  // Filter logic
+  const filteredUsers = users?.filter((user) => {
+    const matchesSearch = `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.mobile?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = statusFilter === "All" || 
+      (statusFilter === "Active" && user.isActive) ||
+      (statusFilter === "Paused" && !user.isActive);
+
+    const matchesPlan = planFilter === "All" || 
+      (planFilter === "Regular" && (user.subscription?.planType === "REGULAR" || (!user.subscription && user.walletBalance >= 100))) ||
+      (planFilter === "Trial" && (user.subscription?.planType === "TRIAL" || (!user.subscription && user.walletBalance < 100)));
+
+    return matchesSearch && matchesStatus && matchesPlan;
+  }) || [];
+
+  // Pagination setup (4 users per page to match mockup scale)
+  const usersPerPage = 4;
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage) || 1;
+
+  if (loading && users.length === 0) return <Loader />;
+
+  return (
+    <div className="w-full bg-[#FAF8F5] min-h-[calc(100vh-80px)] flex flex-col font-['Inter'] pb-16 -mt-6">
+      
+      {/* HEADER SECTION */}
+      <div className="w-full px-4 md:px-8 pt-8 pb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6 max-w-7xl mx-auto">
+        <div className="flex flex-col">
+          <h1 className="text-[32px] font-bold text-[#1A1A1A] font-['Fraunces'] leading-none mb-2">
+            User Directory
+          </h1>
+          <p className="text-[#666666] text-[15px]">
+            Manage your subscribers and monitor community health.
+          </p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <button className="border border-[#E0E0E0] bg-white hover:bg-[#FAFAFA] text-[#333333] px-4 py-2.5 rounded-xl font-semibold text-[13px] flex items-center gap-2 transition-colors">
+            <Download size={16} />
+            Export CSV
+          </button>
+          <button className="border border-[#E0E0E0] bg-white hover:bg-[#FAFAFA] text-[#333333] px-4 py-2.5 rounded-xl font-semibold text-[13px] flex items-center gap-2 transition-colors">
+            <Filter size={16} />
+            Advanced Filters
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto w-full px-4 md:px-8 flex flex-col gap-8">
+
+        {/* METRIC CARDS ROW */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* TOTAL USERS */}
+          <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 flex flex-col justify-between shadow-sm h-[135px] relative overflow-hidden">
+            <div className="flex justify-between items-center text-[#666666] mb-2">
+              <span className="text-[11px] font-bold tracking-widest uppercase">Total Users</span>
+              <span className="bg-[#E8F5E9] text-[#2E7D32] px-2 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-0.5">
+                +12% <ArrowUpRight size={10} />
+              </span>
+            </div>
+            <span className="text-[32px] font-bold text-[#1A1A1A] leading-none mb-4">
+              {totalUsersCount.toLocaleString()}
+            </span>
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#2E7D32] opacity-80" />
+          </div>
+
+          {/* ACTIVE SUBSCRIPTIONS */}
+          <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 flex flex-col justify-between shadow-sm h-[135px] relative overflow-hidden">
+            <div className="flex justify-between items-center text-[#666666] mb-2">
+              <span className="text-[11px] font-bold tracking-widest uppercase">Active Subs</span>
+              <span className="bg-[#E8F5E9] text-[#2E7D32] px-2 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-0.5">
+                +4% <ArrowUpRight size={10} />
+              </span>
+            </div>
+            <span className="text-[32px] font-bold text-[#1A1A1A] leading-none mb-4">
+              {activeSubsCount.toLocaleString()}
+            </span>
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#2B5240]" />
+          </div>
+
+          {/* PAUSED SUBSCRIPTIONS */}
+          <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 flex flex-col justify-between shadow-sm h-[135px] relative overflow-hidden">
+            <div className="flex justify-between items-center text-[#666666] mb-2">
+              <span className="text-[11px] font-bold tracking-widest uppercase">Paused Subs</span>
+              <span className="bg-[#FFF3E0] text-[#E65100] px-2 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-0.5">
+                -2% <ArrowDownRight size={10} />
+              </span>
+            </div>
+            <span className="text-[32px] font-bold text-[#1A1A1A] leading-none mb-4">
+              {pausedSubsCount.toLocaleString()}
+            </span>
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#F97316]" />
+          </div>
+
+          {/* TOTAL REVENUE */}
+          <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 flex flex-col justify-between shadow-sm h-[135px] relative overflow-hidden">
+            <div className="flex justify-between items-center text-[#666666] mb-2">
+              <span className="text-[11px] font-bold tracking-widest uppercase">Total Revenue</span>
+              <span className="bg-[#E8F5E9] text-[#2E7D32] px-2 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-0.5">
+                +18% <ArrowUpRight size={10} />
+              </span>
+            </div>
+            <span className="text-[32px] font-bold text-[#1A1A1A] leading-none mb-4 font-['Fraunces']">
+              ₹{(totalRevenue / 1000).toFixed(1)}k
+            </span>
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#C04E2D]" />
+          </div>
+        </div>
+
+        {/* DATA CONTAINER (TABLE & FILTERS) */}
+        <div className="bg-white rounded-3xl border border-[#EBEBEB] shadow-sm overflow-hidden">
+          
+          {/* SEARCH & FILTERS BAR */}
+          <div className="px-8 py-6 border-b border-[#F5F5F5] flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="relative w-full md:w-[350px]">
+              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                <Search size={16} className="text-[#808080]" />
+              </div>
+              <input 
+                type="text" 
+                placeholder="Search by name, email, or mobile..." 
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="w-full bg-[#FAFAFA] border border-[#E0E0E0] rounded-xl pl-11 pr-4 py-2.5 text-[14px] focus:outline-none focus:ring-2 focus:ring-[#C04E2D]"
+              />
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <select 
+                  value={statusFilter}
+                  onChange={(e) => {
+                    setStatusFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="appearance-none bg-white border border-[#E0E0E0] hover:bg-[#FAFAFA] px-4 py-2.5 pr-10 rounded-xl font-semibold text-[13px] text-[#333333] cursor-pointer focus:outline-none"
+                >
+                  <option value="All">Status: All</option>
+                  <option value="Active">Status: Active</option>
+                  <option value="Paused">Status: Paused</option>
+                </select>
+                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#666666]" />
+              </div>
+
+              <div className="relative">
+                <select 
+                  value={planFilter}
+                  onChange={(e) => {
+                    setPlanFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="appearance-none bg-white border border-[#E0E0E0] hover:bg-[#FAFAFA] px-4 py-2.5 pr-10 rounded-xl font-semibold text-[13px] text-[#333333] cursor-pointer focus:outline-none"
+                >
+                  <option value="All">Plan: All</option>
+                  <option value="Regular">Plan: Regular</option>
+                  <option value="Trial">Plan: Trial</option>
+                </select>
+                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#666666]" />
+              </div>
+            </div>
+          </div>
+
+          {/* CUSTOM DIRECTORY TABLE */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[900px]">
+              <thead>
+                <tr className="bg-[#FAFAFA] border-b border-[#F5F5F5]">
+                  <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">User Name</th>
+                  <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Email & Mobile</th>
+                  <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Status</th>
+                  <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Plan Type</th>
+                  <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Wallet</th>
+                  <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Join Date</th>
+                  <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080] text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#F5F5F5]">
+                {currentUsers.map((user) => {
+                  const isLowBalance = (user.walletBalance ?? 0) < 400;
+                  const isUpdating = activeUserId === user._id;
+                  
+                  // Plan type fetched dynamically from populated subscription details or fallback
+                  const planType = user.subscription?.planType
+                    ? (user.subscription.planType === "TRIAL" ? "Trial" : "Regular")
+                    : (isLowBalance ? "Trial" : "Regular");
+                  
+                  // Format user._id into a short DBF id code
+                  const shortId = `DBF-${user._id?.slice(-4).toUpperCase() || "1022"}`;
+
+                  const formattedJoinDate = user.createdAt 
+                    ? new Date(user.createdAt).toLocaleDateString("en-IN", { day: '2-digit', month: 'short', year: 'numeric' })
+                    : "12 Oct 2023";
+
+                  return (
+                    <tr key={user._id} className="hover:bg-[#FAFAFA] transition-colors">
+                      <td className="px-8 py-5">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-[14px] ${user.isActive ? 'bg-[#2B5240]' : 'bg-[#E08D60]'}`}>
+                            {getInitials(user.firstName, user.lastName)}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-bold text-[#1A1A1A] text-[15px]">
+                              {user.firstName} {user.lastName}
+                            </span>
+                            <span className="text-[11px] text-[#808080] font-medium uppercase tracking-wider">
+                              ID: {shortId}
+                            </span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-8 py-5">
+                        <div className="flex flex-col">
+                          <span className="text-[14px] text-[#4F4F4F]">{user.email}</span>
+                          <span className="text-[11px] text-[#808080] font-semibold">{user.mobile || "No Mobile"}</span>
+                        </div>
+                      </td>
+                      <td className="px-8 py-5">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold ${
+                          user.isActive 
+                            ? 'bg-[#E8F5E9] text-[#2E7D32]' 
+                            : 'bg-[#FFE0B2] text-[#E65100]'
+                        }`}>
+                          • {user.isActive ? 'Active' : 'Paused'}
+                        </span>
+                      </td>
+                      <td className="px-8 py-5">
+                        <span className={`text-[14px] font-medium ${
+                          planType === 'Trial' 
+                            ? 'bg-[#FFF3E0] text-[#E65100] px-3 py-1 rounded-lg text-xs font-semibold' 
+                            : 'text-[#4F4F4F]'
+                        }`}>
+                          {planType}
+                        </span>
+                      </td>
+                      <td className="px-8 py-5 text-[14px] font-bold">
+                        <span className={(user.walletBalance ?? 0) < 0 ? 'text-[#D32F2F]' : (user.walletBalance ?? 0) < 400 ? 'text-[#E65100]' : 'text-[#2E7D32]'}>
+                          ₹{(user.walletBalance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </span>
+                      </td>
+                      <td className="px-8 py-5 text-[13px] text-[#666666] font-medium">
+                        {formattedJoinDate}
+                      </td>
+                      <td className="px-8 py-5">
+                        <div className="flex items-center justify-end gap-3 text-[#666666]">
+                          <button className="p-1 hover:text-[#1A1A1A] transition-colors">
+                            <Pencil size={18} />
+                          </button>
+                          <button 
+                            disabled={isUpdating}
+                            onClick={() => handleToggle(user._id, user.isActive)}
+                            className={`p-1 transition-colors ${user.isActive ? 'hover:text-[#D32F2F]' : 'hover:text-[#2E7D32]'}`}
+                          >
+                            {user.isActive ? <Ban size={18} /> : <UserCheck size={18} />}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+
+                {filteredUsers.length === 0 && (
+                  <tr>
+                    <td colSpan="7" className="px-8 py-12 text-center text-[#808080]">
+                      No users found matching filters.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+
+          {/* TABLE FOOTER / PAGINATION */}
+          <div className="px-8 py-5 border-t border-[#F5F5F5] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <span className="text-[13px] font-medium text-[#666666]">
+              Showing {filteredUsers.length > 0 ? indexOfFirstUser + 1 : 0} to {Math.min(indexOfLastUser, filteredUsers.length)} of {filteredUsers.length} users
+            </span>
+
+            <div className="flex items-center gap-1.5">
+              <button 
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="w-8 h-8 rounded-lg border border-[#E0E0E0] flex items-center justify-center text-[#666666] hover:bg-[#FAFAFA] disabled:opacity-50 disabled:hover:bg-white"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i + 1}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`w-8 h-8 rounded-lg text-[13px] font-bold flex items-center justify-center border transition-colors ${
+                    currentPage === i + 1 
+                      ? 'bg-[#2B5240] border-[#2B5240] text-white' 
+                      : 'bg-white border-[#E0E0E0] text-[#333333] hover:bg-[#FAFAFA]'
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+
+              <button 
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="w-8 h-8 rounded-lg border border-[#E0E0E0] flex items-center justify-center text-[#666666] hover:bg-[#FAFAFA] disabled:opacity-50 disabled:hover:bg-white"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* BOTTOM WIDGETS SECTION */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* WEEKLY SIGNUPS CHART PLACEHOLDER */}
+          <div className="lg:col-span-2 bg-white rounded-3xl border border-[#EBEBEB] p-6 shadow-sm flex flex-col justify-between">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-[18px] font-bold text-[#1A1A1A]">Weekly New Signups</h3>
+              <div className="flex items-center gap-4 text-xs font-semibold">
+                <span className="flex items-center gap-1.5 text-[#666666]">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#A6C4B4]" /> Regular
+                </span>
+                <span className="flex items-center gap-1.5 text-[#666666]">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#E08D60]" /> Trial
+                </span>
+              </div>
+            </div>
+
+            {/* Custom Flex Chart */}
+            <div className="h-[180px] flex items-end gap-3 px-2">
+              {[
+                { day: "Mon", reg: 40, tri: 10 },
+                { day: "Tue", reg: 65, tri: 15 },
+                { day: "Wed", reg: 50, tri: 12 },
+                { day: "Thu", reg: 75, tri: 20 },
+                { day: "Fri", reg: 55, tri: 14 },
+                { day: "Sat", reg: 70, tri: 18 },
+                { day: "Sun", reg: 90, tri: 25 }
+              ].map((item, idx) => {
+                const total = item.reg + item.tri;
+                return (
+                  <div key={idx} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
+                    <div className="w-full relative flex flex-col justify-end h-[140px] rounded-lg overflow-hidden bg-[#FAFAFA]">
+                      <div 
+                        style={{ height: `${(item.reg / 115) * 140}px` }} 
+                        className="w-full bg-[#A6C4B4] rounded-t-sm transition-all group-hover:opacity-90"
+                      />
+                      {idx === 6 && (
+                        <div 
+                           style={{ height: `${(item.tri / 115) * 140}px` }} 
+                          className="w-full bg-[#2B5240] transition-all group-hover:opacity-90"
+                        />
+                      )}
+                    </div>
+                    <span className="text-[12px] font-medium text-[#666666]">{item.day}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* PREMIUM SUPPORT WIDGET */}
+          <div className="lg:col-span-1 bg-[#1A3D2F] rounded-3xl p-8 text-white flex flex-col justify-between shadow-sm relative overflow-hidden min-h-[260px]">
+            <div className="relative z-10 flex flex-col gap-3">
+              <h3 className="text-[20px] font-bold font-['Fraunces']">Premium Support</h3>
+              <p className="text-[#A6C4B4] text-[14px] leading-relaxed">
+                You have 12 unassigned high-priority tickets today.
+              </p>
+            </div>
+            
+            <div className="relative z-10 flex items-center justify-between mt-8 border-t border-[#2B5240] pt-6">
+              <div className="flex items-center gap-1 text-[#A6C4B4]">
+                <Ticket size={20} />
+                <span className="text-sm font-semibold">12 Open</span>
+              </div>
+              
+              <button className="bg-white hover:bg-[#FAFAFA] text-[#1A3D2F] font-bold text-[13px] px-5 py-2.5 rounded-xl transition-all shadow-sm">
+                Go to Tickets
+              </button>
+            </div>
+
+            {/* Background geometric design */}
+            <div className="absolute right-[-40px] top-[-40px] w-36 h-36 rounded-full bg-[#2B5240] opacity-40 pointer-events-none" />
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+export default Users;
