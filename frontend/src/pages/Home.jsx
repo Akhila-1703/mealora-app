@@ -140,13 +140,13 @@ const Home = () => {
                 "Food is not just sustenance; it is the feeling of home, comfort, and care wrapped in a single meal."
               </p>
               <p className={`${bodyText} mb-6 text-[16px]`}>
-                DabbaFresh was born from a simple observation: the modern professional 
+                MealOra was born from a simple observation: the modern professional 
                 deserves the warmth of home, even at the office. We saw a world of 
                 heavy restaurant meals and fast-food shortcuts, and we chose a different path. 
                 Our approach blends centuries-old cooking techniques with modern nutritional science to keep you energized.
               </p>
               <p className={`${bodyText} mb-12 text-[16px]`}>
-                We empower home chefs to share their culinary heritage. Every dabba 
+                We empower home chefs to share their culinary heritage. Every meal 
                 is a story of organic ingredients, precise hygiene, and the 
                 unmistakable taste of care. By partnering directly with local farmers, we ensure every bite is as fresh as it gets.
               </p>
@@ -326,7 +326,7 @@ const Home = () => {
 
             <div className="z-10 text-center md:text-left">
               <p className="text-xl md:text-2xl text-[#332520] leading-relaxed mb-8 font-serif">
-                "As a <span className="font-bold">busy parent</span>, managing <span className="font-bold">daily</span> meals was overwhelming. DabbaFresh changed that. The food tastes just like it came from my own kitchen—warm, <span className="font-bold">honest, and</span> comforting. It <span className="font-bold">brings</span> our family together."
+                "As a <span className="font-bold">busy parent</span>, managing <span className="font-bold">daily</span> meals was overwhelming. MealOra changed that. The food tastes just like it came from my own kitchen—warm, <span className="font-bold">honest, and</span> comforting. It <span className="font-bold">brings</span> our family together."
               </p>
               <div>
                 <p className="font-bold text-[#C04E2D] mb-1">Priya Sharma</p>

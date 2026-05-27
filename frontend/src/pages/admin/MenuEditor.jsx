@@ -50,16 +50,8 @@ const MenuEditor = () => {
   const currentMonthYear = weekDates.find(d => d.name === selectedDay)?.monthYear || weekDates[0].monthYear;
 
 
-  // Day-wise local public fallbacks
-  const mealImages = {
-    Monday: "/mon.png",
-    Tuesday: "/tue.png",
-    Wednesday: "/wed.png",
-    Thursday: "/thu.png",
-    Friday: "/fri.png",
-    Saturday: "/sat.png",
-    Sunday: "/sun.png"
-  };
+
+
 
  
 
@@ -81,9 +73,13 @@ const MenuEditor = () => {
   }, []);
 
   // Find the menu object for the selected day
-const currentMenuObj = menus.find(
-  (m) => m?.day?.toLowerCase() === selectedDay.toLowerCase()
-);
+const currentMenuObj =
+  Array.isArray(menus)
+    ? menus.find(
+        (m) =>
+          m?.day?.toLowerCase() === selectedDay.toLowerCase()
+      )
+    : null;
   
   const [uploading, setUploading] = useState(false);
 
@@ -103,7 +99,6 @@ const currentMenuObj = menus.find(
 
 setLunchMenuInput(
 currentMenuObj?.lunchMenu ||
-currentMenuObj?.items?.join(", ") ||
 ""
 );
     } else {
@@ -188,22 +183,33 @@ if (!imageUrl) {
       if (currentMenuObj) {
         await handleApi(
           () => updateMenu(currentMenuObj.day, {
-            title: titleInput || currentMenuObj.title || "Standard Lunch",
-            lunchMenu: lunchMenuInput || currentMenuObj.lunchMenu || "Standard Lunch",
+            title: titleInput || currentMenuObj?.title || "",
+            lunchMenu: lunchMenuInput || currentMenuObj?.lunchMenu || "",
             imageUrl,
-            imagePublicId
+            imagePublicId,
           }),
           "Menu image uploaded successfully"
         );
       } else {
+        if (!titleInput.trim()) {
+          alert("Enter meal title first");
+          return;
+        }
+
+        if (!lunchMenuInput.trim()) {
+          alert("Enter lunch menu first");
+          return;
+        }
+
         await handleApi(
-          () => addMenu({
-            day: selectedDay,
-            title: titleInput || "Standard Lunch",
-            lunchMenu: lunchMenuInput || "Standard Lunch",
-            imageUrl,
-            imagePublicId
-          }),
+          () =>
+            addMenu({
+              day: selectedDay,
+              title: titleInput,
+              lunchMenu: lunchMenuInput,
+              imageUrl,
+              imagePublicId,
+            }),
           "Menu created with image"
         );
       }
@@ -213,6 +219,9 @@ if (!imageUrl) {
       alert("Failed to upload image. Please try again.");
     } finally {
       setUploading(false);
+      if (e?.target) {
+        e.target.value = "";
+      }
     }
   };
 
@@ -302,24 +311,52 @@ if (!imageUrl) {
             
             {/* LUNCH IMAGE HEADER CARD */}
             <div className="relative h-[320px] rounded-2xl overflow-hidden shadow-sm">
-              <img 
-                src={currentMenuObj?.imageUrl || mealImages[selectedDay] || "/mon.png"} 
-                alt="Lunch Menu" 
-                className="w-full h-full object-cover brightness-[0.65]" 
-              />
-              <div className="absolute inset-0 p-6 flex flex-col justify-between text-white">
-                <span className="bg-white/20 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-bold w-fit uppercase tracking-widest">
-                  {selectedDay}'s Menu
-                </span>
-                <div className="flex flex-col">
-                  <h3 className="text-[26px] font-bold font-['Fraunces'] leading-tight">
-                    {currentMenuObj?.title || "Standard Lunch Box"}
-                  </h3>
-                  <p className="text-white/80 text-xs mt-1">
-                    Manage the core ingredients & dishes included in this dabba.
-                  </p>
+              {currentMenuObj?.imageUrl ? (
+                <>
+                  <img
+                    src={currentMenuObj.imageUrl}
+                    alt="Lunch Menu"
+                    className="w-full h-full object-cover brightness-[0.65]"
+                  />
+
+                  <div className="absolute inset-0 p-6 flex flex-col justify-between text-white">
+                    <span
+                      className="bg-white/20 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-bold w-fit uppercase tracking-widest"
+                    >
+                      {selectedDay}'s Menu
+                    </span>
+
+                    <div>
+                      <h3 className="text-[26px] font-bold font-['Fraunces']">
+                        {currentMenuObj?.title}
+                      </h3>
+
+                      <p className="text-white/80 text-xs mt-1">
+                        Manage the core ingredients & dishes included in this meal.
+                      </p>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div
+                  className="h-full flex items-center justify-center bg-[#FAF8F5] border-2 border-dashed border-[#E5E5E5]"
+                >
+                  <div className="text-center">
+                    <Upload
+                      size={42}
+                      className="mx-auto mb-3 text-[#B8B8B8]"
+                    />
+
+                    <h3 className="text-[22px] font-bold text-[#444]">
+                      No Menu Created
+                    </h3>
+
+                    <p className="text-[#888] mt-2">
+                      Upload image to preview menu
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* DYNAMIC IMAGE UPLOADER */}

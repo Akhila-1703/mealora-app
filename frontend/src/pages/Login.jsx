@@ -38,7 +38,8 @@ const Login = () => {
           className="absolute top-8 left-8 md:top-12 md:left-12 cursor-pointer flex items-center gap-2 hover:opacity-80 transition-opacity"
           onClick={() => navigate("/")}
         >
-          <span className="text-2xl font-black font-['Fraunces'] text-[#332520]">DabbaFresh</span>
+          <img src="/logo.png" alt="MealOra" className="h-8 object-contain" />
+          <span className="text-2xl font-black font-['Fraunces'] text-[#332520]">MealOra</span>
         </div>
 
         <motion.div 

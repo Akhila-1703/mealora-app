@@ -29,26 +29,7 @@ const menuSchema = new Schema(
       trim: true,
     },
 
-    items: {
-      type: [String],
-      default: [],
-    },
 
-    description: {
-      type: String,
-      default: "",
-    },
-
-    category: {
-      type: String,
-      default: "Veg",
-      enum: ["Veg", "Non-Veg"],
-    },
-
-    specialTag: {
-      type: String,
-      default: "",
-    },
 
     imageUrl: {
       type: String,

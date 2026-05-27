@@ -1,5 +1,5 @@
 /*
-DABBA PREMIUM DESIGN SYSTEM
+MEALORA PREMIUM DESIGN SYSTEM
 Lovable Aesthetic UI tokens
 */
 
@@ -60,7 +60,7 @@ export const navWrapper = "px-6 py-4";
 export const navBrand = "text-2xl font-bold flex items-center gap-2 tracking-tighter text-[#332520] font-['Fraunces']";
 
 // Sidebar
-export const sidebar = "w-64 bg-[#FCFBF9] border-r border-[#E6E4DF] p-6 flex flex-col justify-between sticky top-0 h-screen overflow-y-auto";
+export const sidebar = "w-64 bg-[#FCFBF9] border-r border-[#E6E4DF] p-6 flex flex-col justify-between sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto";
 export const sidebarItem = "flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#827873] hover:bg-[#F4EEE8] hover:text-[#332520] transition-all font-medium text-sm";
 export const sidebarItemActive = "flex items-center gap-3 px-4 py-2.5 rounded-lg bg-[#C04E2D] text-white font-semibold shadow-sm text-sm";
 

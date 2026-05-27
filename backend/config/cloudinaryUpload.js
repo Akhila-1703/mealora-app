@@ -4,7 +4,7 @@ export const uploadToCloudinary = (fileBuffer) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
-        folder: "dabba-users", // optional folder name
+        folder: "mealora-users", // optional folder name
       },
       (error, result) => {
         if (error) return reject(error);

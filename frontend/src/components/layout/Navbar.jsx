@@ -68,10 +68,11 @@ function Navbar() {
         
         {/* Logo */}
         <div
-          className="cursor-pointer flex-shrink-0 mr-12 flex items-center"
+          className="cursor-pointer flex-shrink-0 mr-12 flex items-center gap-3"
           onClick={() => navigate("/")}
         >
-          <span className="text-2xl font-black font-['Fraunces'] text-[#332520]">DabbaFresh</span>
+          <img src="/logo.png" alt="MealOra" className="h-8 object-contain" />
+          <span className="text-2xl font-black font-['Fraunces'] text-[#332520]">MealOra</span>
         </div>
 
         {/* Desktop Unified Navigation */}

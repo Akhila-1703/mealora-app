@@ -82,7 +82,8 @@ const Register = () => {
           className="absolute top-8 left-8 md:top-12 md:left-12 cursor-pointer flex items-center gap-2 hover:opacity-80 transition-opacity z-10"
           onClick={() => navigate("/")}
         >
-          <span className="text-2xl font-black font-['Fraunces'] text-[#332520]">DabbaFresh</span>
+          <img src="/logo.png" alt="MealOra" className="h-8 object-contain" />
+          <span className="text-2xl font-black font-['Fraunces'] text-[#332520]">MealOra</span>
         </div>
 
         <motion.div 
@@ -93,7 +94,7 @@ const Register = () => {
         >
           <div className="mb-10">
             <h2 className="text-4xl font-black font-['Fraunces'] text-[#332520] mb-3">Create Account</h2>
-            <p className="text-[#827873] text-lg">Join DabbaFresh for healthy, home-style meals.</p>
+            <p className="text-[#827873] text-lg">Join MealOra for healthy, home-style meals.</p>
           </div>
 
           <form onSubmit={handleSubmit} noValidate className="space-y-5">

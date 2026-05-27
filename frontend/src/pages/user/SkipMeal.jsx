@@ -8,13 +8,17 @@ import {
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Check, X } from "lucide-react";
 import Loader from "../../components/common/Loader";
 
+import useUser from "../../hooks/useUser";
+
 const SkipMeal = () => {
   const { skips, todayStatus, fetchSkips, addSkip, cancelSkip, loading } = useSkip();
+  const { dashboard, loading: dashboardLoading, loadDashboard } = useUser();
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   useEffect(() => {
     fetchSkips();
-  }, [fetchSkips]);
+    if (!dashboard) loadDashboard();
+  }, [fetchSkips, dashboard, loadDashboard]);
 
   const currentHour = new Date().getHours();
   // Cutoff for skipping is 11 AM based on backend
@@ -79,7 +83,29 @@ const SkipMeal = () => {
     return d.getMonth() === currentMonth.getMonth() && d.getFullYear() === currentMonth.getFullYear();
   }).length;
 
-  if (loading && skips.length === 0) return <Loader />;
+  if ((loading && skips.length === 0) || dashboardLoading || !dashboard) return <Loader />;
+
+  if ((dashboard.walletBalance ?? 0) < 100) {
+    return (
+      <div className="w-full bg-[#FAF8F5] min-h-screen flex flex-col items-center justify-center p-6 text-center font-['Inter']">
+        <div className="bg-white p-8 rounded-2xl border border-[#EBEBEB] shadow-sm max-w-md w-full">
+          <div className="w-16 h-16 bg-[#FCE8E8] rounded-full flex items-center justify-center mx-auto mb-4 text-[#991B1B]">
+            <CalendarIcon size={32} />
+          </div>
+          <h2 className="text-2xl font-bold text-[#1A1A1A] font-['Fraunces'] mb-2">Insufficient Balance</h2>
+          <p className="text-[#666666] text-sm mb-6 leading-relaxed">
+            Please add money to your wallet to view and manage your meal calendar.
+          </p>
+          <a 
+            href="/dashboard/wallet"
+            className="block w-full bg-[#C04E2D] hover:bg-[#A34226] text-white font-semibold py-3 rounded-xl transition-all"
+          >
+            Add Funds
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full bg-[#FAF8F5] min-h-screen font-['Inter'] flex flex-col items-center">
@@ -163,7 +189,7 @@ const SkipMeal = () => {
                   </span>
                 </div>
                 <p className="text-[#808080] text-xs leading-relaxed">
-                  Skipped meals are credited to your Dabba Wallet automatically.
+                  Skipped meals are credited to your MealOra Wallet automatically.
                 </p>
               </div>
             </div>
@@ -215,7 +241,12 @@ const SkipMeal = () => {
                 const isShaded = isPastDay || (isTodayDay && isVisualShadedCutoffPassed);
                 const formattedDate = format(day, "yyyy-MM-dd");
                 const isSkipped = skips.some(s => s.date === formattedDate);
-                const isDelivered = isShaded && !isSkipped;
+                
+                const userStartDate = new Date(dashboard.subscriptionStartDate || new Date());
+                userStartDate.setHours(0, 0, 0, 0);
+                const isBeforeSubscription = isBefore(day, userStartDate);
+                
+                const isDelivered = dashboard?.servedMealsDates?.includes(formattedDate) || false;
                 const isCurrentMonth = isSameMonth(day, currentMonth);
                 
                 const isInteractive = !isPastDay && !(isTodayDay && isSkipCutoffPassed);

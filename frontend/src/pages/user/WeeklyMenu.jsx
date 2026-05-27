@@ -2,21 +2,22 @@ import React, { useEffect } from "react";
 import { format, isTomorrow, addDays } from "date-fns";
 import useMenu from "../../hooks/useMenu";
 import useSkip from "../../hooks/useSkip";
-import { Check, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Check, X, ChevronLeft, ChevronRight, Utensils } from "lucide-react";
 
 import useUser from "../../hooks/useUser";
 
 const WeeklyMenu = () => {
   const { menu = [], fetchMenu } = useMenu();
   const { fetchSkips, addSkip, cancelSkip, skips } = useSkip();
-  const { dashboard } = useUser();
+  const { dashboard, loadDashboard } = useUser();
 
 
 
   useEffect(() => {
     fetchMenu();
     fetchSkips();
-  }, [fetchMenu, fetchSkips]);
+    if (!dashboard) loadDashboard();
+  }, [fetchMenu, fetchSkips, dashboard, loadDashboard]);
 
   const todayDate = new Date();
 
@@ -58,6 +59,36 @@ const WeeklyMenu = () => {
     ];
     return nutritionList[index % nutritionList.length];
   };
+
+  if (!dashboard) {
+    return (
+      <div className="w-full bg-[#FAF8F5] min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-[#114232] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if ((dashboard?.walletBalance ?? 0) < 100) {
+    return (
+      <div className="w-full bg-[#FAF8F5] min-h-screen flex flex-col items-center justify-center p-6 text-center font-['Inter']">
+        <div className="bg-white p-8 rounded-2xl border border-[#EBEBEB] shadow-sm max-w-md w-full">
+          <div className="w-16 h-16 bg-[#FCE8E8] rounded-full flex items-center justify-center mx-auto mb-4 text-[#991B1B]">
+            <Utensils size={32} />
+          </div>
+          <h2 className="text-2xl font-bold text-[#1A1A1A] font-['Fraunces'] mb-2">Insufficient Balance</h2>
+          <p className="text-[#666666] text-sm mb-6 leading-relaxed">
+            Please add money to your wallet to view the upcoming weekly menu.
+          </p>
+          <a 
+            href="/dashboard/wallet"
+            className="block w-full bg-[#C04E2D] hover:bg-[#A34226] text-white font-semibold py-3 rounded-xl transition-all"
+          >
+            Add Funds
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full bg-[#FAF8F5] min-h-screen font-['Inter'] flex flex-col items-center">
@@ -133,6 +164,20 @@ const WeeklyMenu = () => {
                   >
                     Arriving by 1 PM
                   </div>
+                ) : dashboard?.deliveryState === "MISSED_CUTOFF" ? (
+                  <div
+                    className="
+                      bg-[#827873]
+                      text-white
+                      px-4
+                      py-2
+                      rounded-xl
+                      font-bold
+                      text-sm
+                    "
+                  >
+                    No Meal Today
+                  </div>
                 ) : (
                   <div
                     className="
@@ -161,14 +206,16 @@ const WeeklyMenu = () => {
                 </p>
 
                 <p className="text-[#666666] text-[15px] leading-relaxed mb-6">
-                {dashboard?.deliveryState === "SKIPPED"
-                    ? "You have skipped today's meal. Your wallet balance remains unchanged."
-                    : dashboard?.deliveryState === "DELIVERED"
-                    ? "Your meal has been delivered. Enjoy!"
-                    : dashboard?.deliveryState === "PENDING_BEFORE_CUTOFF"
-                    ? "Your meal is on the way. Arriving by 1 PM."
-                    : (todayMenu.description ||
-                        "A classic, comforting meal featuring fresh, premium ingredients served perfectly alongside aromatic spiced basmati rice. Accompanied by wholesome rotis and a fresh side salad.")}
+                  {dashboard?.deliveryState === "SKIPPED"
+                      ? "You have skipped today's meal. Your wallet balance remains unchanged."
+                      : dashboard?.deliveryState === "DELIVERED"
+                      ? "Your meal has been delivered. Enjoy!"
+                      : dashboard?.deliveryState === "MISSED_CUTOFF"
+                      ? "You missed today's 1:00 PM cutoff. Your deliveries will start tomorrow."
+                      : dashboard?.deliveryState === "PENDING_BEFORE_CUTOFF"
+                      ? "Your meal is on the way. Arriving by 1 PM."
+                      : (todayMenu.description ||
+                          "A classic, comforting meal featuring fresh, premium ingredients served perfectly alongside aromatic spiced basmati rice. Accompanied by wholesome rotis and a fresh side salad.")}
 
 
                 </p>

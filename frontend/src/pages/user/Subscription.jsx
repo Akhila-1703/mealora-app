@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useSubscription from "../../hooks/useSubscription";
+import useUser from "../../hooks/useUser";
 
 import Loader from "../../components/common/Loader";
 import EmptyState from "../../components/common/EmptyState";
@@ -29,6 +30,8 @@ function Subscription() {
     handleStatusChange,
   } = useSubscription();
 
+  const { dashboard, loadDashboard } = useUser();
+
   const [form, setForm] = useState({
     address: subscription?.address || "",
     city: subscription?.city || "",
@@ -39,7 +42,8 @@ function Subscription() {
 
   useEffect(() => {
     fetchSubscription();
-  }, [fetchSubscription]);
+    loadDashboard();
+  }, [fetchSubscription, loadDashboard]);
 
   useEffect(() => {
     if (subscription) {
@@ -108,52 +112,12 @@ function Subscription() {
             </div>
 
             <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label className="text-[13px] font-bold text-[#4F4F4F] tracking-wide">
-                  Delivery Address
-                </label>
-                <textarea
-                  name="address"
-                  rows={3}
-                  placeholder="Enter your full street address, building number, and landmarks..."
-                  value={form.address}
-                  onChange={handleChange}
-                  className="w-full border border-[#E0E0E0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#114232] text-[#333333] placeholder-[#A0A0A0] transition-all resize-none"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-bold text-[#4F4F4F] tracking-wide">
-                    City
-                  </label>
-                  <input
-                    name="city"
-                    type="text"
-                    placeholder="e.g. Mumbai"
-                    value={form.city}
-                    onChange={handleChange}
-                    className="w-full border border-[#E0E0E0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#114232] text-[#333333] placeholder-[#A0A0A0] transition-all"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[13px] font-bold text-[#4F4F4F] tracking-wide">
-                    Pincode
-                  </label>
-                  <input
-                    name="pincode"
-                    type="text"
-                    placeholder="6-digit PIN"
-                    value={form.pincode}
-                    onChange={handleChange}
-                    className="w-full border border-[#E0E0E0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#114232] text-[#333333] placeholder-[#A0A0A0] transition-all"
-                  />
-                </div>
-              </div>
+              <p className="text-sm text-[#4F4F4F] leading-relaxed mb-4">
+                To start receiving delicious meals, you'll need an active plan. By creating a subscription, you opt-in to our default Pay-Per-Meal lunch plan.
+              </p>
 
               <button
-                onClick={() => handleCreateSubscription(form)}
+                onClick={() => handleCreateSubscription({ address: "Default", city: "Default", pincode: "000000" })}
                 disabled={loading}
                 className="w-full bg-[#114232] hover:bg-[#0D3326] text-white font-semibold py-3.5 rounded-xl transition-all duration-200 text-sm active:scale-[0.98] shadow-sm flex items-center justify-center mt-4 cursor-pointer"
               >
@@ -275,83 +239,29 @@ function Subscription() {
                   <h2 className="text-xl font-bold text-[#1A1A1A] font-['Fraunces']">
                     Delivery Address
                   </h2>
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-[#4F4F4F]">Edit Address</span>
-                    <div 
-                      onClick={() => setEditing(!editing)}
-                      className={`w-12 h-6 rounded-full flex items-center px-1 cursor-pointer transition-colors duration-300 ${editing ? 'bg-[#114232]' : 'bg-[#E0E0E0]'}`}
-                    >
-                      <div className={`w-4 h-4 bg-white rounded-full shadow-sm transform transition-transform duration-300 ${editing ? 'translate-x-6' : 'translate-x-0'}`}></div>
-                    </div>
-                  </div>
+                  <button
+                    onClick={() => navigate("/dashboard/profile")}
+                    className="text-[#9A3B14] hover:underline text-sm font-bold transition-all"
+                  >
+                    Manage Addresses
+                  </button>
                 </div>
 
-                {!editing ? (
-                  <>
-                    <div className="bg-[#F5F5F5] rounded-xl p-4 flex items-center gap-3">
-                      <div className="text-[#666666]">
-                        <MapPin size={20} />
-                      </div>
-                      <p className="text-[#333333] font-medium text-[15px]">
-                        {subscription.address}, {subscription.city} {subscription.pincode}
-                      </p>
-                    </div>
-
-                    <div className="bg-[#FFF4F4] border border-[#FFE0E0] rounded-xl p-4 flex gap-3 text-[#D32F2F]">
-                      <AlertTriangle size={18} className="shrink-0 mt-0.5" />
-                      <p className="text-xs font-medium leading-relaxed">
-                        <span className="font-bold">Note:</span> Address updates are blocked 3 hours prior to tomorrow's delivery (Cutoff: 10:00 AM)
-                      </p>
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex flex-col gap-4 bg-[#F9F9F9] p-6 rounded-xl border border-[#EEEEEE]">
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[13px] font-bold text-[#4F4F4F] tracking-wide">Street Address</label>
-                      <input
-                        name="address"
-                        value={form.address}
-                        onChange={handleChange}
-                        className="w-full border border-[#E0E0E0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#114232] text-[#333333]"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-[13px] font-bold text-[#4F4F4F] tracking-wide">City</label>
-                        <input
-                          name="city"
-                          value={form.city}
-                          onChange={handleChange}
-                          className="w-full border border-[#E0E0E0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#114232] text-[#333333]"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-[13px] font-bold text-[#4F4F4F] tracking-wide">Pincode</label>
-                        <input
-                          name="pincode"
-                          value={form.pincode}
-                          onChange={handleChange}
-                          className="w-full border border-[#E0E0E0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#114232] text-[#333333]"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex gap-3 mt-2">
-                      <button
-                        onClick={handleSave}
-                        disabled={loading}
-                        className="bg-[#114232] hover:bg-[#0D3326] text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all active:scale-[0.98] shadow-sm"
-                      >
-                        {loading ? "Saving..." : "Save Address"}
-                      </button>
-                      <button
-                        onClick={() => setEditing(false)}
-                        className="bg-white border border-[#E0E0E0] hover:bg-[#F5F5F5] text-[#4F4F4F] px-6 py-2.5 rounded-xl text-sm font-semibold transition-all"
-                      >
-                        Cancel
-                      </button>
-                    </div>
+                <div className="bg-[#F5F5F5] rounded-xl p-4 flex items-center gap-3">
+                  <div className="text-[#666666]">
+                    <MapPin size={20} />
                   </div>
-                )}
+                  <p className="text-[#333333] font-medium text-[15px]">
+                    {dashboard?.deliveryAddress || "No active delivery address"}
+                  </p>
+                </div>
+
+                <div className="bg-[#FFF8F6] border border-[#FCE8E8] rounded-xl p-4 flex gap-3 text-[#9A3B14]">
+                  <AlertTriangle size={18} className="shrink-0 mt-0.5" />
+                  <p className="text-xs font-medium leading-relaxed text-[#332520]">
+                    To change your delivery address for today or update your default address, please use the <span className="font-bold">Manage Addresses</span> option in your profile. Address overrides for today are subject to the 10:00 AM cutoff.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -365,7 +275,7 @@ function Subscription() {
                 </h2>
                 
                 <p className="text-sm text-[#4F4F4F] leading-relaxed mb-6">
-                  Your dabba is scheduled for delivery every weekday between <span className="font-bold text-[#1A1A1A]">12:45 PM</span> and <span className="font-bold text-[#1A1A1A]">1:15 PM</span>.
+                  Your meal is scheduled for delivery every weekday between <span className="font-bold text-[#1A1A1A]">12:45 PM</span> and <span className="font-bold text-[#1A1A1A]">1:15 PM</span>.
                 </p>
 
                 <button 

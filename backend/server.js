@@ -13,8 +13,7 @@ import { menuRouter } from "./APIs/MenuAPI.js"
 import { walletRouter } from "./APIs/WalletAPI.js"
 import { skipMealRouter } from "./APIs/SkipMealAPI.js"
 import { adminRouter } from "./APIs/AdminAPI.js"
-// import { processDailyDeductions } from "./services/mealProcessor.js";
-
+import { initScheduler } from "./services/scheduler.js";
 
 config()
 
@@ -80,6 +79,7 @@ const connectDB = async () => {
     // Keep server start only here; do NOT run deductions automatically on startup.
     app.listen(process.env.PORT, () => {
       console.log(`Server started on port ${process.env.PORT}`);
+      initScheduler();
     })
 
 

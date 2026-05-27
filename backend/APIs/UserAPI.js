@@ -35,10 +35,14 @@ userRouter.get("/dashboard", verifyToken("USER"), async (req, res, next) => {
   try {
     const userId = req.user.id;
 
-    const [user, subscription, recentTransactions] = await Promise.all([
+    const [user, subscription, recentTransactions, servedMealsCount, recentServedMealsList, allMenus, allServedMeals] = await Promise.all([
       UserModel.findById(userId),
       SubscriptionModel.findOne({ userId, status: "ACTIVE" }),
-      WalletTransactionModel.find({ userId }).sort({ createdAt: -1 }).limit(3).lean()
+      WalletTransactionModel.find({ userId }).sort({ createdAt: -1 }).limit(3).lean(),
+      WalletTransactionModel.countDocuments({ userId, reason: "MEAL_DEDUCTED" }),
+      WalletTransactionModel.find({ userId, reason: "MEAL_DEDUCTED" }).sort({ createdAt: -1 }).limit(3).lean(),
+      MenuModel.find().lean(),
+      WalletTransactionModel.find({ userId, reason: "MEAL_DEDUCTED" }).select("createdAt").lean()
     ]);
 
     if (!user) {
@@ -69,6 +73,24 @@ userRouter.get("/dashboard", verifyToken("USER"), async (req, res, next) => {
       }).lean()
     ]);
 
+    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    
+    const recentServedMeals = recentServedMealsList.map(tx => {
+       const txDate = new Date(tx.createdAt);
+       const dayName = days[txDate.getDay()];
+       const menuForDay = allMenus.find(m => m.day === dayName);
+       return {
+           date: tx.createdAt,
+           day: dayName,
+           mealName: menuForDay ? menuForDay.lunchMenu : "Meal",
+           amount: tx.amount
+       };
+    });
+
+    const servedMealsDates = allServedMeals.map(tx => {
+       const d = new Date(tx.createdAt);
+       return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    });
 
     const mealPrice = subscription?.mealPrice || 100;
     const walletBalance = user.walletBalance || 0;
@@ -82,16 +104,40 @@ userRouter.get("/dashboard", verifyToken("USER"), async (req, res, next) => {
       message = "Plan expiring soon";
     }
 
+    const todayDateStr = new Date().toISOString().split("T")[0];
+    let activeAddressObj = null;
+
+    // Check for override
+    const override = user.addressOverrides?.find(o => o.date === todayDateStr);
+    if (override) {
+      activeAddressObj = user.addresses?.find(a => a._id.toString() === override.addressId.toString());
+    }
+    
+    // Fallback to default
+    if (!activeAddressObj && user.addresses?.length > 0) {
+      activeAddressObj = user.addresses.find(a => a.isDefault) || user.addresses[0];
+    }
+
+    const calculatedDeliveryAddress = activeAddressObj 
+      ? `${activeAddressObj.address}, ${activeAddressObj.city}` 
+      : (subscription ? `${subscription.address}, ${subscription.city}` : null);
+
     res.status(200).json({
       success: true,
       payload: {
         walletBalance,
         remainingMeals,
+        servedMealsCount,
+        recentServedMeals,
+        servedMealsDates,
         todayMenu: menu?.lunchMenu || null,
         imageUrl: menu?.imageUrl || null,
         isSkippedToday: !!skipped,
         subscriptionStatus: subscription?.status || "INACTIVE",
-        deliveryAddress: subscription ? `${subscription.address}, ${subscription.city}` : null,
+        deliveryAddress: calculatedDeliveryAddress,
+        addresses: user.addresses || [],
+        todayAddressOverride: override?.addressId || null,
+        subscriptionStartDate: subscription?.startDate || user.createdAt,
         message,
         recentTransactions: recentTransactions || [],
         deliveryState: (() => {
@@ -99,8 +145,9 @@ userRouter.get("/dashboard", verifyToken("USER"), async (req, res, next) => {
           const cutoffHour = 13; // 1:00 PM
 
           if (skipped) return "SKIPPED";
-          if (hour < cutoffHour) return "PENDING_BEFORE_CUTOFF";
-          return deliveryTx ? "DELIVERED" : "PENDING";
+          if (deliveryTx) return "DELIVERED";
+          if (hour >= cutoffHour) return "MISSED_CUTOFF";
+          return "PENDING_BEFORE_CUTOFF";
         })()
       }
     });
@@ -122,7 +169,7 @@ userRouter.put(
     try {
       const userId = req.user.id;
 
-      let { firstName, lastName, username, mobile } = req.body;
+      let { firstName, lastName, username, mobile, emailUpdates } = req.body;
 
       // 🔥 get existing user (needed for old image delete)
       const existingUser = await UserModel.findById(userId);
@@ -140,6 +187,7 @@ userRouter.put(
         ...(lastName && { lastName: lastName.trim() }),
         ...(username && { username: username.trim() }),
         ...(mobile && { mobile: mobile.toString().trim() }),
+        ...(emailUpdates !== undefined && { emailUpdates: emailUpdates === "true" || emailUpdates === true }),
       };
 
       // ================= IMAGE HANDLING =================
@@ -182,6 +230,112 @@ userRouter.put(
     }
   }
 );
+
+
+// ================= ADDRESS MANAGEMENT =================
+
+userRouter.post("/address", verifyToken("USER"), async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { tag, address, city, pincode, isDefault } = req.body;
+
+    const user = await UserModel.findById(userId);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    if (isDefault || !user.addresses || user.addresses.length === 0) {
+      user.addresses.forEach(a => a.isDefault = false);
+    }
+
+    user.addresses.push({ tag, address, city, pincode, isDefault: isDefault || user.addresses.length === 0 });
+    await user.save();
+
+    res.status(201).json({ success: true, message: "Address added successfully", payload: user.addresses });
+  } catch (err) {
+    next(err);
+  }
+});
+
+userRouter.put("/address/:addressId", verifyToken("USER"), async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { addressId } = req.params;
+    const { tag, address, city, pincode, isDefault } = req.body;
+
+    const user = await UserModel.findById(userId);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    const addressObj = user.addresses.id(addressId);
+    if (!addressObj) return res.status(404).json({ success: false, message: "Address not found" });
+
+    if (isDefault) {
+      user.addresses.forEach(a => a.isDefault = false);
+    }
+
+    if (tag) addressObj.tag = tag;
+    if (address) addressObj.address = address;
+    if (city) addressObj.city = city;
+    if (pincode) addressObj.pincode = pincode;
+    if (isDefault !== undefined) addressObj.isDefault = isDefault;
+
+    await user.save();
+    res.status(200).json({ success: true, message: "Address updated successfully", payload: user.addresses });
+  } catch (err) {
+    next(err);
+  }
+});
+
+userRouter.delete("/address/:addressId", verifyToken("USER"), async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { addressId } = req.params;
+
+    const user = await UserModel.findById(userId);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    const addressObj = user.addresses.id(addressId);
+    if (!addressObj) return res.status(404).json({ success: false, message: "Address not found" });
+
+    user.addresses.pull({ _id: addressId });
+    
+    if (addressObj.isDefault && user.addresses.length > 0) {
+      user.addresses[0].isDefault = true;
+    }
+
+    await user.save();
+    res.status(200).json({ success: true, message: "Address deleted successfully", payload: user.addresses });
+  } catch (err) {
+    next(err);
+  }
+});
+
+userRouter.post("/address/override", verifyToken("USER"), async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { date, addressId } = req.body; // date format 'YYYY-MM-DD'
+
+    if (!date || !addressId) return res.status(400).json({ success: false, message: "Date and addressId are required" });
+
+    const user = await UserModel.findById(userId);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    // Ensure address exists
+    if (!user.addresses.id(addressId)) {
+      return res.status(400).json({ success: false, message: "Invalid addressId" });
+    }
+
+    const existingOverride = user.addressOverrides.find(o => o.date === date);
+    if (existingOverride) {
+      existingOverride.addressId = addressId;
+    } else {
+      user.addressOverrides.push({ date, addressId });
+    }
+
+    await user.save();
+    res.status(200).json({ success: true, message: "Address override set successfully" });
+  } catch (err) {
+    next(err);
+  }
+});
 
 /*import exp from "express"
 import { verifyToken } from "../middleware/verifyToken.js"

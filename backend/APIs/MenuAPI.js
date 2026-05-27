@@ -139,7 +139,7 @@ menuRouter.post(
       let {
         day,
         title,
-        menuItems,
+        lunchMenu,
         imageUrl,
         imagePublicId
       } = req.body;
@@ -182,8 +182,8 @@ menuRouter.post(
 
           title,
 
-          menuItems:
-            menuItems || [],
+          lunchMenu:
+            lunchMenu,
 
           imageUrl:
             imageUrl || "",
@@ -222,7 +222,7 @@ menuRouter.put(
 
       let {
         title,
-        menuItems,
+        lunchMenu,
         imageUrl,
         imagePublicId
       } = req.body;
@@ -276,10 +276,10 @@ menuRouter.put(
       }
 
       if (
-        menuItems !== undefined
+        lunchMenu !== undefined
       ) {
-        existingMenu.menuItems =
-          menuItems;
+        existingMenu.lunchMenu =
+          lunchMenu;
       }
 
       if (

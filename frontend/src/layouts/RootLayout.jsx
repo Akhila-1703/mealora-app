@@ -17,7 +17,7 @@ function RootLayout() {
     <div className="min-h-screen bg-slate-50 selection:bg-green-100 selection:text-green-900">
       <Navbar />
 
-      <main className="relative">
+      <main className="relative pt-[73px]">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}

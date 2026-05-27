@@ -16,14 +16,7 @@ function Sidebar() {
       {/* TOP */}
       <div>
 
-        {/* LOGO */}
-        <div className="flex items-center gap-3 mb-8">
-          <img src="/logo.png" alt="MealFlow" className="w-8 h-8 object-contain" />
-          <h2 className={navBrand}>
-            <span className="text-[#332520]">Meal</span>
-            <span className="text-[#C04E2D]">Flow</span>
-          </h2>
-        </div>
+
 
         {/* NAVIGATION */}
         <nav className="flex flex-col gap-1">

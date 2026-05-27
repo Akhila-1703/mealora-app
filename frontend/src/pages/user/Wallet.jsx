@@ -181,12 +181,27 @@ function Wallet() {
         </motion.div>
 
         {/* TRANSACTIONS */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`lg:col-span-2 ${glassCard} rounded-[14px] p-8`}
-        >
-          <div className="flex items-center justify-between mb-8">
+        {(balance ?? 0) < 100 ? (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`lg:col-span-2 ${glassCard} rounded-[14px] p-8 flex flex-col items-center justify-center text-center`}
+          >
+            <div className="w-16 h-16 bg-[#FCE8E8] rounded-full flex items-center justify-center mx-auto mb-4 text-[#991B1B]">
+              <WalletIcon size={32} />
+            </div>
+            <h2 className="text-2xl font-bold text-[#1A1A1A] font-['Fraunces'] mb-2">Insufficient Balance</h2>
+            <p className="text-[#666666] text-sm leading-relaxed">
+              Please add money to your wallet to view your transaction history and unlock your meal calendar.
+            </p>
+          </motion.div>
+        ) : (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`lg:col-span-2 ${glassCard} rounded-[14px] p-8`}
+          >
+            <div className="flex items-center justify-between mb-8">
             <h2 className="text-xl font-bold font-serif flex items-center gap-2 text-[#332520]">
               <History className="text-[#827873]" size={24} />
               Recent Activity
@@ -245,6 +260,7 @@ function Wallet() {
             </div>
           )}
         </motion.div>
+        )}
 
       </div>
     </div>
