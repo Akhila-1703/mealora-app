@@ -13,7 +13,7 @@ export const adminRouter = exp.Router();
 adminRouter.get("/dashboard", verifyToken("ADMIN"), async (req, res, next) => {
   try {
     const [totalUsers, activeSubscriptions] = await Promise.all([
-      UserModel.countDocuments(),
+      UserModel.countDocuments({ role: "USER" }),
       SubscriptionModel.countDocuments({ status: "ACTIVE" })
     ]);
 
@@ -126,7 +126,7 @@ adminRouter.get("/meals/today", verifyToken("ADMIN"), async (req, res, next) => 
 // ================= USERS =================
 adminRouter.get("/users", verifyToken("ADMIN"), async (req, res, next) => {
   try {
-    const users = await UserModel.find().select("-password").lean();
+    const users = await UserModel.find({ role: "USER" }).select("-password").lean();
     const subscriptions = await SubscriptionModel.find().lean();
     const subMap = new Map(subscriptions.map(s => [s.userId.toString(), s]));
 

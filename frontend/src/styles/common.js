@@ -60,13 +60,13 @@ export const navWrapper = "px-6 py-4";
 export const navBrand = "text-2xl font-bold flex items-center gap-2 tracking-tighter text-[#332520] font-['Fraunces']";
 
 // Sidebar
-export const sidebar = "w-64 bg-[#FCFBF9] border-r border-[#E6E4DF] p-6 flex flex-col justify-between sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto";
-export const sidebarItem = "flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#827873] hover:bg-[#F4EEE8] hover:text-[#332520] transition-all font-medium text-sm";
-export const sidebarItemActive = "flex items-center gap-3 px-4 py-2.5 rounded-lg bg-[#C04E2D] text-white font-semibold shadow-sm text-sm";
+export const sidebar = "w-full lg:w-64 bg-[#FCFBF9] border-b lg:border-b-0 lg:border-r border-[#E6E4DF] p-4 lg:p-6 flex flex-row lg:flex-col justify-between items-center lg:items-stretch gap-4 sticky top-[73px] lg:h-[calc(100vh-73px)] overflow-x-auto lg:overflow-y-auto z-40";
+export const sidebarItem = "flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#827873] hover:bg-[#F4EEE8] hover:text-[#332520] transition-all font-medium text-sm whitespace-nowrap";
+export const sidebarItemActive = "flex items-center gap-3 px-4 py-2.5 rounded-lg bg-[#C04E2D] text-white font-semibold shadow-sm text-sm whitespace-nowrap";
 
 // Layout
-export const layoutWrapper = "flex min-h-screen bg-[#FAF8F5] font-['Inter']";
-export const contentArea = "flex-1 p-8 md:p-12 max-w-7xl mx-auto w-full overflow-x-hidden text-[#332520]";
+export const layoutWrapper = "flex flex-col lg:flex-row min-h-screen bg-[#FAF8F5] font-['Inter']";
+export const contentArea = "flex-1 p-6 md:p-12 max-w-7xl mx-auto w-full overflow-x-hidden text-[#332520]";
 
 // Badges
 export const badge = "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest";

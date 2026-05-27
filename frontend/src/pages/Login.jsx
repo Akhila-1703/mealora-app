@@ -33,14 +33,7 @@ const Login = () => {
       {/* LEFT SIDE - Form */}
       <div className="w-full md:w-1/2 flex flex-col justify-center p-8 md:p-16 lg:p-24 relative order-2 md:order-1 min-h-screen">
         
-        {/* Logo / Back */}
-        <div 
-          className="absolute top-8 left-8 md:top-12 md:left-12 cursor-pointer flex items-center gap-2 hover:opacity-80 transition-opacity"
-          onClick={() => navigate("/")}
-        >
-          <img src="/logo.png" alt="MealOra" className="h-8 object-contain" />
-          <span className="text-2xl font-black font-['Fraunces'] text-[#332520]">MealOra</span>
-        </div>
+        <div className="pt-24 md:pt-0"></div>
 
         <motion.div 
           initial={{ opacity: 0, x: -30 }}

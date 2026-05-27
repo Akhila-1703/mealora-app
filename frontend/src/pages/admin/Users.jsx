@@ -9,21 +9,23 @@ import Loader from "../../components/common/Loader";
 const Users = () => {
   const {
     users,
+    dashboard,
     loading,
     fetchUsers,
+    fetchDashboard,
     toggleUserStatus,
   } = useAdmin();
 
   // 🔥 LOCAL STATES
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [planFilter, setPlanFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [activeUserId, setActiveUserId] = useState(null);
 
   useEffect(() => {
     fetchUsers();
-  }, [fetchUsers]);
+    fetchDashboard();
+  }, [fetchUsers, fetchDashboard]);
 
   // 🔥 SAFE TOGGLE
   const handleToggle = async (id, isActive) => {
@@ -45,8 +47,7 @@ const Users = () => {
   const activeSubsCount = users?.filter(u => u.isActive).length || 0;
   const pausedSubsCount = users?.filter(u => !u.isActive).length || 0;
   
-  // Approximate a revenue mock (e.g. active users * Rs. 100/meal * 30 days)
-  const totalRevenue = activeSubsCount * 3000;
+  const totalRevenue = dashboard?.walletRevenue || 0;
 
   // Filter logic
   const filteredUsers = users?.filter((user) => {
@@ -58,11 +59,7 @@ const Users = () => {
       (statusFilter === "Active" && user.isActive) ||
       (statusFilter === "Paused" && !user.isActive);
 
-    const matchesPlan = planFilter === "All" || 
-      (planFilter === "Regular" && (user.subscription?.planType === "REGULAR" || (!user.subscription && user.walletBalance >= 100))) ||
-      (planFilter === "Trial" && (user.subscription?.planType === "TRIAL" || (!user.subscription && user.walletBalance < 100)));
-
-    return matchesSearch && matchesStatus && matchesPlan;
+    return matchesSearch && matchesStatus;
   }) || [];
 
   // Pagination setup (4 users per page to match mockup scale)
@@ -155,7 +152,7 @@ const Users = () => {
               </span>
             </div>
             <span className="text-[32px] font-bold text-[#1A1A1A] leading-none mb-4 font-['Fraunces']">
-              ₹{(totalRevenue / 1000).toFixed(1)}k
+              ₹{totalRevenue.toLocaleString("en-IN")}
             </span>
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#C04E2D]" />
           </div>
@@ -199,21 +196,6 @@ const Users = () => {
                 <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#666666]" />
               </div>
 
-              <div className="relative">
-                <select 
-                  value={planFilter}
-                  onChange={(e) => {
-                    setPlanFilter(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                  className="appearance-none bg-white border border-[#E0E0E0] hover:bg-[#FAFAFA] px-4 py-2.5 pr-10 rounded-xl font-semibold text-[13px] text-[#333333] cursor-pointer focus:outline-none"
-                >
-                  <option value="All">Plan: All</option>
-                  <option value="Regular">Plan: Regular</option>
-                  <option value="Trial">Plan: Trial</option>
-                </select>
-                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#666666]" />
-              </div>
             </div>
           </div>
 
@@ -225,7 +207,6 @@ const Users = () => {
                   <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">User Name</th>
                   <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Email & Mobile</th>
                   <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Status</th>
-                  <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Plan Type</th>
                   <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Wallet</th>
                   <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Join Date</th>
                   <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080] text-right">Actions</th>
@@ -235,11 +216,6 @@ const Users = () => {
                 {currentUsers.map((user) => {
                   const isLowBalance = (user.walletBalance ?? 0) < 400;
                   const isUpdating = activeUserId === user._id;
-                  
-                  // Plan type fetched dynamically from populated subscription details or fallback
-                  const planType = user.subscription?.planType
-                    ? (user.subscription.planType === "TRIAL" ? "Trial" : "Regular")
-                    : (isLowBalance ? "Trial" : "Regular");
                   
                   // Format user._id into a short DBF id code
                   const shortId = `DBF-${user._id?.slice(-4).toUpperCase() || "1022"}`;
@@ -278,15 +254,6 @@ const Users = () => {
                             : 'bg-[#FFE0B2] text-[#E65100]'
                         }`}>
                           • {user.isActive ? 'Active' : 'Paused'}
-                        </span>
-                      </td>
-                      <td className="px-8 py-5">
-                        <span className={`text-[14px] font-medium ${
-                          planType === 'Trial' 
-                            ? 'bg-[#FFF3E0] text-[#E65100] px-3 py-1 rounded-lg text-xs font-semibold' 
-                            : 'text-[#4F4F4F]'
-                        }`}>
-                          {planType}
                         </span>
                       </td>
                       <td className="px-8 py-5 text-[14px] font-bold">

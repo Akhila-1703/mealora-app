@@ -3,6 +3,8 @@ import { SubscriptionModel } from "../models/SubscriptionModel.js";
 import { SkipMealModel } from "../models/SkipMealModel.js";
 import { WalletTransactionModel } from "../models/WalletTransactionModel.js";
 import { BillingRunModel } from "../models/BillingRunModel.js";
+import { sendMealDeliveredEmail } from "./emailService.js";
+
 
 // ================= HELPERS =================
 
@@ -206,45 +208,41 @@ await user.save();
 // ================= TRANSACTION =================
 
 await WalletTransactionModel.create({
-
 userId:
 user._id,
-
 amount:
 mealPrice,
-
 type:
 "DEBIT",
-
 reason:
 "MEAL_DEDUCTED"
-
 });
 
 processedCount++;
 
 details.push({
-
 userId:
 user._id,
-
 username:
 user.username,
-
 email:
 user.email,
-
 status:
 "BILLED",
-
 amount:
 mealPrice
-
 });
 
 console.log(
 `✅ Deducted ₹${mealPrice}`
 );
+
+// ================= EMAIL REMINDER =================
+if (user.emailUpdates) {
+  sendMealDeliveredEmail(user.email, user.firstName).catch(err => {
+    console.error(`❌ Failed to send email to ${user.email}:`, err);
+  });
+}
 
 }
 
