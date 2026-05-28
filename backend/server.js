@@ -40,28 +40,34 @@ app.use("/menu-api", menuRouter)
 app.use("/wallet-api", walletRouter)
 app.use("/skipmeal-api", skipMealRouter)
 app.use("/admin-api", adminRouter)
+
+
 app.post(
-"/scheduler-api/deduct",
+  "/scheduler-api/deduct",
+  async (req, res) => {
+    try {
 
-async (req, res) => {
-  try {
-    // Manual run endpoint: scheduler should call the processor.
-    // Keeping this route intact for manual/admin triggers.
-    const { processDailyDeductions } = await import("./services/mealProcessor.js");
-    const result = await processDailyDeductions("MANUAL");
+      const { processDailyDeductions } =
+        await import("./services/mealProcessor.js");
 
-    res.status(200).json({
-      success: true,
-      payload: result
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      success: false,
-      message: "Meal deduction failed"
-    });
+      await processDailyDeductions("SYSTEM");
+
+      res.status(200).json({
+        success: true,
+        message: "Daily deduction completed"
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+        success: false,
+        message: "Meal deduction failed"
+      });
+
+    }
   }
-}
 );
 
 

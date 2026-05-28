@@ -9,7 +9,7 @@ export const getAllUsers = () =>
   axiosInstance.get("/admin-api/users");
 
 export const updateUserStatus = (userId, data) =>
-  axiosInstance.patch(`/admin-api/user/${userId}/status`, data);
+  axiosInstance.put(`/admin-api/user/${userId}`, data);
 
 // Meals
 export const getTodayMeals = () =>

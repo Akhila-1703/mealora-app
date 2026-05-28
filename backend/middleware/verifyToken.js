@@ -33,9 +33,12 @@ export const verifyToken = (...allowedRoles) => {
         return res.status(401).json({ message: "User not found" });
       }
 
-      if (!user.isActive) {
-        return res.status(403).json({ message: "Account is inactive" });
+      if (user.isActive === false) {
+        return res.status(403).send({
+          message: "Account deactivated",
+        });
       }
+
 
       req.user = user;
 

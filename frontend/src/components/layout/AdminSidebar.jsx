@@ -4,8 +4,8 @@ import {
   sidebar,
   sidebarItem,
   sidebarItemActive,
-  navBrand,
 } from "../../styles/common";
+
 
 function AdminSidebar() {
   return (
@@ -39,14 +39,7 @@ function AdminSidebar() {
           Menu Management
         </NavLink>
 
-        <NavLink
-          to="/admin/process-meals"
-          className={({ isActive }) =>
-            isActive ? sidebarItemActive : sidebarItem
-          }
-        >
-          Operations
-        </NavLink>
+
 
         <NavLink
           to="/admin/reports"

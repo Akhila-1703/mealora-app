@@ -173,6 +173,30 @@ adminRouter.patch("/user/:id/status", verifyToken("ADMIN"), async (req, res, nex
   }
 });
 
+// ================= UPDATE USER STATUS (PUT - TO MATCH TOGGLE CONTRACT) =================
+adminRouter.put("/user/:id", verifyToken("ADMIN"), async (req, res) => {
+  try {
+    const updated = await UserModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        isActive: req.body.isActive,
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.send({
+      success: true,
+      user: updated,
+    });
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+});
+
 
 // ================= TODAY DELIVERIES =================
 adminRouter.get("/today-deliveries", verifyToken("ADMIN"), async (req, res, next) => {
@@ -585,182 +609,3 @@ adminRouter.get("/billing-runs", verifyToken("ADMIN"), async (req, res, next) =>
     next(err);
   }
 });
-
-/*import exp from "express"
-import { verifyToken } from "../middleware/verifyToken.js"
-import { UserModel } from "../models/UserModel.js"
-import { SubscriptionModel } from "../models/SubscriptionModel.js"
-import { SkipMealModel } from "../models/SkipMealModel.js"
-import { WalletTransactionModel } from "../models/WalletTransactionModel.js"
-
-export const adminRouter = exp.Router()
-
-adminRouter.get("/dashboard", verifyToken("ADMIN"), async (req, res, next) => {
-  try {
-
-    const [totalUsers, activeUsers] = await Promise.all([
-      UserModel.countDocuments(),
-      SubscriptionModel.countDocuments({ status: "ACTIVE" })
-    ])
-
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-
-    const skippedMeals = await SkipMealModel.countDocuments({ date: today })
-
-    const todayMealCount = activeUsers - skippedMeals
-
-    res.status(200).json({
-      success: true,
-      payload: {
-        totalUsers,
-        activeUsers,
-        todayMealCount,
-        skippedMeals
-      }
-    })
-
-  } catch (err) {
-    next(err)
-  }
-})
-
-adminRouter.get("/meals/today", verifyToken("ADMIN"), async (req, res, next) => {
-  try {
-
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-
-    const activeUsers = await SubscriptionModel.countDocuments({ status: "ACTIVE" })
-    const skippedMeals = await SkipMealModel.countDocuments({ date: today })
-
-    const todayMealCount = activeUsers - skippedMeals
-
-    res.status(200).json({
-      success: true,
-      payload: {
-        totalMeals: todayMealCount,
-        skippedMeals
-      }
-    })
-
-  } catch (err) {
-    next(err)
-  }
-})
-
-adminRouter.get("/users", verifyToken("ADMIN"), async (req, res, next) => {
-  try {
-
-    const users = await UserModel.find().select("-password")
-
-    res.status(200).json({
-      success: true,
-      payload: users
-    })
-
-  } catch (err) {
-    next(err)
-  }
-})
-
-adminRouter.patch("/user/:id/status", verifyToken("ADMIN"), async (req, res, next) => {
-  try {
-
-    const { id } = req.params
-    const { isActive } = req.body
-
-    const user = await UserModel.findByIdAndUpdate(
-      id,
-      { isActive },
-      { new: true }
-    ).select("-password")
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" })
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "User status updated",
-      payload: user
-    })
-
-  } catch (err) {
-    next(err)
-  }
-})
-
-adminRouter.post("/process-meals", verifyToken("ADMIN"), async (req, res, next) => {
-  try {
-
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-
-    // 🔥 get all active subscriptions
-    const subscriptions = await SubscriptionModel.find({ status: "ACTIVE" })
-
-    const userIds = subscriptions.map(sub => sub.userId)
-
-    // 🔥 fetch all users in one go
-    const users = await UserModel.find({ _id: { $in: userIds } })
-
-    // 🔥 fetch all skips in one go
-    const skips = await SkipMealModel.find({ date: today })
-
-    const skippedUserIds = new Set(skips.map(s => s.userId.toString()))
-
-    let processed = 0
-    let skipped = 0
-    let insufficientBalance = 0
-
-    for (let user of users) {
-
-      if (!user.isActive) continue
-
-      // ❌ skipped
-      if (skippedUserIds.has(user._id.toString())) {
-        skipped++
-        continue
-      }
-
-      const sub = subscriptions.find(s => s.userId.toString() === user._id.toString())
-
-      const mealPrice = sub?.mealPrice || 100
-
-      // ❌ insufficient balance
-      if ((user.walletBalance || 0) < mealPrice) {
-        insufficientBalance++
-        continue
-      }
-
-      // 🔥 ATOMIC UPDATE
-      await UserModel.findByIdAndUpdate(
-        user._id,
-        { $inc: { walletBalance: -mealPrice } }
-      )
-
-      await WalletTransactionModel.create({
-        userId: user._id,
-        amount: mealPrice,
-        type: "DEBIT",
-        reason: "MEAL_DEDUCTED"
-      })
-
-      processed++
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Meal processing completed",
-      payload: {
-        processed,
-        skipped,
-        insufficientBalance
-      }
-    })
-
-  } catch (err) {
-    next(err)
-  }
-})*/

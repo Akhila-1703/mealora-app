@@ -28,7 +28,7 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import Users from "./pages/admin/Users";
 import AdminMenu from "./pages/admin/MenuEditor";
 import Reports from "./pages/admin/Reports";
-import ProcessMeals from "./pages/admin/ProcessMeals";
+
 
 // ================= COMPONENTS =================
 import Unauthorized from "./components/Unauthorized";
@@ -173,11 +173,7 @@ function App() {
               element: <AdminMenu />,
             },
 
-            // OPERATIONS
-            {
-              path: "process-meals",
-              element: <ProcessMeals />,
-            },
+
 
             // REPORTS
             {

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import useAdmin from "../../hooks/useAdmin";
 import { 
-  Search, ChevronDown, Download, Filter, Pencil, Ban, UserCheck, 
-  ArrowUpRight, ArrowDownRight, Ticket, ChevronLeft, ChevronRight 
+  Search, ChevronDown,
+  ArrowUpRight, ArrowDownRight, ChevronLeft, ChevronRight 
 } from "lucide-react";
+
 import Loader from "../../components/common/Loader";
 
 const Users = () => {
@@ -28,11 +29,16 @@ const Users = () => {
   }, [fetchUsers, fetchDashboard]);
 
   // 🔥 SAFE TOGGLE
-  const handleToggle = async (id, isActive) => {
+  const handleToggle = async (userId, currentStatus) => {
     try {
-      setActiveUserId(id);
-      await toggleUserStatus(id, isActive);
+      await toggleUserStatus(userId, {
+        isActive: !currentStatus,
+      });
+
       await fetchUsers();
+    } catch (err) {
+      console.log(err);
+      alert("Failed to update user");
     } finally {
       setActiveUserId(null);
     }
@@ -85,16 +91,9 @@ const Users = () => {
           </p>
         </div>
         
-        <div className="flex items-center gap-3">
-          <button className="border border-[#E0E0E0] bg-white hover:bg-[#FAFAFA] text-[#333333] px-4 py-2.5 rounded-xl font-semibold text-[13px] flex items-center gap-2 transition-colors">
-            <Download size={16} />
-            Export CSV
-          </button>
-          <button className="border border-[#E0E0E0] bg-white hover:bg-[#FAFAFA] text-[#333333] px-4 py-2.5 rounded-xl font-semibold text-[13px] flex items-center gap-2 transition-colors">
-            <Filter size={16} />
-            Advanced Filters
-          </button>
-        </div>
+          <div className="flex items-center gap-3">
+            {/* Removed Export CSV + Advanced Filters as requested */}
+          </div>
       </div>
 
       <div className="max-w-7xl mx-auto w-full px-4 md:px-8 flex flex-col gap-8">
@@ -105,10 +104,8 @@ const Users = () => {
           <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 flex flex-col justify-between shadow-sm h-[135px] relative overflow-hidden">
             <div className="flex justify-between items-center text-[#666666] mb-2">
               <span className="text-[11px] font-bold tracking-widest uppercase">Total Users</span>
-              <span className="bg-[#E8F5E9] text-[#2E7D32] px-2 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-0.5">
-                +12% <ArrowUpRight size={10} />
-              </span>
             </div>
+
             <span className="text-[32px] font-bold text-[#1A1A1A] leading-none mb-4">
               {totalUsersCount.toLocaleString()}
             </span>
@@ -119,9 +116,7 @@ const Users = () => {
           <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 flex flex-col justify-between shadow-sm h-[135px] relative overflow-hidden">
             <div className="flex justify-between items-center text-[#666666] mb-2">
               <span className="text-[11px] font-bold tracking-widest uppercase">Active Subs</span>
-              <span className="bg-[#E8F5E9] text-[#2E7D32] px-2 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-0.5">
-                +4% <ArrowUpRight size={10} />
-              </span>
+
             </div>
             <span className="text-[32px] font-bold text-[#1A1A1A] leading-none mb-4">
               {activeSubsCount.toLocaleString()}
@@ -133,9 +128,7 @@ const Users = () => {
           <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 flex flex-col justify-between shadow-sm h-[135px] relative overflow-hidden">
             <div className="flex justify-between items-center text-[#666666] mb-2">
               <span className="text-[11px] font-bold tracking-widest uppercase">Paused Subs</span>
-              <span className="bg-[#FFF3E0] text-[#E65100] px-2 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-0.5">
-                -2% <ArrowDownRight size={10} />
-              </span>
+
             </div>
             <span className="text-[32px] font-bold text-[#1A1A1A] leading-none mb-4">
               {pausedSubsCount.toLocaleString()}
@@ -147,9 +140,7 @@ const Users = () => {
           <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 flex flex-col justify-between shadow-sm h-[135px] relative overflow-hidden">
             <div className="flex justify-between items-center text-[#666666] mb-2">
               <span className="text-[11px] font-bold tracking-widest uppercase">Total Revenue</span>
-              <span className="bg-[#E8F5E9] text-[#2E7D32] px-2 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-0.5">
-                +18% <ArrowUpRight size={10} />
-              </span>
+
             </div>
             <span className="text-[32px] font-bold text-[#1A1A1A] leading-none mb-4 font-['Fraunces']">
               ₹{totalRevenue.toLocaleString("en-IN")}
@@ -214,8 +205,8 @@ const Users = () => {
               </thead>
               <tbody className="divide-y divide-[#F5F5F5]">
                 {currentUsers.map((user) => {
-                  const isLowBalance = (user.walletBalance ?? 0) < 400;
                   const isUpdating = activeUserId === user._id;
+
                   
                   // Format user._id into a short DBF id code
                   const shortId = `DBF-${user._id?.slice(-4).toUpperCase() || "1022"}`;
@@ -249,11 +240,11 @@ const Users = () => {
                       </td>
                       <td className="px-8 py-5">
                         <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold ${
-                          user.isActive 
-                            ? 'bg-[#E8F5E9] text-[#2E7D32]' 
-                            : 'bg-[#FFE0B2] text-[#E65100]'
+                          user.isActive
+                            ? "bg-[#E8F5E9] text-[#2E7D32]"
+                            : "bg-[#FFE0B2] text-[#E65100]"
                         }`}>
-                          • {user.isActive ? 'Active' : 'Paused'}
+                          {user.isActive ? "Active" : "Inactive"}
                         </span>
                       </td>
                       <td className="px-8 py-5 text-[14px] font-bold">
@@ -265,18 +256,17 @@ const Users = () => {
                         {formattedJoinDate}
                       </td>
                       <td className="px-8 py-5">
-                        <div className="flex items-center justify-end gap-3 text-[#666666]">
-                          <button className="p-1 hover:text-[#1A1A1A] transition-colors">
-                            <Pencil size={18} />
-                          </button>
-                          <button 
-                            disabled={isUpdating}
-                            onClick={() => handleToggle(user._id, user.isActive)}
-                            className={`p-1 transition-colors ${user.isActive ? 'hover:text-[#D32F2F]' : 'hover:text-[#2E7D32]'}`}
-                          >
-                            {user.isActive ? <Ban size={18} /> : <UserCheck size={18} />}
-                          </button>
-                        </div>
+                        <button
+                          disabled={isUpdating}
+                          className={`px-4 py-2 rounded-lg text-white ${
+                            user.isActive
+                              ? "bg-red-500"
+                              : "bg-green-600"
+                          } ${isUpdating ? "opacity-70 cursor-not-allowed" : ""}`}
+                          onClick={() => handleToggle(user._id, user.isActive)}
+                        >
+                          {user.isActive ? "Deactivate" : "Activate"}
+                        </button>
                       </td>
                     </tr>
                   );
@@ -335,17 +325,15 @@ const Users = () => {
 
         {/* BOTTOM WIDGETS SECTION */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* WEEKLY SIGNUPS CHART PLACEHOLDER */}
+          {/* DAILY SIGNUPS CHART PLACEHOLDER */}
           <div className="lg:col-span-2 bg-white rounded-3xl border border-[#EBEBEB] p-6 shadow-sm flex flex-col justify-between">
+
+
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-[18px] font-bold text-[#1A1A1A]">Weekly New Signups</h3>
+              <h3 className="text-[18px] font-bold text-[#1A1A1A]">Daily Signups</h3>
               <div className="flex items-center gap-4 text-xs font-semibold">
                 <span className="flex items-center gap-1.5 text-[#666666]">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#A6C4B4]" /> Regular
-                </span>
-                <span className="flex items-center gap-1.5 text-[#666666]">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#E08D60]" /> Trial
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#A6C4B4]" /> Signups
                 </span>
               </div>
             </div>
@@ -353,65 +341,35 @@ const Users = () => {
             {/* Custom Flex Chart */}
             <div className="h-[180px] flex items-end gap-3 px-2">
               {[
-                { day: "Mon", reg: 40, tri: 10 },
-                { day: "Tue", reg: 65, tri: 15 },
-                { day: "Wed", reg: 50, tri: 12 },
-                { day: "Thu", reg: 75, tri: 20 },
-                { day: "Fri", reg: 55, tri: 14 },
-                { day: "Sat", reg: 70, tri: 18 },
-                { day: "Sun", reg: 90, tri: 25 }
-              ].map((item, idx) => {
-                const total = item.reg + item.tri;
-                return (
-                  <div key={idx} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                    <div className="w-full relative flex flex-col justify-end h-[140px] rounded-lg overflow-hidden bg-[#FAFAFA]">
-                      <div 
-                        style={{ height: `${(item.reg / 115) * 140}px` }} 
-                        className="w-full bg-[#A6C4B4] rounded-t-sm transition-all group-hover:opacity-90"
-                      />
-                      {idx === 6 && (
-                        <div 
-                           style={{ height: `${(item.tri / 115) * 140}px` }} 
-                          className="w-full bg-[#2B5240] transition-all group-hover:opacity-90"
-                        />
-                      )}
-                    </div>
-                    <span className="text-[12px] font-medium text-[#666666]">{item.day}</span>
+                { day: "Mon", reg: 40 },
+                { day: "Tue", reg: 65 },
+                { day: "Wed", reg: 50 },
+                { day: "Thu", reg: 75 },
+                { day: "Fri", reg: 55 },
+                { day: "Sat", reg: 70 },
+                { day: "Sun", reg: 90 }
+              ].map((item, idx) => (
+                <div key={idx} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
+                  <div className="w-full relative flex flex-col justify-end h-[140px] rounded-lg overflow-hidden bg-[#FAFAFA]">
+                    <div
+                      style={{ height: `${(item.reg / 115) * 140}px` }}
+                      className="w-full bg-[#A6C4B4] rounded-t-sm transition-all group-hover:opacity-90"
+                    />
                   </div>
-                );
-              })}
+                  <span className="text-[12px] font-medium text-[#666666]">{item.day}</span>
+                </div>
+              ))}
             </div>
+
           </div>
-
-          {/* PREMIUM SUPPORT WIDGET */}
-          <div className="lg:col-span-1 bg-[#1A3D2F] rounded-3xl p-8 text-white flex flex-col justify-between shadow-sm relative overflow-hidden min-h-[260px]">
-            <div className="relative z-10 flex flex-col gap-3">
-              <h3 className="text-[20px] font-bold font-['Fraunces']">Premium Support</h3>
-              <p className="text-[#A6C4B4] text-[14px] leading-relaxed">
-                You have 12 unassigned high-priority tickets today.
-              </p>
-            </div>
-            
-            <div className="relative z-10 flex items-center justify-between mt-8 border-t border-[#2B5240] pt-6">
-              <div className="flex items-center gap-1 text-[#A6C4B4]">
-                <Ticket size={20} />
-                <span className="text-sm font-semibold">12 Open</span>
-              </div>
-              
-              <button className="bg-white hover:bg-[#FAFAFA] text-[#1A3D2F] font-bold text-[13px] px-5 py-2.5 rounded-xl transition-all shadow-sm">
-                Go to Tickets
-              </button>
-            </div>
-
-            {/* Background geometric design */}
-            <div className="absolute right-[-40px] top-[-40px] w-36 h-36 rounded-full bg-[#2B5240] opacity-40 pointer-events-none" />
-          </div>
-
         </div>
 
       </div>
     </div>
   );
-};
+}
 
 export default Users;
+
+
+

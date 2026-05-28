@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import useAdmin from "../../hooks/useAdmin";
-import { CheckCircle, Calendar, Utensils, Zap, Search, Pencil, Ban, Wallet } from "lucide-react";
+import { CheckCircle, Calendar, Utensils, Wallet } from "lucide-react";
 
 import Loader from "../../components/common/Loader";
+
 import {
   ResponsiveContainer,
   LineChart,
@@ -17,9 +18,9 @@ import {
 } from "recharts";
 
 function AdminDashboard() {
-  const { dashboard, users, billingRuns, fetchDashboard, fetchUsers, fetchBillingRuns, loading } = useAdmin();
+  const { dashboard, users, fetchDashboard, fetchUsers, fetchBillingRuns, loading } = useAdmin();
 
-  const [searchTerm, setSearchTerm] = useState("");
+
 
   useEffect(() => {
     fetchDashboard();
@@ -29,17 +30,7 @@ function AdminDashboard() {
 
   if (loading && !dashboard) return <Loader />;
 
-  // Filter users based on search
-  const filteredUsers = users?.filter((user) => 
-    `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
-
-  const insufficientBalanceCount = users?.filter(u => (u.walletBalance ?? 0) < 400).length ?? 0;
-
-  const getInitials = (firstName, lastName) => {
-    return `${firstName?.charAt(0) || ""}${lastName?.charAt(0) || ""}`.toUpperCase() || "U";
-  };
+  const lowBalanceUsers = users?.filter(u => (u.walletBalance ?? 0) < 100) || [];
 
   return (
     <div className="w-full bg-[#FAF8F5] min-h-[calc(100vh-80px)] flex flex-col font-['Inter'] pb-12 -mt-6">
@@ -116,126 +107,47 @@ function AdminDashboard() {
           </div>
         </div>
 
-        {/* LATEST BILLING RUN RESULTS */}
-        <div className="bg-white rounded-3xl border border-[#EBEBEB] shadow-sm overflow-hidden">
-          <div className="px-8 py-6 border-b border-[#F5F5F5] flex items-center justify-between">
-            <h2 className="text-[20px] font-bold text-[#1A1A1A]">Latest Automated Billing Run</h2>
-            <span className={`px-3 py-1 rounded-full text-[12px] font-bold uppercase ${billingRuns?.[0]?.status === 'SUCCESS' ? 'bg-[#E8F5E9] text-[#2E7D32]' : billingRuns?.[0]?.status === 'FAILED' ? 'bg-[#FFEBEE] text-[#D32F2F]' : 'bg-[#F5F5F5] text-[#666666]'}`}>
-              {billingRuns?.[0]?.status || 'PENDING'}
+        <div className="bg-white rounded-3xl border border-[#EBEBEB] shadow-sm overflow-hidden p-8 flex flex-col md:flex-row gap-8 items-stretch">
+          <div className="flex flex-col items-center justify-center p-6 bg-red-50/50 rounded-2xl md:w-1/3 border border-red-100/50">
+            <span className="text-[48px] font-black text-[#D32F2F] leading-none mb-3">
+              {lowBalanceUsers.length}
             </span>
+            <span className="text-[13px] font-bold text-[#D32F2F] tracking-wide uppercase text-center">Low Balance Users</span>
+            <p className="text-[#666666] text-xs text-center mt-2 leading-relaxed">
+              Active subscribers with wallet balance under ₹100.
+            </p>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#F5F5F5]">
-            <div className="flex flex-col items-center justify-center p-8">
-              <span className="text-[36px] font-bold text-[#2E7D32] leading-none mb-2">
-                {billingRuns?.[0]?.processedCount ?? dashboard?.todayMealCount ?? 0}
-              </span>
-              <span className="text-[13px] font-medium text-[#666666]">Processed</span>
-            </div>
-            
-            <div className="flex flex-col items-center justify-center p-8">
-              <span className="text-[36px] font-bold text-[#1A1A1A] leading-none mb-2">
-                {billingRuns?.[0]?.skippedCount ?? dashboard?.skippedMeals ?? 0}
-              </span>
-              <span className="text-[13px] font-medium text-[#666666]">Skipped</span>
+
+          <div className="flex-1 flex flex-col justify-between py-2">
+            <div>
+              <h2 className="text-[20px] font-bold text-[#1A1A1A] mb-1">Insufficient Balance Alert</h2>
+              <p className="text-[#666666] text-sm mb-4">
+                The following users' wallet balances are below the minimum threshold (₹100) required for their daily meal subscription.
+              </p>
+              
+              {lowBalanceUsers.length > 0 ? (
+                <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto pr-2">
+                  {lowBalanceUsers.map(u => (
+                    <span key={u._id} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FAFAFA] border border-[#EBEBEB] rounded-xl text-xs font-semibold text-[#333333]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                      {u.firstName} {u.lastName} (₹{(u.walletBalance ?? 0).toFixed(0)})
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <div className="py-6 text-center bg-[#F5F8F6] rounded-xl border border-emerald-100 text-emerald-800 text-sm font-semibold">
+                  🎉 Excellent! All active users have sufficient balance.
+                </div>
+              )}
             </div>
 
-            <div className="flex flex-col items-center justify-center p-8">
-              <span className="text-[36px] font-bold text-[#D32F2F] leading-none mb-2">
-                {billingRuns?.[0]?.insufficientBalanceCount ?? insufficientBalanceCount}
-              </span>
-              <span className="text-[13px] font-medium text-[#D32F2F]">Insufficient Balance</span>
+            <div className="flex items-center justify-between border-t border-[#F5F5F5] pt-4 mt-4 text-xs text-[#666666]">
+              <span>Status: <strong className="text-[#2E7D32] uppercase">Success</strong></span>
+              <span>Last run: today at 1:00 PM</span>
             </div>
           </div>
         </div>
 
-        {/* USER DIRECTORY */}
-        <div className="bg-white rounded-3xl border border-[#EBEBEB] shadow-sm overflow-hidden">
-          <div className="px-8 py-6 border-b border-[#F5F5F5] flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <h2 className="text-[20px] font-bold text-[#1A1A1A]">User Directory</h2>
-            
-            <div className="relative w-full md:w-[300px]">
-              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                <Search size={16} className="text-[#808080]" />
-              </div>
-              <input 
-                type="text" 
-                placeholder="Search users..." 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-[#FAFAFA] border border-[#E0E0E0] rounded-xl pl-11 pr-4 py-2.5 text-[14px] focus:outline-none focus:ring-2 focus:ring-[#C04E2D]"
-              />
-            </div>
-          </div>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[700px]">
-              <thead>
-                <tr className="bg-[#FAFAFA] border-b border-[#F5F5F5]">
-                  <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">User</th>
-                  <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Balance</th>
-                  <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Sub State</th>
-                  <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080] text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#F5F5F5]">
-                {filteredUsers.slice(0, 5).map((user) => {
-                  const isLowBalance = (user.walletBalance ?? 0) < 400;
-                  // For UI mockup parity, we'll randomize a bit if the data isn't exact, 
-                  // but we stick to the data logic:
-                  const isSkipped = false; // Add real skip logic if we have it in user object
-                  
-                  return (
-                    <tr key={user._id} className="hover:bg-[#FAFAFA] transition-colors">
-                      <td className="px-8 py-4">
-                        <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-[14px] ${isLowBalance ? 'bg-[#F97316]' : 'bg-[#2B5240]'}`}>
-                            {getInitials(user.firstName, user.lastName)}
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="font-bold text-[#1A1A1A] text-[15px]">
-                              {user.firstName} {user.lastName}
-                            </span>
-                            <span className="text-[13px] text-[#666666]">{user.email}</span>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-8 py-4">
-                        <div className={`inline-flex items-center px-3 py-1 rounded-full text-[12px] font-bold ${isLowBalance ? 'bg-[#FFEBEE] text-[#D32F2F]' : 'bg-[#E8F5E9] text-[#2E7D32]'}`}>
-                          <span className="mr-1">{isLowBalance ? '•' : '•'}</span> 
-                          ${(user.walletBalance || 0).toFixed(2)}
-                        </div>
-                      </td>
-                      <td className="px-8 py-4">
-                        <span className={`text-[14px] ${isSkipped ? 'text-[#808080] italic' : 'text-[#1A1A1A]'}`}>
-                          {user.isActive ? (isSkipped ? 'Paused (Skipped Today)' : 'Active') : 'Inactive'}
-                        </span>
-                      </td>
-                      <td className="px-8 py-4">
-                        <div className="flex items-center justify-end gap-3 text-[#666666]">
-                          <button className="p-1 hover:text-[#1A1A1A] transition-colors">
-                            <Pencil size={18} />
-                          </button>
-                          <button className="p-1 hover:text-[#D32F2F] transition-colors">
-                            <Ban size={18} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-
-                {filteredUsers.length === 0 && (
-                  <tr>
-                    <td colSpan="4" className="px-8 py-12 text-center text-[#808080]">
-                      No users found.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
 
       </div>
     </div>

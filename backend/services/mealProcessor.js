@@ -57,13 +57,13 @@ date: dateStr,
 status: "SUCCESS"
 });
 
-if (alreadyProcessed) {
+if (alreadyProcessed && executor === "SYSTEM") {
 
-console.log(
-"⚠️ Billing already completed today"
-);
+  console.log(
+    "⚠️ Billing already completed today"
+  );
 
-return alreadyProcessed;
+  return alreadyProcessed;
 
 }
 
