@@ -449,15 +449,48 @@ adminRouter.get("/reports", verifyToken("ADMIN"), async (req, res, next) => {
       })
       .filter(Boolean);
 
-    // 2. Meal popularity
-    const MenuModelModule = await import("../models/MenuModel.js");
-    const MenuModel = MenuModelModule.MenuModel;
-    const menus = await MenuModel.find({});
-    const popularityData = menus.map(m => ({
-      name: m.title || m.mealName || m.day,
-      served: 0,
-      skipped: 0
-    }));
+    // 2. Meal popularity (REAL DATABASE ANALYTICS)
+
+const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+const popularityMap = {
+  Sun: { name: "Sun", served: 0, skipped: 0 },
+  Mon: { name: "Mon", served: 0, skipped: 0 },
+  Tue: { name: "Tue", served: 0, skipped: 0 },
+  Wed: { name: "Wed", served: 0, skipped: 0 },
+  Thu: { name: "Thu", served: 0, skipped: 0 },
+  Fri: { name: "Fri", served: 0, skipped: 0 },
+  Sat: { name: "Sat", served: 0, skipped: 0 }
+};
+
+// SERVED MEALS FROM REAL DEDUCTIONS
+
+const deductions = await WalletTransactionModel.find({
+  reason: "MEAL_DEDUCTED"
+});
+
+for (const txn of deductions) {
+
+  const day =
+    weekdays[new Date(txn.createdAt).getDay()];
+
+  popularityMap[day].served += 1;
+}
+
+// SKIPPED MEALS FROM REAL SKIPS
+
+const skips = await SkipMealModel.find({});
+
+for (const skip of skips) {
+
+  const day =
+    weekdays[new Date(skip.date).getDay()];
+
+  popularityMap[day].skipped += 1;
+}
+
+const popularityData =
+  Object.values(popularityMap);
 
     // 3. User growth
     const growth = await UserModel.aggregate([
