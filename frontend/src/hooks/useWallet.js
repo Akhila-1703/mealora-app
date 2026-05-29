@@ -10,12 +10,12 @@ const useWallet = () => {
     addMoneyToWallet,
   } = useWalletStore();
 
-  const handleAddMoney = useCallback((amount) => {
+  const handleAddMoney = useCallback((amount, paymentMethod = "CARD") => {
     if (!amount || amount <= 0) return;
 
-    addMoneyToWallet({
+    return addMoneyToWallet({
       amount,
-      paymentMethod: "UPI",
+      paymentMethod,
     });
   }, [addMoneyToWallet]);
 

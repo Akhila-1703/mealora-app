@@ -14,7 +14,7 @@ function RootLayout() {
   }, [getCurrentUser]);
 
   return (
-    <div className="min-h-screen bg-slate-50 selection:bg-green-100 selection:text-green-900">
+    <div className="min-h-screen bg-[#FAF8F5] font-['Inter'] selection:bg-[#C04E2D]/10 selection:text-[#C04E2D]">
       <Navbar />
 
       <main className="relative pt-[73px]">

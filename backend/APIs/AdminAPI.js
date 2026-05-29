@@ -72,6 +72,45 @@ adminRouter.get("/dashboard", verifyToken("ADMIN"), async (req, res, next) => {
       skipped: 0
     }));
 
+    // Calculate daily signups for the last 7 days
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
+    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const dailySignups = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const dayVal = String(d.getDate()).padStart(2, "0");
+      const dateString = `${year}-${month}-${dayVal}`;
+      const dayName = weekdays[d.getDay()];
+      dailySignups.push({
+        date: dateString,
+        day: dayName,
+        reg: 0
+      });
+    }
+
+    const userList = await UserModel.find({
+      role: "USER",
+      createdAt: { $gte: sevenDaysAgo }
+    }).select("createdAt");
+
+    for (const user of userList) {
+      const uDate = new Date(user.createdAt);
+      const year = uDate.getFullYear();
+      const month = String(uDate.getMonth() + 1).padStart(2, "0");
+      const dayVal = String(uDate.getDate()).padStart(2, "0");
+      const dateString = `${year}-${month}-${dayVal}`;
+      const match = dailySignups.find(item => item.date === dateString);
+      if (match) {
+        match.reg++;
+      }
+    }
+
     res.status(200).json({
       success: true,
       payload: {
@@ -82,7 +121,8 @@ adminRouter.get("/dashboard", verifyToken("ADMIN"), async (req, res, next) => {
         mealsDeliveredRevenue,
         todayDeliveries,
         revenueChartData,
-        popularityChartData
+        popularityChartData,
+        dailySignups
       }
     });
 

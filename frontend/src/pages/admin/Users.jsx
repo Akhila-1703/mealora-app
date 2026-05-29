@@ -31,10 +31,8 @@ const Users = () => {
   // 🔥 SAFE TOGGLE
   const handleToggle = async (userId, currentStatus) => {
     try {
-      await toggleUserStatus(userId, {
-        isActive: !currentStatus,
-      });
-
+      setActiveUserId(userId);
+      await toggleUserStatus(userId, !currentStatus);
       await fetchUsers();
     } catch (err) {
       console.log(err);
@@ -340,25 +338,34 @@ const Users = () => {
 
             {/* Custom Flex Chart */}
             <div className="h-[180px] flex items-end gap-3 px-2">
-              {[
-                { day: "Mon", reg: 40 },
-                { day: "Tue", reg: 65 },
-                { day: "Wed", reg: 50 },
-                { day: "Thu", reg: 75 },
-                { day: "Fri", reg: 55 },
-                { day: "Sat", reg: 70 },
-                { day: "Sun", reg: 90 }
-              ].map((item, idx) => (
-                <div key={idx} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
-                  <div className="w-full relative flex flex-col justify-end h-[140px] rounded-lg overflow-hidden bg-[#FAFAFA]">
-                    <div
-                      style={{ height: `${(item.reg / 115) * 140}px` }}
-                      className="w-full bg-[#A6C4B4] rounded-t-sm transition-all group-hover:opacity-90"
-                    />
+              {(dashboard?.dailySignups || [
+                { day: "Mon", reg: 0 },
+                { day: "Tue", reg: 0 },
+                { day: "Wed", reg: 0 },
+                { day: "Thu", reg: 0 },
+                { day: "Fri", reg: 0 },
+                { day: "Sat", reg: 0 },
+                { day: "Sun", reg: 0 }
+              ]).map((item, idx, arr) => {
+                const maxReg = Math.max(...arr.map(d => d.reg), 5);
+                return (
+                  <div key={idx} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
+                    <div className="w-full relative flex flex-col justify-end h-[140px] rounded-lg overflow-hidden bg-[#FAFAFA]" title={`${item.reg} signups`}>
+                      <div
+                        style={{ height: `${(item.reg / maxReg) * 140}px` }}
+                        className="w-full bg-[#A6C4B4] rounded-t-sm transition-all group-hover:opacity-90 flex items-start justify-center pt-1"
+                      >
+                        {item.reg > 0 && (
+                          <span className="text-[10px] font-bold text-[#2B5240] leading-none select-none">
+                            {item.reg}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <span className="text-[12px] font-medium text-[#666666]">{item.day}</span>
                   </div>
-                  <span className="text-[12px] font-medium text-[#666666]">{item.day}</span>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
           </div>

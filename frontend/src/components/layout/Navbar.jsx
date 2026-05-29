@@ -111,7 +111,7 @@ function Navbar() {
           <div className="flex items-center gap-6">
             {user ? (
               <div className="flex items-center gap-6 border-l border-[#E6E4DF] pl-8">
-                <Link to="/dashboard" className="flex items-center gap-2 font-bold text-[#332520] hover:text-[#C04E2D] transition-colors">
+                <Link to={user?.role === "ADMIN" ? "/admin" : "/dashboard"} className="flex items-center gap-2 font-bold text-[#332520] hover:text-[#C04E2D] transition-colors">
                   <User size={18} />
                   Dashboard
                 </Link>
@@ -184,7 +184,7 @@ function Navbar() {
             {user ? (
               <>
                 <Link 
-                  to="/dashboard" 
+                  to={user?.role === "ADMIN" ? "/admin" : "/dashboard"} 
                   onClick={() => setIsOpen(false)}
                   className="flex items-center gap-2 font-bold text-[#332520] hover:text-[#C04E2D] transition-colors text-base"
                 >
