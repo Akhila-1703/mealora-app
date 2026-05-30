@@ -82,9 +82,10 @@ const connectDB = async () => {
     console.log("DB connection successful")
 
     // Keep server start only here; do NOT run deductions automatically on startup.
-    app.listen(process.env.PORT, () => {
-      console.log(`Server started on port ${process.env.PORT}`);
-    })
+    const port = process.env.PORT || 10000;
+    app.listen(port, "0.0.0.0", () => {
+      console.log(`Server started on port ${port}`);
+    });
 
 
   } catch (err) {
