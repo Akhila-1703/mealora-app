@@ -123,8 +123,8 @@ authRouter.post("/login", async (req, res, next) => {
     // 🔥 SET COOKIE
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false, // true in production
-      sameSite: "lax",
+      secure: true, // Must be true for SameSite=None to work in production
+      sameSite: "none",
     });
 
     const userObj = user.toObject();
