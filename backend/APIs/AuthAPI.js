@@ -54,8 +54,8 @@ authRouter.post(
         email,
         password: hashedPassword,
         mobile,
-        profileImageUrl: cloudinaryResult?.secure_url || null,
-        profileImageId: cloudinaryResult?.public_id || null,
+        profileImageUrl: cloudinaryResult?.secure_url || undefined,
+        profileImageId: cloudinaryResult?.public_id || undefined,
       });
 
       console.log("STEP 6: Saving user...");
