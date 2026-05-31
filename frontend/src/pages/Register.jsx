@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Mail, Lock, Phone, Upload, UserPlus } from "lucide-react";
+import { User, Mail, Lock, Phone, Upload, UserPlus, Eye, EyeOff } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 
 import {
@@ -12,6 +12,8 @@ import {
 const Register = () => {
   const { register, loading } = useAuth();
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const [form, setForm] = useState({
     firstName: "",

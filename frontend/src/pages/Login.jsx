@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, Lock, LogIn, ArrowLeft } from "lucide-react";
+import { User, Lock, LogIn, Eye, EyeOff } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 
 import {
@@ -12,6 +12,8 @@ import {
 const Login = () => {
   const { login, loading } = useAuth();
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const [form, setForm] = useState({
     identifier: "",
@@ -60,7 +62,7 @@ const Login = () => {
                   type="text"
                   placeholder="you@example.com or username"
                   onChange={handleChange}
-                  className="w-full bg-white border border-[#E6E4DF] rounded-2xl py-4 pl-12 pr-4 text-[#332520] focus:outline-none focus:ring-2 focus:ring-[#C04E2D]/20 focus:border-[#C04E2D] transition-all"
+                  className="w-full bg-white border border-[#E6E4DF] rounded-2xl py-4 pl-12 pr-12 text-[#332520] focus:outline-none focus:ring-2 focus:ring-[#C04E2D]/20 focus:border-[#C04E2D] transition-all"
                   required
                 />
               </div>
