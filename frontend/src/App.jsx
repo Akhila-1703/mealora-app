@@ -43,6 +43,7 @@ const NotFound = () => (
 
 function App() {
 
+  // we use createBrowserRouter instead of the older BrowserRouter because it enables react router v6.4+ data fetching APIs. this is the central nervous system of our client-side routing
   const routerObj = createBrowserRouter([
 
     {
@@ -87,6 +88,7 @@ function App() {
         {
           path: "dashboard",
 
+          // the dashboard is protected by our custom gatekeeper component. if a user without the 'USER' role tries to hit this route, they get bounced back to the login page immediately
           element: (
             <ProtectedRoute role="USER">
               <UserLayout />
@@ -147,6 +149,7 @@ function App() {
         {
           path: "admin",
 
+          // exact same gatekeeper logic here, but strictly requiring the 'ADMIN' enum. this prevents regular users from ever loading the javascript chunks for the admin panel
           element: (
             <ProtectedRoute role="ADMIN">
               <AdminLayout />

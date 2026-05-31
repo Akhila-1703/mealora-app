@@ -31,6 +31,7 @@ const formatDate = (date) => {
 };
 
 // ================= POST =================
+// allows a user to submit an array of future dates they wish to skip. we process this in a loop to validate each date individually against our strict indian standard time (ist) cutoff rules
 skipMealRouter.post("/", verifyToken("USER"), async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -120,6 +121,7 @@ skipMealRouter.post("/", verifyToken("USER"), async (req, res, next) => {
 });
 
 // ================= GET ALL =================
+// returns a sorted array of all the future dates the user has successfully skipped. the frontend calendar uses this to render the active skip markers on the ui
 skipMealRouter.get("/", verifyToken("USER"), async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -143,6 +145,7 @@ skipMealRouter.get("/", verifyToken("USER"), async (req, res, next) => {
 });
 
 // ================= TODAY =================
+// a quick lookup specifically for the user dashboard to determine if they skipped today's meal. we evaluate this against the start and end of the current utc day to avoid timezone drift
 skipMealRouter.get("/today", verifyToken("USER"), async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -172,6 +175,7 @@ skipMealRouter.get("/today", verifyToken("USER"), async (req, res, next) => {
 });
 
 // ================= DELETE =================
+// allows a user to cancel a skip (resume their meal) for a specific date. we enforce the exact same 11:00 am ist cutoff here to prevent them from un-skipping today's meal after the kitchen has already finished preparing the food
 skipMealRouter.delete("/:date", verifyToken("USER"), async (req, res, next) => {
   try {
     const userId = req.user.id;

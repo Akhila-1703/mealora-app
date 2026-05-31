@@ -1,11 +1,12 @@
 import { create } from "zustand";
 
 const useAuthStore = create((set) => ({
-  user: null, // ✅ no localStorage as source
-  isCheckingAuth: true, // 🔥 important
+  user: null, // we intentionally don't hydrate this directly from localstorage on boot to prevent ui flashes if the backend cookie is already expired. the initial /check-auth call will populate this reliably
+  isCheckingAuth: true, // we default this to true so the entire react tree can render a global loading spinner until the backend validates our http-only cookie
 
   setUser: (user) => {
-    localStorage.setItem("user", JSON.stringify(user)); // optional (for quick reload UI)
+    // we still mirror the user object to localstorage just for quick non-blocking reads across tabs, but the real source of truth remains the secure cookie on the backend
+    localStorage.setItem("user", JSON.stringify(user));
     set({ user });
   },
 

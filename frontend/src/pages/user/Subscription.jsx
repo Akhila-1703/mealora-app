@@ -40,11 +40,13 @@ function Subscription() {
 
   const [editing, setEditing] = useState(false);
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     fetchSubscription();
     loadDashboard();
   }, [fetchSubscription, loadDashboard]);
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     if (subscription) {
       queueMicrotask(() => {

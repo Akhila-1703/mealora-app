@@ -50,6 +50,7 @@ function AdminDashboard() {
       <div className="max-w-7xl mx-auto w-full px-4 md:px-8 flex flex-col gap-8">
         
         {/* STATS ROW */}
+        {/* these top-level kpi cards give the admin a 10-second overview of the platform health. they map directly to the aggregation pipeline outputs from the backend */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
           {/* ACTIVE SUBS */}
           <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 flex flex-col justify-between shadow-sm h-[130px]">

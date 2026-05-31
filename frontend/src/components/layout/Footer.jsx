@@ -61,6 +61,7 @@ const Footer = () => {
                   <a
                     href="#"
                     onClick={(e) => {
+                      // preventing default browser behavior to handle the submission seamlessly within the virtual dom
                       e.preventDefault();
                       handleNav(item.to);
                     }}

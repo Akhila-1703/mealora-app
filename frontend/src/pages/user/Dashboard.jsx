@@ -119,6 +119,7 @@ function Dashboard() {
     <div className="-m-6 md:-m-12 bg-[#FAF8F5] min-h-screen font-['Inter'] flex flex-col">
       
       {/* ================= WARNING BANNER ================= */}
+      {/* we conditionally render this high-priority alert if the backend indicates their wallet balance drops below the threshold of 2 meals. this drives immediate conversion for recharges */}
       {dashboard.remainingMeals <= 2 && (
         <div className="w-full bg-[#F4EEE8] border-b border-[#E6E4DF] py-3 px-6 flex items-center justify-center gap-2 text-[#C04E2D] text-sm font-semibold">
           <AlertCircle size={16} />
@@ -141,6 +142,7 @@ function Dashboard() {
         </div>
 
         {/* ================= ONBOARDING SECTION ================= */}
+        {/* if the user has literally just signed up and hasn't started their subscription yet, we intercept their dashboard feed with this gamified 3-step setup guide */}
         {dashboard.subscriptionStatus === "INACTIVE" && (
           <div className="bg-[#F4EEE8] border border-[#E6E4DF] rounded-2xl p-6 md:p-8 mb-8 text-[#332520] shadow-sm relative overflow-hidden">
             <div className="relative z-10">
@@ -368,6 +370,7 @@ function Dashboard() {
         </div>
 
         {/* ================= LOWER SECTION ================= */}
+        {/* this lower grid holds secondary information like their persistent delivery address mapping and a miniature ledger of their 3 most recent wallet transactions */}
         <div className="grid lg:grid-cols-2 gap-6">
           
           {/* SUBSCRIPTION CARD */}

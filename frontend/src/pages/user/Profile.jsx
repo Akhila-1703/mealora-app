@@ -50,11 +50,13 @@ const Profile = () => {
   const [avatarFile, setAvatarFile] = useState(null);
   const [preview, setPreview] = useState(user?.profileImageUrl || null);
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     loadDashboard();
     fetchWeeklyMenu();
   }, [loadDashboard, fetchWeeklyMenu]);
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     if (user) {
       queueMicrotask(() => {

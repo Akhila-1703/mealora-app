@@ -12,6 +12,7 @@ import {
 function LowBalanceUsers() {
   const { users, fetchUsers, loading } = useAdmin();
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);

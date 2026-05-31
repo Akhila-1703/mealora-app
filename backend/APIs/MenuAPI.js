@@ -14,6 +14,7 @@ const formatDay = (day) =>
 
 
 // ================= UPLOAD IMAGE =================
+// we accept multipart form data here via multer to allow admins to upload images for daily dishes. we stream these directly to cloudinary's cdn instead of storing them locally so our server stays stateless
 menuRouter.post(
   "/upload",
   verifyToken("ADMIN"),
@@ -49,6 +50,7 @@ menuRouter.post(
 
 
 // ================= TODAY MENU =================
+// this endpoint dynamically calculates the current day of the week to serve the correct menu to the dashboard without the frontend having to manage date logic
 menuRouter.get(
   "/today",
   async (req, res, next) => {
@@ -93,6 +95,7 @@ menuRouter.get(
 
 
 // ================= WEEK MENU =================
+// fetches the entire weekly rotation. we sort the days logically (monday to sunday) instead of relying on the database insertion order so the ui calendar remains consistent
 menuRouter.get(
   "/week",
   async (req, res, next) => {
@@ -129,6 +132,7 @@ menuRouter.get(
 
 
 // ================= ADD MENU =================
+// allows admins to draft menus for future days. we validate the day and format it securely before inserting it into the database to prevent duplicate day entries
 menuRouter.post(
   "/",
   verifyToken("ADMIN"),
@@ -210,6 +214,7 @@ menuRouter.post(
 
 
 // ================= UPDATE MENU =================
+// updating the menu requires special care regarding images. if the admin uploads a new dish photo, we must instruct cloudinary to permanently destroy the old image to prevent orphaned files and save storage costs
 menuRouter.put(
   "/:day",
   verifyToken("ADMIN"),

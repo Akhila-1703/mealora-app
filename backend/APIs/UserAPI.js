@@ -31,6 +31,7 @@ const getTodayDayName = () => {
 
 
 // ================= DASHBOARD =================
+// this is the heaviest endpoint in the app. it aggregates data from four different collections (users, subscriptions, wallet transactions, menus) to build the live dashboard. we use promise.all to fetch them concurrently instead of sequentially to keep latency low
 userRouter.get("/dashboard", verifyToken("USER"), async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -175,6 +176,7 @@ userRouter.get("/dashboard", verifyToken("USER"), async (req, res, next) => {
 
 
 // ================= UPDATE PROFILE =================
+// allows the user to update their core profile data. we use cloudinary here to handle the avatar uploads, ensuring we delete the old image hash to keep our cloud storage footprint minimal
 userRouter.put(
   "/update-profile",
   verifyToken("USER"),
@@ -250,6 +252,7 @@ userRouter.put(
 
 // ================= ADDRESS MANAGEMENT =================
 
+// adds a new delivery address to the user's address book. if this is their first address or they explicitly flag it, we automatically make it their default shipping destination
 userRouter.post("/address", verifyToken("USER"), async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -271,6 +274,7 @@ userRouter.post("/address", verifyToken("USER"), async (req, res, next) => {
   }
 });
 
+// edits an existing address entry based on its subdocument _id. if they mark this one as default, we map over the rest of the array and remove the default flag from the others
 userRouter.put("/address/:addressId", verifyToken("USER"), async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -300,6 +304,7 @@ userRouter.put("/address/:addressId", verifyToken("USER"), async (req, res, next
   }
 });
 
+// removes an address from the array. if they delete their default address, we automatically promote the next available address in the array to default so deliveries don't get stuck
 userRouter.delete("/address/:addressId", verifyToken("USER"), async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -324,6 +329,7 @@ userRouter.delete("/address/:addressId", verifyToken("USER"), async (req, res, n
   }
 });
 
+// handles the edge case where a user wants their dabba delivered to their office tomorrow instead of home, without permanently changing their default address setting
 userRouter.post("/address/override", verifyToken("USER"), async (req, res, next) => {
   try {
     const userId = req.user.id;
@@ -352,186 +358,3 @@ userRouter.post("/address/override", verifyToken("USER"), async (req, res, next)
     next(err);
   }
 });
-
-/*import exp from "express"
-import { verifyToken } from "../middleware/verifyToken.js"
-import { UserModel } from "../models/UserModel.js"
-import { SubscriptionModel } from "../models/SubscriptionModel.js"
-import { MenuModel } from "../models/MenuModel.js"
-import { SkipMealModel } from "../models/SkipMealModel.js"
-
-export const userRouter = exp.Router()
-
-/*userRouter.get(
-  "/dashboard",
-  verifyToken("USER"),
-  async (req, res, next) => {
-    try {
-      // ✅ get userId from token (cookie)
-      const userId = req.user.id;
-
-      // parallel DB calls
-      const [user, subscription] = await Promise.all([
-        UserModel.findById(userId),
-        SubscriptionModel.findOne({ userId, status: "ACTIVE" })
-      ]);
-
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      const today = new Date().toLocaleString("en-US", { weekday: "long" });
-
-      const menu = await MenuModel.findOne({ day: today });
-
-      const todayDate = new Date();
-      todayDate.setHours(0, 0, 0, 0);
-
-      const skipped = await SkipMealModel.findOne({
-        userId,
-        date: todayDate
-      });
-
-      const mealPrice = subscription?.mealPrice || 100;
-      const walletBalance = user.walletBalance || 0;
-      const remainingMeals = Math.floor(walletBalance / mealPrice);
-
-      let message = null;
-
-      if (remainingMeals <= 2) {
-        message = "Recharge urgently";
-      } else if (remainingMeals <= 5) {
-        message = "Plan expiring soon";
-      }
-
-      res.status(200).json({
-        success: true,
-        payload: {
-          walletBalance,
-          remainingMeals,
-          todayMenu: menu?.lunchMenu || null,
-          isSkippedToday: !!skipped,
-          subscriptionStatus: subscription?.status || "INACTIVE",
-          message
-        }
-      });
-
-    } catch (err) {
-      next(err);
-    }
-  }
-);*/
-
-/*userRouter.get(
-  "/dashboard/:userid",
-  verifyToken("USER"),
-  async (req, res, next) => {
-    try {
-
-      const { userid } = req.params
-
-      // 🔒 SECURITY CHECK
-      if (req.user.id.toString() !== userid) {
-        return res.status(403).json({ message: "Access denied" })
-      }
-
-      const userId = userid
-
-      // parallel DB calls
-      const [user, subscription] = await Promise.all([
-        UserModel.findById(userId),
-        SubscriptionModel.findOne({ userId, status: "ACTIVE" })
-      ])
-
-      if (!user) {
-        return res.status(404).json({ message: "User not found" })
-      }
-
-      // today day
-      const today = new Date().toLocaleString("en-US", { weekday: "long" })
-
-      const menu = await MenuModel.findOne({ day: today })
-
-      // normalize date
-      const todayDate = new Date()
-      todayDate.setHours(0, 0, 0, 0)
-
-      const skipped = await SkipMealModel.findOne({
-        userId,
-        date: todayDate
-      })
-
-      // calculations
-      const mealPrice = subscription?.mealPrice || 100
-      const walletBalance = user.walletBalance || 0
-      const remainingMeals = Math.floor(walletBalance / mealPrice)
-
-      let message = null
-
-      if (remainingMeals <= 2) {
-        message = "Recharge urgently"
-      } else if (remainingMeals <= 5) {
-        message = "Plan expiring soon"
-      }
-
-      res.status(200).json({
-        success: true,
-        payload: {
-          walletBalance,
-          remainingMeals,
-          todayMenu: menu?.lunchMenu || null,
-          isSkippedToday: !!skipped,
-          subscriptionStatus: subscription?.status || "INACTIVE",
-          message
-        }
-      })
-
-    } catch (err) {
-      next(err)
-    }
-  }
-)
-
-userRouter.put(
-  "/update-profile/:userid",
-  verifyToken("USER"),
-  async (req, res, next) => {
-    try {
-
-      const { userid } = req.params
-
-      // 🔒 SECURITY CHECK
-      if (req.user.id.toString() !== userid) {
-        return res.status(403).json({ message: "Access denied" })
-      }
-
-      const { firstName, lastName, username, mobile } = req.body
-
-      const updatedUser = await UserModel.findByIdAndUpdate(
-        userid,
-        {
-          $set: {
-            ...(firstName && { firstName }),
-            ...(lastName && { lastName }),
-            ...(username && { username }),
-            ...(mobile && { mobile })
-          }
-        },
-        { new: true }
-      ).select("-password")
-
-      if (!updatedUser) {
-        return res.status(404).json({ message: "User not found" })
-      }
-
-      res.status(200).json({
-        success: true,
-        message: "Profile updated successfully",
-        payload: updatedUser
-      })
-
-    } catch (err) {
-      next(err)
-    }
-  }
-) */

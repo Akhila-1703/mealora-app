@@ -9,6 +9,7 @@ function RootLayout() {
   const { getCurrentUser } = useAuth();
   const location = useLocation();
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     getCurrentUser(); // 🔥 auto login using cookie
   }, [getCurrentUser]);

@@ -13,6 +13,7 @@ import {
 function Transactions() {
   const { transactions, loading, fetchWallet } = useWallet();
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     fetchWallet();
   }, [fetchWallet]);

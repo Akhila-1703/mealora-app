@@ -15,6 +15,7 @@ const SkipMeal = () => {
   const { dashboard, loading: dashboardLoading, loadDashboard } = useUser();
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     fetchSkips();
     if (!dashboard) loadDashboard();
@@ -30,7 +31,7 @@ const SkipMeal = () => {
   
   const startOfTodayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-  // Date-fns calendar generation
+  // dynamically generates the allowed date array for the calendar. we block off past dates and today (if it is past the 11 am cutoff) to prevent users from skipping meals already in transit
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart);
@@ -44,7 +45,7 @@ const SkipMeal = () => {
     const isPastDay = isBefore(day, startOfTodayDay);
     const isTodayDay = isToday(day);
     
-    // Cannot interact with past days
+    // the core calendar callback that strictly prevents clicks on invalid dates. this is the frontend mirror of the backend ist time validation logic
     if (isPastDay) return;
     
     // Cannot interact with today if skip cutoff is passed

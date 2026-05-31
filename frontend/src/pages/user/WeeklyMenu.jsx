@@ -13,6 +13,7 @@ const WeeklyMenu = () => {
 
 
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     fetchMenu();
     fetchSkips();

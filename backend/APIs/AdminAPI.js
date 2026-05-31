@@ -10,6 +10,7 @@ export const adminRouter = exp.Router();
 
 
 // ================= DASHBOARD =================
+// calculates the vital statistics for the admin dashboard. we perform several heavy mongodb aggregations here to calculate total revenue, meal popularity, and signup trends concurrently
 adminRouter.get("/dashboard", verifyToken("ADMIN"), async (req, res, next) => {
   try {
     const [totalUsers, activeSubscriptions] = await Promise.all([
@@ -133,6 +134,7 @@ adminRouter.get("/dashboard", verifyToken("ADMIN"), async (req, res, next) => {
 
 
 // ================= TODAY MEALS =================
+// calculates precisely how many meals need to be cooked today by subtracting the number of active users who skipped from the total pool of active subscriptions
 adminRouter.get("/meals/today", verifyToken("ADMIN"), async (req, res, next) => {
   try {
     const start = new Date();
@@ -164,6 +166,7 @@ adminRouter.get("/meals/today", verifyToken("ADMIN"), async (req, res, next) => 
 
 
 // ================= USERS =================
+// retrieves the master list of all customers. we map over their subscriptions in memory instead of using $lookup in mongodb to keep the database query execution extremely fast
 adminRouter.get("/users", verifyToken("ADMIN"), async (req, res, next) => {
   try {
     const users = await UserModel.find({ role: "USER" }).select("-password").lean();
@@ -187,6 +190,7 @@ adminRouter.get("/users", verifyToken("ADMIN"), async (req, res, next) => {
 
 
 // ================= UPDATE USER STATUS =================
+// provides the admin the authority to instantly suspend a user account, preventing them from logging in or receiving deliveries
 adminRouter.patch("/user/:id/status", verifyToken("ADMIN"), async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -214,6 +218,7 @@ adminRouter.patch("/user/:id/status", verifyToken("ADMIN"), async (req, res, nex
 });
 
 // ================= UPDATE USER STATUS (PUT - TO MATCH TOGGLE CONTRACT) =================
+// alternative toggle route for user suspension that perfectly matches the frontend expected contract structure
 adminRouter.put("/user/:id", verifyToken("ADMIN"), async (req, res) => {
   try {
     const updated = await UserModel.findByIdAndUpdate(
@@ -239,6 +244,7 @@ adminRouter.put("/user/:id", verifyToken("ADMIN"), async (req, res) => {
 
 
 // ================= TODAY DELIVERIES =================
+// generates the kitchen delivery manifest for today. we filter out anyone who skipped or doesnt have an active subscription so the delivery riders know exactly where to go
 adminRouter.get("/today-deliveries", verifyToken("ADMIN"), async (req, res, next) => {
   try {
     const start = new Date();
@@ -302,6 +308,7 @@ adminRouter.get("/today-deliveries", verifyToken("ADMIN"), async (req, res, next
 
 
 // ================= USER OPERATIONS: EXCLUDE =================
+// allows the kitchen manager to manually exclude a user from todays delivery manifest (e.g., if they called in sick after the 11 am cutoff)
 adminRouter.post("/user/:id/exclude", verifyToken("ADMIN"), async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -335,6 +342,7 @@ adminRouter.post("/user/:id/exclude", verifyToken("ADMIN"), async (req, res, nex
 
 
 // ================= USER OPERATIONS: MARK DELIVERED & BILL =================
+// manual override to explicitly mark a single user meal as delivered. this immediately deducts the meal price from their wallet and prevents double-billing if they were already charged
 adminRouter.post("/user/:id/deliver", verifyToken("ADMIN"), async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -388,6 +396,7 @@ adminRouter.post("/user/:id/deliver", verifyToken("ADMIN"), async (req, res, nex
 
 
 // ================= REVENUE SYSTEM ANALYTICS =================
+// calculates the total gross revenue ever deposited into the platform by aggregating all credit transactions in the ledger
 adminRouter.get("/revenue/total", verifyToken("ADMIN"), async (req, res, next) => {
   try {
     const totalResult = await WalletTransactionModel.aggregate([
@@ -401,6 +410,7 @@ adminRouter.get("/revenue/total", verifyToken("ADMIN"), async (req, res, next) =
   }
 });
 
+// groups wallet deposits into monthly buckets for the revenue trend graph on the admin dashboard
 adminRouter.get("/revenue/monthly", verifyToken("ADMIN"), async (req, res, next) => {
   try {
     const monthlyResult = await WalletTransactionModel.aggregate([
@@ -432,6 +442,7 @@ adminRouter.get("/revenue/monthly", verifyToken("ADMIN"), async (req, res, next)
   }
 });
 
+// groups wallet deposits into weekly buckets for a more granular view of the revenue trend graph
 adminRouter.get("/revenue/weekly", verifyToken("ADMIN"), async (req, res, next) => {
   try {
     const weeklyResult = await WalletTransactionModel.aggregate([
@@ -463,6 +474,7 @@ adminRouter.get("/revenue/weekly", verifyToken("ADMIN"), async (req, res, next) 
 
 
 // ================= REPORTS ANALYTICS =================
+// the master analytics engine. this route processes the last 14 days of data to generate growth metrics, wallet usage distribution, and precise meal popularity based on real deductions
 adminRouter.get("/reports", verifyToken("ADMIN"), async (req, res, next) => {
   try {
     const last14Days = [];
@@ -659,6 +671,7 @@ export const processDailyMealsLogic = async () => {
 };
 
 // ================= PROCESS MEALS ROUTE (Manual Fallback) =================
+// the manual fallback trigger for the daily billing run. if the nightly cron job fails to execute, the admin can click a button on their dashboard to hit this route and process all payments manually
 adminRouter.post("/process-meals", verifyToken("ADMIN"), async (req, res, next) => {
   try {
     const log = await processDailyDeductions("ADMIN");
@@ -679,6 +692,7 @@ adminRouter.post("/process-meals", verifyToken("ADMIN"), async (req, res, next) 
 });
 
 // ================= GET BILLING RUNS HISTORY =================
+// fetches the audit logs of all previous billing runs (both automated and manual) so the admin can verify that payments are being processed correctly each day
 adminRouter.get("/billing-runs", verifyToken("ADMIN"), async (req, res, next) => {
   try {
     const BillingRunModelModule = await import("../models/BillingRunModel.js");

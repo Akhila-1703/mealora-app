@@ -14,6 +14,7 @@ function Menu() {
     fetchWeeklyMenu,
   } = useMenu();
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     fetchWeeklyMenu();
   }, []);

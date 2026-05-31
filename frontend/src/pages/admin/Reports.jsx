@@ -40,6 +40,7 @@ function Reports() {
     }
   };
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     // Silent fetch on mount
     fetchReports().catch(() => {});

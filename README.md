@@ -19,7 +19,7 @@
 
 MealOra eliminates the manual tracking of daily food subscriptions. It provides a seamless experience where customers manage a prepaid wallet, automatically pay for meals they consume, and dynamically skip days they aren't home—while giving kitchen managers deep analytical oversight.
 
-### 👤 Customer Features (User Dashboard)
+### Customer Features (User Dashboard)
 - **Prepaid Wallet Ledger:** Users deposit funds into their MealOra wallet (simulated via Razorpay/Stripe UI). The system maintains an immutable ledger of all `CREDIT` (recharges) and `DEBIT` (meal deductions) transactions.
 - **Dynamic Daily Dashboard:** The landing page calculates today's delivery state in real-time. It displays the day's menu, alerts the user if their meal is *Pending Before 1 PM*, *Skipped*, or *Delivered*, and warns them if their wallet balance is too low for tomorrow's meal.
 - **Subscription Toggles:** Users can globally pause or resume their daily meal subscription with a single click.
@@ -27,7 +27,7 @@ MealOra eliminates the manual tracking of daily food subscriptions. It provides 
 - **Strict Cutoff Enforcement:** Users cannot skip today's meal after **11:00 AM IST**. The system enforces this timezone-aware cutoff globally.
 - **Profile & Address Book:** Users can maintain a list of delivery addresses (Home, Office) and set their active default address dynamically.
 
-### 👨‍🍳 Kitchen Manager Features (Admin Dashboard)
+### Kitchen Manager Features (Admin Dashboard)
 - **Visual Analytics & Reports:** Integrated with `Recharts` to provide visual business intelligence. 
   - *Revenue Growth Chart:* Tracks aggregate wallet recharges over time.
   - *Meal Popularity Chart:* Bar graphs analyzing the ratio of Served vs. Skipped meals to predict kitchen inventory requirements.
@@ -35,7 +35,7 @@ MealOra eliminates the manual tracking of daily food subscriptions. It provides 
 - **Customer CRM Table:** A comprehensive view of all registered customers, allowing admins to monitor live wallet balances, active addresses, and total meals served.
 - **Manual Billing Override:** While billing is automated, admins possess a master override switch to manually trigger the daily billing deduction pipeline if required.
 
-### ⚙️ Backend Automation & Logistics
+### Backend Automation & Logistics
 - **Automated Cron Engine:** Powered by `node-cron`, the backend runs autonomous scheduled tasks every single day.
   - At exactly 1:00 PM IST, the cron job evaluates every user. If a user has an active subscription, has NOT skipped the date, and possesses sufficient wallet balance, it deducts ₹100 from their wallet and generates a ledger receipt.
 - **Transactional Email Alerts:** The exact moment a meal is successfully billed and dispatched, the backend triggers an automated SMTP (`NodeMailer`) email notifying the customer that their food has been delivered.

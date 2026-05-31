@@ -22,6 +22,7 @@ function Navbar() {
   };
 
   // Scroll to hash on location change
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     if (location.hash) {
       const id = location.hash.replace("#", "");
@@ -34,12 +35,14 @@ function Navbar() {
     }
   }, [location]);
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
 
   const handleNavClick = (e, path) => {
     if (path.startsWith("/#")) {
+      // preventing default browser behavior to handle the submission seamlessly within the virtual dom
       e.preventDefault();
       const hash = path.substring(1); // "#about"
       if (location.pathname !== "/") {

@@ -44,10 +44,12 @@ function Wallet() {
   const [country, setCountry] = useState("India");
   const [formError, setFormError] = useState("");
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     fetchWallet();
   }, [fetchWallet]);
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     if (user) {
       setEmailInput(user.email || "");
@@ -112,6 +114,7 @@ function Wallet() {
   };
 
   const handleStripePay = async (e) => {
+    // preventing default browser behavior to handle the submission seamlessly within the virtual dom
     e.preventDefault();
     if (!cardNo || cardNo.replace(/\s+/g, "").length < 16) {
       setFormError("Please enter a valid 16-digit card number.");

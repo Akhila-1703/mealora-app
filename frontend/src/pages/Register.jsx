@@ -53,7 +53,9 @@ const Register = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // form submission handler. we intentionally use a controlled form to validate inputs before making the heavy api call to the backend. upon success, zustand triggers a global state hydrate
   const handleSubmit = (e) => {
+    // preventing default browser behavior to handle the submission seamlessly within the virtual dom
     e.preventDefault();
 
     if (!validateForm()) return;

@@ -23,6 +23,7 @@ const Users = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [activeUserId, setActiveUserId] = useState(null);
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     fetchUsers();
     fetchDashboard();

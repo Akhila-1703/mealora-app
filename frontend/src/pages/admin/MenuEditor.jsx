@@ -68,6 +68,7 @@ const MenuEditor = () => {
     }
   };
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     fetchMenus();
   }, []);
@@ -93,6 +94,7 @@ const currentMenuObj =
     ? lunchMenuInput.split(",").map(d => d.trim()).filter(Boolean) 
     : [];
 
+  // mounting the component lifecycle and hydrating initial state from the server
   useEffect(() => {
     if (currentMenuObj) {
       setTitleInput(currentMenuObj?.title || "");
