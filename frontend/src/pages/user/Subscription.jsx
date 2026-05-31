@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import useSubscription from "../../hooks/useSubscription";
 import useUser from "../../hooks/useUser";
 
@@ -8,7 +8,7 @@ import { ClipboardCheck, Utensils, PauseCircle, PlayCircle, MapPin, AlertTriangl
 import { useNavigate } from "react-router-dom";
 
 import {
-  heading,
+  pageTitle,
   subText,
   card,
   input,
@@ -88,7 +88,7 @@ function Subscription() {
       {/* HEADER */}
       <div>
 
-        <h1 className={heading}>
+        <h1 className={pageTitle}>
           Subscription
         </h1>
 
@@ -103,10 +103,10 @@ function Subscription() {
           {/* LEFT: CREATE FORM */}
           <div className="bg-white rounded-2xl border border-[#EBEBEB] p-8 shadow-sm flex flex-col gap-6">
             <div className="flex items-center gap-3">
-              <div className="text-[#114232] flex items-center justify-center">
+              <div className="text-[#C04E2D] flex items-center justify-center">
                 <ClipboardCheck size={28} />
               </div>
-              <h2 className="text-xl md:text-2xl font-bold text-[#1A1A1A] font-['Fraunces']">
+              <h2 className="text-xl md:text-2xl font-bold text-[#332520] font-['Inter']">
                 Create Your Subscription
               </h2>
             </div>
@@ -119,7 +119,7 @@ function Subscription() {
               <button
                 onClick={() => handleCreateSubscription({ address: "Default", city: "Default", pincode: "000000" })}
                 disabled={loading}
-                className="w-full bg-[#114232] hover:bg-[#0D3326] text-white font-semibold py-3.5 rounded-xl transition-all duration-200 text-sm active:scale-[0.98] shadow-sm flex items-center justify-center mt-4 cursor-pointer"
+                className="w-full bg-[#C04E2D] hover:bg-[#A33F23] text-white font-semibold py-3.5 rounded-xl transition-all duration-200 text-sm active:scale-[0.98] shadow-sm flex items-center justify-center mt-4 cursor-pointer"
               >
                 {loading ? "Processing..." : "Start Subscription"}
               </button>
@@ -128,23 +128,23 @@ function Subscription() {
 
           {/* RIGHT: DEFAULT PLAN DETAILS */}
           <div className="bg-white rounded-2xl border border-[#EBEBEB] p-8 shadow-sm flex flex-col gap-6">
-            <h2 className="text-xl font-bold text-[#1A1A1A] font-['Fraunces'] border-b border-[#F5F5F5] pb-4">
+            <h2 className="text-xl font-bold text-[#332520] font-['Inter'] border-b border-[#F5F5F5] pb-4">
               Default Plan Details
             </h2>
 
             <div className="flex flex-col">
               <div className="flex justify-between items-center py-4 border-b border-[#F5F5F5]">
-                <span className="text-sm font-medium text-[#666666]">Plan Type</span>
-                <span className="text-sm font-bold text-[#1A1A1A]">REGULAR (Lunch Only)</span>
+                <span className="text-sm font-medium text-[#827873]">Plan Type</span>
+                <span className="text-sm font-bold text-[#332520]">REGULAR (Lunch Only)</span>
               </div>
 
               <div className="flex justify-between items-center py-4 border-b border-[#F5F5F5]">
-                <span className="text-sm font-medium text-[#666666]">Rate</span>
-                <span className="text-sm font-bold text-[#1A1A1A]">₹100 per meal</span>
+                <span className="text-sm font-medium text-[#827873]">Rate</span>
+                <span className="text-sm font-bold text-[#332520]">₹100 per meal</span>
               </div>
 
               <div className="flex justify-between items-center py-4">
-                <span className="text-sm font-medium text-[#666666]">Status</span>
+                <span className="text-sm font-medium text-[#827873]">Status</span>
                 <span className="bg-[#D1E7DD] text-[#0F5132] px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">
                   ACTIVE
                 </span>
@@ -172,7 +172,7 @@ function Subscription() {
                       <Utensils size={24} />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-[#1A1A1A] font-['Fraunces']">
+                      <h2 className="text-2xl font-bold text-[#332520] font-['Inter']">
                         Lunch Only
                       </h2>
                       <p className="text-sm text-[#808080] mt-1 tracking-wider uppercase">
@@ -183,7 +183,7 @@ function Subscription() {
                   
                   <div className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest ${
                     subscription.status === "ACTIVE" 
-                      ? "bg-[#2E7D32] text-white shadow-sm" 
+                      ? "bg-[#C04E2D] text-white shadow-sm" 
                       : "bg-[#F5F5F5] text-[#808080]"
                   }`}>
                     {subscription.status}
@@ -196,14 +196,14 @@ function Subscription() {
                   <div className="flex flex-col gap-1">
                     <span className="text-[10px] font-bold text-[#808080] uppercase tracking-widest">Rate</span>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-lg font-bold text-[#1A1A1A]">₹{subscription.mealPrice}</span>
-                      <span className="text-xs font-medium text-[#666666]">/meal</span>
+                      <span className="text-lg font-bold text-[#332520]">₹{subscription.mealPrice}</span>
+                      <span className="text-xs font-medium text-[#827873]">/meal</span>
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-1">
                     <span className="text-[10px] font-bold text-[#808080] uppercase tracking-widest">Started On</span>
-                    <span className="text-sm font-bold text-[#1A1A1A]">
+                    <span className="text-sm font-bold text-[#332520]">
                       {subscription.startDate ? new Date(subscription.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "-"}
                     </span>
                   </div>
@@ -223,7 +223,7 @@ function Subscription() {
                       <button
                         onClick={() => handleStatusChange({ status: "ACTIVE" })}
                         disabled={loading}
-                        className="bg-[#2E7D32] hover:bg-[#1B5E20] text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-sm w-full"
+                        className="bg-[#C04E2D] hover:bg-[#A34226] text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-sm w-full"
                       >
                         <PlayCircle size={16} />
                         Resume Subscription
@@ -236,7 +236,7 @@ function Subscription() {
               {/* DELIVERY ADDRESS CARD */}
               <div className="bg-white rounded-2xl border border-[#EBEBEB] p-8 shadow-sm flex flex-col gap-6">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-bold text-[#1A1A1A] font-['Fraunces']">
+                  <h2 className="text-xl font-bold text-[#332520] font-['Inter']">
                     Delivery Address
                   </h2>
                   <button
@@ -248,10 +248,10 @@ function Subscription() {
                 </div>
 
                 <div className="bg-[#F5F5F5] rounded-xl p-4 flex items-center gap-3">
-                  <div className="text-[#666666]">
+                  <div className="text-[#827873]">
                     <MapPin size={20} />
                   </div>
-                  <p className="text-[#333333] font-medium text-[15px]">
+                  <p className="text-[#332520] font-medium text-[15px]">
                     {dashboard?.deliveryAddress || "No active delivery address"}
                   </p>
                 </div>
@@ -270,17 +270,17 @@ function Subscription() {
               
               {/* MEAL CALENDAR CARD */}
               <div className="bg-[#F4F9F6] rounded-2xl border border-[#E0EFE5] p-8 shadow-sm flex flex-col">
-                <h2 className="text-xl font-bold text-[#114232] font-['Fraunces'] mb-4 flex items-center gap-2">
+                <h2 className="text-xl font-bold text-[#C04E2D] font-['Inter'] mb-4 flex items-center gap-2">
                   Meal Calendar
                 </h2>
                 
                 <p className="text-sm text-[#4F4F4F] leading-relaxed mb-6">
-                  Your meal is scheduled for delivery every weekday between <span className="font-bold text-[#1A1A1A]">12:45 PM</span> and <span className="font-bold text-[#1A1A1A]">1:15 PM</span>.
+                  Your meal is scheduled for delivery every weekday between <span className="font-bold text-[#332520]">12:45 PM</span> and <span className="font-bold text-[#332520]">1:15 PM</span>.
                 </p>
 
                 <button 
                   onClick={() => navigate("/dashboard/skip")}
-                  className="w-full bg-transparent border border-[#2E7D32] hover:bg-[#2E7D32] hover:text-white text-[#2E7D32] font-semibold py-3 rounded-xl transition-all duration-300 text-sm"
+                  className="w-full bg-transparent border border-[#C04E2D] hover:bg-[#C04E2D] hover:text-white text-[#C04E2D] font-semibold py-3 rounded-xl transition-all duration-300 text-sm"
                 >
                   View Delivery History
                 </button>
@@ -289,12 +289,12 @@ function Subscription() {
               {/* BADGES */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-[#EEEEEE] rounded-xl p-4 flex flex-col items-center justify-center gap-2 text-center h-24">
-                  <Leaf size={20} className="text-[#114232]" />
-                  <span className="text-xs font-bold text-[#1A1A1A]">Eco-Packaging</span>
+                  <Leaf size={20} className="text-[#C04E2D]" />
+                  <span className="text-xs font-bold text-[#332520]">Eco-Packaging</span>
                 </div>
                 <div className="bg-[#EEEEEE] rounded-xl p-4 flex flex-col items-center justify-center gap-2 text-center h-24">
-                  <ShieldCheck size={20} className="text-[#114232]" />
-                  <span className="text-xs font-bold text-[#1A1A1A]">Hygiene Certified</span>
+                  <ShieldCheck size={20} className="text-[#C04E2D]" />
+                  <span className="text-xs font-bold text-[#332520]">Hygiene Certified</span>
                 </div>
               </div>
             </div>
@@ -312,3 +312,4 @@ function Subscription() {
 }
 
 export default Subscription;
+

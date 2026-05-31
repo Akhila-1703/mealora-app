@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import {
   card,
-  heading,
+  pageTitle,
   subText,
   input,
   primaryBtn,
@@ -51,7 +51,7 @@ const Support = () => {
 
       {/* HEADER */}
       <div>
-        <h1 className={heading}>Support</h1>
+        <h1 className={pageTitle}>Support</h1>
         <p className={subText}>
           Get help from our AI assistant or browse FAQs
         </p>
@@ -157,3 +157,4 @@ const Support = () => {
 };
 
 export default Support;
+

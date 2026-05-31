@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import useAdmin from "../../hooks/useAdmin";
 import { 
   Search, ChevronDown,
@@ -81,10 +81,10 @@ const Users = () => {
       {/* HEADER SECTION */}
       <div className="w-full px-4 md:px-8 pt-8 pb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6 max-w-7xl mx-auto">
         <div className="flex flex-col">
-          <h1 className="text-[32px] font-bold text-[#1A1A1A] font-['Fraunces'] leading-none mb-2">
+          <h1 className="text-[24px] md:text-[32px] font-bold tracking-tight text-[#332520] leading-[1.1] font-['Inter'] mb-2">
             User Directory
           </h1>
-          <p className="text-[#666666] text-[15px]">
+          <p className="text-[#827873] text-[15px]">
             Manage your subscribers and monitor community health.
           </p>
         </div>
@@ -100,11 +100,11 @@ const Users = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* TOTAL USERS */}
           <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 flex flex-col justify-between shadow-sm h-[135px] relative overflow-hidden">
-            <div className="flex justify-between items-center text-[#666666] mb-2">
+            <div className="flex justify-between items-center text-[#827873] mb-2">
               <span className="text-[11px] font-bold tracking-widest uppercase">Total Users</span>
             </div>
 
-            <span className="text-[32px] font-bold text-[#1A1A1A] leading-none mb-4">
+            <span className="text-[32px] font-bold text-[#332520] leading-none mb-4">
               {totalUsersCount.toLocaleString()}
             </span>
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#2E7D32] opacity-80" />
@@ -112,11 +112,11 @@ const Users = () => {
 
           {/* ACTIVE SUBSCRIPTIONS */}
           <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 flex flex-col justify-between shadow-sm h-[135px] relative overflow-hidden">
-            <div className="flex justify-between items-center text-[#666666] mb-2">
+            <div className="flex justify-between items-center text-[#827873] mb-2">
               <span className="text-[11px] font-bold tracking-widest uppercase">Active Subs</span>
 
             </div>
-            <span className="text-[32px] font-bold text-[#1A1A1A] leading-none mb-4">
+            <span className="text-[32px] font-bold text-[#332520] leading-none mb-4">
               {activeSubsCount.toLocaleString()}
             </span>
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#2B5240]" />
@@ -124,11 +124,11 @@ const Users = () => {
 
           {/* PAUSED SUBSCRIPTIONS */}
           <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 flex flex-col justify-between shadow-sm h-[135px] relative overflow-hidden">
-            <div className="flex justify-between items-center text-[#666666] mb-2">
+            <div className="flex justify-between items-center text-[#827873] mb-2">
               <span className="text-[11px] font-bold tracking-widest uppercase">Paused Subs</span>
 
             </div>
-            <span className="text-[32px] font-bold text-[#1A1A1A] leading-none mb-4">
+            <span className="text-[32px] font-bold text-[#332520] leading-none mb-4">
               {pausedSubsCount.toLocaleString()}
             </span>
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#F97316]" />
@@ -136,11 +136,11 @@ const Users = () => {
 
           {/* TOTAL REVENUE */}
           <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 flex flex-col justify-between shadow-sm h-[135px] relative overflow-hidden">
-            <div className="flex justify-between items-center text-[#666666] mb-2">
+            <div className="flex justify-between items-center text-[#827873] mb-2">
               <span className="text-[11px] font-bold tracking-widest uppercase">Total Revenue</span>
 
             </div>
-            <span className="text-[32px] font-bold text-[#1A1A1A] leading-none mb-4 font-['Fraunces']">
+            <span className="text-[32px] font-bold text-[#332520] leading-none mb-4 font-['Inter']">
               ₹{totalRevenue.toLocaleString("en-IN")}
             </span>
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#C04E2D]" />
@@ -176,13 +176,13 @@ const Users = () => {
                     setStatusFilter(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="appearance-none bg-white border border-[#E0E0E0] hover:bg-[#FAFAFA] px-4 py-2.5 pr-10 rounded-xl font-semibold text-[13px] text-[#333333] cursor-pointer focus:outline-none"
+                  className="appearance-none bg-white border border-[#E0E0E0] hover:bg-[#FAFAFA] px-4 py-2.5 pr-10 rounded-xl font-semibold text-[13px] text-[#332520] cursor-pointer focus:outline-none"
                 >
                   <option value="All">Status: All</option>
                   <option value="Active">Status: Active</option>
                   <option value="Paused">Status: Paused</option>
                 </select>
-                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#666666]" />
+                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-[#827873]" />
               </div>
 
             </div>
@@ -195,7 +195,6 @@ const Users = () => {
                 <tr className="bg-[#FAFAFA] border-b border-[#F5F5F5]">
                   <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">User Name</th>
                   <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Email & Mobile</th>
-                  <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Status</th>
                   <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Wallet</th>
                   <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080]">Join Date</th>
                   <th className="px-8 py-4 text-[11px] font-bold tracking-widest uppercase text-[#808080] text-right">Actions</th>
@@ -221,7 +220,7 @@ const Users = () => {
                             {getInitials(user.firstName, user.lastName)}
                           </div>
                           <div className="flex flex-col">
-                            <span className="font-bold text-[#1A1A1A] text-[15px]">
+                            <span className="font-bold text-[#332520] text-[15px]">
                               {user.firstName} {user.lastName}
                             </span>
                             <span className="text-[11px] text-[#808080] font-medium uppercase tracking-wider">
@@ -236,21 +235,12 @@ const Users = () => {
                           <span className="text-[11px] text-[#808080] font-semibold">{user.mobile || "No Mobile"}</span>
                         </div>
                       </td>
-                      <td className="px-8 py-5">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold ${
-                          user.isActive
-                            ? "bg-[#E8F5E9] text-[#2E7D32]"
-                            : "bg-[#FFE0B2] text-[#E65100]"
-                        }`}>
-                          {user.isActive ? "Active" : "Inactive"}
-                        </span>
-                      </td>
                       <td className="px-8 py-5 text-[14px] font-bold">
                         <span className={(user.walletBalance ?? 0) < 0 ? 'text-[#D32F2F]' : (user.walletBalance ?? 0) < 400 ? 'text-[#E65100]' : 'text-[#2E7D32]'}>
                           ₹{(user.walletBalance || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                       </td>
-                      <td className="px-8 py-5 text-[13px] text-[#666666] font-medium">
+                      <td className="px-8 py-5 text-[13px] text-[#827873] font-medium">
                         {formattedJoinDate}
                       </td>
                       <td className="px-8 py-5">
@@ -283,7 +273,7 @@ const Users = () => {
 
           {/* TABLE FOOTER / PAGINATION */}
           <div className="px-8 py-5 border-t border-[#F5F5F5] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <span className="text-[13px] font-medium text-[#666666]">
+            <span className="text-[13px] font-medium text-[#827873]">
               Showing {filteredUsers.length > 0 ? indexOfFirstUser + 1 : 0} to {Math.min(indexOfLastUser, filteredUsers.length)} of {filteredUsers.length} users
             </span>
 
@@ -291,7 +281,7 @@ const Users = () => {
               <button 
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="w-8 h-8 rounded-lg border border-[#E0E0E0] flex items-center justify-center text-[#666666] hover:bg-[#FAFAFA] disabled:opacity-50 disabled:hover:bg-white"
+                className="w-8 h-8 rounded-lg border border-[#E0E0E0] flex items-center justify-center text-[#827873] hover:bg-[#FAFAFA] disabled:opacity-50 disabled:hover:bg-white"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -303,7 +293,7 @@ const Users = () => {
                   className={`w-8 h-8 rounded-lg text-[13px] font-bold flex items-center justify-center border transition-colors ${
                     currentPage === i + 1 
                       ? 'bg-[#2B5240] border-[#2B5240] text-white' 
-                      : 'bg-white border-[#E0E0E0] text-[#333333] hover:bg-[#FAFAFA]'
+                      : 'bg-white border-[#E0E0E0] text-[#332520] hover:bg-[#FAFAFA]'
                   }`}
                 >
                   {i + 1}
@@ -313,7 +303,7 @@ const Users = () => {
               <button 
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="w-8 h-8 rounded-lg border border-[#E0E0E0] flex items-center justify-center text-[#666666] hover:bg-[#FAFAFA] disabled:opacity-50 disabled:hover:bg-white"
+                className="w-8 h-8 rounded-lg border border-[#E0E0E0] flex items-center justify-center text-[#827873] hover:bg-[#FAFAFA] disabled:opacity-50 disabled:hover:bg-white"
               >
                 <ChevronRight size={16} />
               </button>
@@ -328,9 +318,9 @@ const Users = () => {
 
 
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-[18px] font-bold text-[#1A1A1A]">Daily Signups</h3>
+              <h3 className="text-[18px] font-bold text-[#332520]">Daily Signups</h3>
               <div className="flex items-center gap-4 text-xs font-semibold">
-                <span className="flex items-center gap-1.5 text-[#666666]">
+                <span className="flex items-center gap-1.5 text-[#827873]">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#A6C4B4]" /> Signups
                 </span>
               </div>
@@ -362,7 +352,7 @@ const Users = () => {
                         )}
                       </div>
                     </div>
-                    <span className="text-[12px] font-medium text-[#666666]">{item.day}</span>
+                    <span className="text-[12px] font-medium text-[#827873]">{item.day}</span>
                   </div>
                 );
               })}
@@ -377,6 +367,7 @@ const Users = () => {
 }
 
 export default Users;
+
 
 
 

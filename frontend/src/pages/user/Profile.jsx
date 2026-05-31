@@ -132,7 +132,7 @@ const Profile = () => {
           </div>
           
           <div className="flex flex-col items-center md:items-start justify-center h-full pt-4 md:pt-6">
-            <h1 className="text-[32px] md:text-[40px] font-bold text-[#1A1A1A] font-['Fraunces'] leading-none mb-3 text-center md:text-left">
+            <h1 className="text-[24px] md:text-[32px] font-bold tracking-tight text-[#332520] leading-[1.1] font-['Inter'] mb-3 text-center md:text-left">
               {user?.firstName} {user?.lastName}
             </h1>
             <div className="flex items-center gap-2 text-[#C04E2D] font-semibold text-sm">
@@ -156,11 +156,11 @@ const Profile = () => {
             <div className="flex justify-between items-center mb-8 border-b border-[#F5F5F5] pb-4">
               <div className="flex items-center gap-3 text-[#C04E2D]">
                 <User size={22} strokeWidth={2.5} />
-                <h2 className="text-[22px] font-bold font-['Fraunces']">Personal Information</h2>
+                <h2 className="text-[22px] font-bold font-['Inter']">Personal Information</h2>
               </div>
               <button 
                 onClick={() => setIsEditing(!isEditing)}
-                className="text-[13px] font-bold text-[#666666] hover:text-[#1A1A1A] transition-colors"
+                className="text-[13px] font-bold text-[#827873] hover:text-[#332520] transition-colors"
               >
                 {isEditing ? "Cancel" : "Edit Details"}
               </button>
@@ -176,7 +176,7 @@ const Profile = () => {
                     const parts = e.target.value.split(" ");
                     setForm({ ...form, firstName: parts[0] || "", lastName: parts.slice(1).join(" ") || "" });
                   }}
-                  className={`w-full border rounded-xl px-4 py-3.5 text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-[#C04E2D] ${!isEditing ? "bg-[#FAFAFA] border-[#E0E0E0] text-[#808080] cursor-not-allowed" : "bg-white border-[#C04E2D] text-[#333333]"}`}
+                  className={`w-full border rounded-xl px-4 py-3.5 text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-[#C04E2D] ${!isEditing ? "bg-[#FAFAFA] border-[#E0E0E0] text-[#808080] cursor-not-allowed" : "bg-white border-[#C04E2D] text-[#332520]"}`}
                 />
               </div>
 
@@ -196,7 +196,7 @@ const Profile = () => {
                   name="mobile"
                   value={form.mobile}
                   onChange={handleChange}
-                  className={`w-full border rounded-xl px-4 py-3.5 text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-[#C04E2D] ${!isEditing ? "bg-[#FAFAFA] border-[#E0E0E0] text-[#808080] cursor-not-allowed" : "bg-white border-[#C04E2D] text-[#333333]"}`}
+                  className={`w-full border rounded-xl px-4 py-3.5 text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-[#C04E2D] ${!isEditing ? "bg-[#FAFAFA] border-[#E0E0E0] text-[#808080] cursor-not-allowed" : "bg-white border-[#C04E2D] text-[#332520]"}`}
                 />
               </div>
               </div>
@@ -222,7 +222,7 @@ const Profile = () => {
             <div className="flex justify-between items-center mb-6 border-b border-[#F5F5F5] pb-4">
               <div className="flex items-center gap-3 text-[#C04E2D]">
                 <Map size={22} strokeWidth={2.5} />
-                <h2 className="text-[22px] font-bold font-['Fraunces']">Saved Addresses</h2>
+                <h2 className="text-[22px] font-bold font-['Inter']">Saved Addresses</h2>
               </div>
               <button 
                 onClick={() => {
@@ -241,7 +241,7 @@ const Profile = () => {
                 <div key={addr._id} className={`p-5 rounded-2xl border ${addr.isDefault ? 'border-[#C04E2D] bg-[#FFF8F6]' : 'border-[#F5F5F5] bg-[#FAFAFA]'}`}>
                   <div className="flex justify-between items-start mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-[#1A1A1A]">{addr.tag}</span>
+                      <span className="font-bold text-[#332520]">{addr.tag}</span>
                       {addr.isDefault && (
                         <span className="text-[10px] font-bold text-white bg-[#C04E2D] px-2 py-0.5 rounded-full uppercase tracking-wider">
                           Default
@@ -261,7 +261,7 @@ const Profile = () => {
                           });
                           setShowAddressModal(true);
                         }}
-                        className="text-[#666666] hover:text-[#C04E2D]"
+                        className="text-[#827873] hover:text-[#C04E2D]"
                       >
                         <Pencil size={14} />
                       </button>
@@ -298,10 +298,10 @@ const Profile = () => {
             <div className="flex justify-between items-center mb-6 border-b border-[#F5F5F5] pb-4">
               <div className="flex items-center gap-3 text-[#C04E2D]">
                 <Leaf size={22} strokeWidth={2.5} />
-                <h2 className="text-[22px] font-bold font-['Fraunces']">Recent Meals</h2>
+                <h2 className="text-[22px] font-bold font-['Inter']">Recent Meals</h2>
               </div>
-              <div className="text-[13px] font-bold text-[#666666]">
-                Total Served: <span className="text-[#1A1A1A]">{dashboard?.servedMealsCount || 0}</span>
+              <div className="text-[13px] font-bold text-[#827873]">
+                Total Served: <span className="text-[#332520]">{dashboard?.servedMealsCount || 0}</span>
               </div>
             </div>
             
@@ -309,8 +309,8 @@ const Profile = () => {
               {dashboard?.recentServedMeals?.map((menu, idx) => (
                 <div key={idx} className="flex justify-between items-center p-4 rounded-xl border border-[#F5F5F5] bg-[#FAFAFA]">
                   <div>
-                    <h3 className="font-bold text-[#1A1A1A]">{menu.day}</h3>
-                    <p className="text-sm text-[#666666]">{menu.mealName}</p>
+                    <h3 className="font-bold text-[#332520]">{menu.day}</h3>
+                    <p className="text-sm text-[#827873]">{menu.mealName}</p>
                     <p className="text-xs text-[#808080] mt-1">{new Date(menu.date).toLocaleDateString()}</p>
                   </div>
                   <div className="text-[10px] font-bold text-[#C04E2D] bg-[#FCE8E8] px-3 py-1 rounded-full uppercase tracking-wider">
@@ -334,7 +334,7 @@ const Profile = () => {
             <div className="bg-white rounded-2xl p-5 flex justify-between items-center shadow-sm">
               <div className="flex flex-col gap-1">
                 <span className="text-[13px] font-medium text-[#4F4F4F]">Wallet Balance</span>
-                <span className="text-[22px] font-bold text-[#1A1A1A]">₹{dashboard?.walletBalance?.toFixed(2) || "0.00"}</span>
+                <span className="text-[22px] font-bold text-[#332520]">₹{dashboard?.walletBalance?.toFixed(2) || "0.00"}</span>
               </div>
               <div className="w-12 h-12 rounded-full bg-[#F4EEE8] flex items-center justify-center text-[#C04E2D]">
                 <Wallet size={20} />
@@ -350,7 +350,7 @@ const Profile = () => {
               </div>
               
               <div className="flex flex-col gap-1">
-                <span className="text-[12px] font-medium text-[#666666]">
+                <span className="text-[12px] font-medium text-[#827873]">
                   Your meals are automatically deducted from your wallet balance.
                 </span>
               </div>
@@ -359,11 +359,11 @@ const Profile = () => {
 
           {/* ACCOUNT SETTINGS */}
           <div className="bg-white rounded-3xl border border-[#EBEBEB] p-6 shadow-sm">
-            <h3 className="text-[12px] font-bold text-[#1A1A1A] tracking-wider uppercase mb-6">Account Settings</h3>
+            <h3 className="text-[12px] font-bold text-[#332520] tracking-wider uppercase mb-6">Account Settings</h3>
             
             <div className="flex flex-col">
               <div className="flex justify-between items-center py-4 border-b border-[#F5F5F5]">
-                <div className="flex items-center gap-3 text-[#333333]">
+                <div className="flex items-center gap-3 text-[#332520]">
                   <Mail size={20} strokeWidth={2} />
                   <span className="text-[15px] font-medium">Email Updates</span>
                 </div>
@@ -438,12 +438,12 @@ const Profile = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-xl">
             <div className="p-6 border-b border-[#F5F5F5] flex justify-between items-center">
-              <h3 className="text-xl font-bold text-[#1A1A1A] font-['Fraunces']">
+              <h3 className="text-xl font-bold text-[#332520] font-['Inter']">
                 {editingAddress ? "Edit Address" : "Add New Address"}
               </h3>
               <button 
                 onClick={() => setShowAddressModal(false)}
-                className="text-[#808080] hover:text-[#1A1A1A]"
+                className="text-[#808080] hover:text-[#332520]"
               >
                 ✕
               </button>
@@ -548,3 +548,4 @@ const Profile = () => {
 };
 
 export default Profile;
+

@@ -465,29 +465,43 @@ adminRouter.get("/revenue/weekly", verifyToken("ADMIN"), async (req, res, next) 
 // ================= REPORTS ANALYTICS =================
 adminRouter.get("/reports", verifyToken("ADMIN"), async (req, res, next) => {
   try {
+    const last14Days = [];
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const dayVal = String(d.getDate()).padStart(2, "0");
+      const dateString = `${year}-${month}-${dayVal}`;
+      const monthName = d.toLocaleString("en-IN", { month: "short" });
+      last14Days.push({
+        date: dateString,
+        display: `${dayVal} ${monthName}`
+      });
+    }
+
+    const fourteenDaysAgo = new Date();
+    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 13);
+    fourteenDaysAgo.setHours(0,0,0,0);
+
     // 1. Revenue trend
     const revenue = await WalletTransactionModel.aggregate([
-      { $match: { type: "CREDIT", createdAt: { $ne: null } } },
+      { $match: { type: "CREDIT", createdAt: { $gte: fourteenDaysAgo } } },
       {
         $group: {
-          _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           revenue: { $sum: "$amount" }
         }
-      },
-      { $sort: { _id: 1 } }
+      }
     ]);
 
-    const revenueData = revenue
-      .filter(item => item._id)
-      .map(item => {
-        const parts = item._id.split("-");
-        if (parts.length < 2) return null;
-        const [year, monthNum] = parts;
-        const date = new Date(parseInt(year), parseInt(monthNum) - 1, 1);
-        const monthName = date.toLocaleString("en-IN", { month: "short" });
-        return { month: `${monthName} ${year.slice(-2)}`, revenue: item.revenue };
-      })
-      .filter(Boolean);
+    const revenueDataMap = new Map();
+    revenue.forEach(r => revenueDataMap.set(r._id, r.revenue));
+
+    const revenueData = last14Days.map(d => ({
+      month: d.display,
+      revenue: revenueDataMap.get(d.date) || 0
+    }));
 
     // 2. Meal popularity (REAL DATABASE ANALYTICS)
 
@@ -533,30 +547,29 @@ const popularityData =
   Object.values(popularityMap);
 
     // 3. User growth
-    const growth = await UserModel.aggregate([
-      { $match: { createdAt: { $ne: null } } },
+    const initialUsersCount = await UserModel.countDocuments({
+      role: "USER",
+      createdAt: { $lt: fourteenDaysAgo }
+    });
+
+    const userSignups = await UserModel.aggregate([
+      { $match: { role: "USER", createdAt: { $gte: fourteenDaysAgo } } },
       {
         $group: {
-          _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           count: { $sum: 1 }
         }
-      },
-      { $sort: { _id: 1 } }
+      }
     ]);
-    
-    let accum = 0;
-    const userGrowthData = growth
-      .filter(item => item._id)
-      .map(item => {
-        accum += item.count;
-        const parts = item._id.split("-");
-        if (parts.length < 2) return null;
-        const [year, monthNum] = parts;
-        const date = new Date(parseInt(year), parseInt(monthNum) - 1, 1);
-        const monthName = date.toLocaleString("en-IN", { month: "short" });
-        return { month: `${monthName} ${year.slice(-2)}`, users: accum };
-      })
-      .filter(Boolean);
+
+    const userSignupsMap = new Map();
+    userSignups.forEach(u => userSignupsMap.set(u._id, u.count));
+
+    let currentTotal = initialUsersCount;
+    const userGrowthData = last14Days.map(d => {
+      currentTotal += (userSignupsMap.get(d.date) || 0);
+      return { month: d.display, users: currentTotal };
+    });
 
     // 4. Wallet usage breakdown
     const lowCount = await UserModel.countDocuments({ walletBalance: { $lt: 100 } });

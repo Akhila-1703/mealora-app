@@ -77,7 +77,7 @@ function Navbar() {
           onClick={() => navigate("/")}
         >
           <img src="/logo.png" alt="MealOra" className="h-8 object-contain" />
-          <span className="text-2xl font-black font-['Fraunces'] text-[#332520]">MealOra</span>
+          <span className="text-2xl font-black font-['Inter'] text-[#332520]">MealOra</span>
         </div>
 
         {/* Desktop Unified Navigation */}

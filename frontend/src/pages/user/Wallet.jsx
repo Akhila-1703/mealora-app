@@ -195,7 +195,7 @@ function Wallet() {
           <div className="flex justify-between items-start relative z-10">
             <div>
               <p className={statLabel}>Available Balance</p>
-              <h2 className="text-5xl font-black text-[#332520] tracking-tight font-['Fraunces']">₹{(balance ?? 0).toLocaleString('en-IN')}</h2>
+              <h2 className="text-5xl font-black text-[#332520] tracking-tight font-['Inter']">₹{(balance ?? 0).toLocaleString('en-IN')}</h2>
               <p className="text-[13px] font-medium text-[#827873] mt-2 flex items-center gap-2 font-['Inter']">
                 <ReceiptIndianRupee size={16} /> Ready for {remainingMeals} meals
               </p>
@@ -226,11 +226,11 @@ function Wallet() {
         >
           <div>
             <p className={statLabel}>This Month Spent</p>
-            <h3 className="text-2xl font-bold text-[#332520] font-['Fraunces']">₹{monthlySpent || 0}</h3>
+            <h3 className="text-2xl font-bold text-[#332520] font-['Inter']">₹{monthlySpent || 0}</h3>
           </div>
           <div className="pt-4 border-t border-[#E6E4DF]">
             <p className={statLabel}>Total Recharged</p>
-            <h3 className="text-2xl font-bold text-[#332520] font-['Fraunces']">₹{totalAdded || 0}</h3>
+            <h3 className="text-2xl font-bold text-[#332520] font-['Inter']">₹{totalAdded || 0}</h3>
           </div>
         </motion.div>
       </motion.div>
@@ -243,11 +243,11 @@ function Wallet() {
             animate={{ opacity: 1, y: 0 }}
             className={`w-full ${glassCard} rounded-[14px] p-8 flex flex-col items-center justify-center text-center`}
           >
-            <div className="w-16 h-16 bg-[#FCE8E8] rounded-full flex items-center justify-center mx-auto mb-4 text-[#991B1B]">
+            <div className="w-16 h-16 bg-[#F4EEE8] rounded-full flex items-center justify-center mx-auto mb-4 text-[#C04E2D]">
               <WalletIcon size={32} />
             </div>
-            <h2 className="text-2xl font-bold text-[#1A1A1A] font-['Fraunces'] mb-2">Insufficient Balance</h2>
-            <p className="text-[#666666] text-sm leading-relaxed mb-6">
+            <h2 className="text-2xl font-bold text-[#332520] font-['Inter'] mb-2">Insufficient Balance</h2>
+            <p className="text-[#827873] text-sm leading-relaxed mb-6">
               Please add money to your wallet to view your transaction history and unlock your meal calendar.
             </p>
             <button 
@@ -316,7 +316,7 @@ function Wallet() {
                         </div>
                       </div>
 
-                      <div className={`text-lg font-black font-['Fraunces'] ${isCredit ? "text-[#C04E2D]" : "text-[#332520]"}`}>
+                      <div className={`text-lg font-black font-['Inter'] ${isCredit ? "text-[#C04E2D]" : "text-[#332520]"}`}>
                         {isCredit ? "+" : "-"}₹{tx.amount}
                       </div>
                     </div>
@@ -347,10 +347,10 @@ function Wallet() {
                 <X size={20} />
               </button>
 
-              <h2 className="text-[22px] font-bold text-[#1A1A1A] font-['Fraunces'] leading-tight mb-2">
+              <h2 className="text-[22px] font-bold text-[#332520] font-['Inter'] leading-tight mb-2">
                 Top up wallet
               </h2>
-              <p className="text-[13px] text-[#666666] leading-relaxed mb-6">
+              <p className="text-[13px] text-[#827873] leading-relaxed mb-6">
                 Pick a package. You'll be redirected to Stripe to pay via UPI or Card.
               </p>
 
@@ -371,11 +371,11 @@ function Wallet() {
                     }`}
                   >
                     {pkg.popular && (
-                      <span className="absolute -top-2.5 right-3 bg-[#2B5240] text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full select-none">
+                      <span className="absolute -top-2.5 right-3 bg-[#C04E2D] text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full select-none">
                         Popular
                       </span>
                     )}
-                    <span className="text-[20px] font-black font-['Fraunces']">₹{pkg.amount}</span>
+                    <span className="text-[20px] font-black font-['Inter']">₹{pkg.amount}</span>
                     <span className="text-[11px] font-medium text-[#827873]">≈ {pkg.meals} meals</span>
                   </button>
                 ))}
@@ -389,7 +389,7 @@ function Wallet() {
               <div className="flex gap-3 justify-end">
                 <button
                   onClick={() => setIsTopUpOpen(false)}
-                  className="px-6 py-3 rounded-xl border border-[#E6E4DF] text-xs font-bold text-[#666666] hover:bg-gray-50 transition-colors cursor-pointer"
+                  className="px-6 py-3 rounded-xl border border-[#E6E4DF] text-xs font-bold text-[#827873] hover:bg-gray-50 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -421,7 +421,7 @@ function Wallet() {
                   </button>
 
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#332520] text-white flex items-center justify-center font-bold text-sm font-['Fraunces']">
+                    <div className="w-8 h-8 rounded-lg bg-[#332520] text-white flex items-center justify-center font-bold text-sm font-['Inter']">
                       M
                     </div>
                     <span className="font-bold text-lg">MealOra</span>
@@ -431,7 +431,7 @@ function Wallet() {
                   </div>
 
                   <p className="text-sm text-[#827873] mb-4">Recharge Kitchen Wallet</p>
-                  <h1 className="text-5xl font-black tracking-tight text-[#332520] font-['Fraunces']">
+                  <h1 className="text-5xl font-black tracking-tight text-[#332520] font-['Inter']">
                     ₹{selectedPackage.toFixed(2)}
                   </h1>
                 </div>
@@ -445,7 +445,7 @@ function Wallet() {
               {/* RIGHT PANEL (PAYMENT FORM) */}
               <div className="w-full md:w-[55%] bg-white p-8 md:p-16 flex flex-col justify-between overflow-y-auto">
                 <div className="max-w-md w-full mx-auto">
-                  <h2 className="text-xl font-bold mb-6 text-[#1A1A1A]">Payment Details</h2>
+                  <h2 className="text-xl font-bold mb-6 text-[#332520]">Payment Details</h2>
 
                   {formError && (
                     <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 text-xs font-semibold rounded-xl">
@@ -580,10 +580,10 @@ function Wallet() {
                 <CheckCircle size={36} />
               </div>
 
-              <h2 className="text-[24px] font-bold text-[#1A1A1A] font-['Fraunces'] leading-tight mb-2">
+              <h2 className="text-[24px] font-bold text-[#332520] font-['Inter'] leading-tight mb-2">
                 Payment Successful!
               </h2>
-              <p className="text-sm text-[#666666] leading-relaxed mb-8">
+              <p className="text-sm text-[#827873] leading-relaxed mb-8">
                 ₹{selectedPackage.toLocaleString()} has been credited to your MealOra kitchen wallet.
               </p>
 
@@ -604,3 +604,4 @@ function Wallet() {
 }
 
 export default Wallet;
+

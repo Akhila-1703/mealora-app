@@ -86,7 +86,7 @@ const Register = () => {
           className="w-full max-w-lg mx-auto"
         >
           <div className="mb-10">
-            <h2 className="text-4xl font-black font-['Fraunces'] text-[#332520] mb-3">Create Account</h2>
+            <h2 className="text-[32px] md:text-[36px] font-black font-['Inter'] text-[#332520] mb-3">Create Account</h2>
             <p className="text-[#827873] text-lg">Join MealOra for healthy, home-style meals.</p>
           </div>
 

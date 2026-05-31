@@ -42,7 +42,7 @@ const Login = () => {
           className="w-full max-w-md mx-auto"
         >
           <div className="mb-10">
-            <h2 className="text-4xl font-black font-['Fraunces'] text-[#332520] mb-3">Welcome Back</h2>
+            <h2 className="text-[32px] md:text-[36px] font-black font-['Inter'] text-[#332520] mb-3">Welcome Back</h2>
             <p className="text-[#827873] text-lg">Please enter your details to sign in.</p>
           </div>
 
@@ -93,7 +93,7 @@ const Login = () => {
             </button>
 
             <p className="text-center mt-8 text-[#827873] font-medium">
-              Don’t have an account?{" "}
+              Don't have an account?{" "}
               <span
                 onClick={() => navigate("/register")}
                 className="text-[#C04E2D] cursor-pointer font-bold hover:text-[#A34226] transition-colors"

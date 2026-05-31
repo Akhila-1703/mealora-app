@@ -28,7 +28,7 @@ const Footer = () => {
           <div className="col-span-1 lg:col-span-1">
             <div className="flex items-center gap-2 mb-6 cursor-pointer" onClick={() => navigate("/")}>
               <img src="/logo.png" alt="MealOra" className="h-8 object-contain" />
-              <span className="text-3xl font-black font-['Fraunces'] text-[#332520]">MealOra</span>
+              <span className="text-3xl font-black font-['Inter'] text-[#332520]">MealOra</span>
             </div>
             <p className="text-[#827873] leading-relaxed mb-8 max-w-xs text-[15px]">
               Bringing the warmth of home-cooked meals to the modern workspace. Authentic,

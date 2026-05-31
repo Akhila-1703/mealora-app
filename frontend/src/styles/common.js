@@ -38,9 +38,9 @@ export const bentoGrid = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 auto-ro
 export const bentoItem = `${card} flex flex-col justify-between`;
 
 // Typography
-export const pageTitle = "text-[36px] md:text-[56px] font-bold tracking-tight text-[#332520] leading-[1.1] font-['Fraunces']";
-export const sectionTitle = "text-[24px] md:text-[36px] font-bold text-[#332520] tracking-tight mb-6 font-['Fraunces']";
-export const heading = "text-[20px] font-bold text-[#332520] mb-4 font-['Fraunces']";
+export const pageTitle = "text-[24px] md:text-[32px] font-bold tracking-tight text-[#332520] leading-[1.1] font-['Inter']";
+export const sectionTitle = "text-[18px] md:text-[22px] font-bold text-[#332520] tracking-tight mb-6 font-['Inter']";
+export const heading = "text-[16px] font-bold text-[#332520] mb-4 font-['Inter']";
 export const bodyText = "text-[#827873] leading-relaxed text-[16px] font-['Inter']";
 export const subText = "text-[12px] text-[#827873] font-semibold uppercase tracking-widest mb-3 block font-['Inter']";
 
@@ -57,7 +57,7 @@ export const formGroup = "mb-6";
 
 // Navigation
 export const navWrapper = "px-6 py-4";
-export const navBrand = "text-2xl font-bold flex items-center gap-2 tracking-tighter text-[#332520] font-['Fraunces']";
+export const navBrand = "text-2xl font-bold flex items-center gap-2 tracking-tighter text-[#332520] font-['Inter']";
 
 // Sidebar
 export const sidebar = "w-full lg:w-64 bg-[#FCFBF9] border-b lg:border-b-0 lg:border-r border-[#E6E4DF] p-4 lg:p-6 flex flex-row lg:flex-col justify-between items-center lg:items-stretch gap-4 sticky top-[73px] lg:h-[calc(100vh-73px)] overflow-x-auto lg:overflow-y-auto z-40";
@@ -76,7 +76,7 @@ export const dangerBadge = `${badge} bg-red-100 text-red-700`;
 
 // Dashboard & Stats
 export const statLabel = "text-[12px] font-bold uppercase tracking-widest text-[#827873] mb-1 font-['Inter']";
-export const statValue = "text-[32px] font-black text-[#332520] tracking-tight font-['Fraunces']";
+export const statValue = "text-[32px] font-black text-[#332520] tracking-tight font-['Inter']";
 export const statCard = `${card} flex flex-col justify-between`;
 export const highlightCard = "bg-[#C04E2D] text-white rounded-[14px] p-8 shadow-md relative overflow-hidden";
 

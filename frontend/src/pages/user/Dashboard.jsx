@@ -116,11 +116,11 @@ function Dashboard() {
   const isLowBalance = (dashboard.walletBalance ?? 0) < 100;
 
   return (
-    <div className="w-full bg-[#FAF8F5] min-h-screen font-['Inter'] flex flex-col">
+    <div className="-m-6 md:-m-12 bg-[#FAF8F5] min-h-screen font-['Inter'] flex flex-col">
       
       {/* ================= WARNING BANNER ================= */}
       {dashboard.remainingMeals <= 2 && (
-        <div className="w-full bg-[#FCE8E8] border-b border-[#F8D0D0] py-3 px-6 flex items-center justify-center gap-2 text-[#991B1B] text-sm font-semibold">
+        <div className="w-full bg-[#F4EEE8] border-b border-[#E6E4DF] py-3 px-6 flex items-center justify-center gap-2 text-[#C04E2D] text-sm font-semibold">
           <AlertCircle size={16} />
           {dashboard.message || `Recharge Urgently: Only ${dashboard.remainingMeals} meal left in your balance.`}
         </div>
@@ -131,14 +131,80 @@ function Dashboard() {
         {/* ================= HEADER ================= */}
         <div className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="text-3xl md:text-[40px] font-bold text-[#1A1A1A] font-['Fraunces'] tracking-tight mb-2">
+            <h1 className="text-[24px] md:text-[32px] font-bold tracking-tight text-[#332520] leading-[1.1] font-['Inter'] mb-2">
               Hello, {user?.firstName || "Customer"}
             </h1>
-            <p className="text-[#666666] text-[15px]">
+            <p className="text-[#827873] text-[15px]">
               Here is your daily meal summary.
             </p>
           </div>
         </div>
+
+        {/* ================= ONBOARDING SECTION ================= */}
+        {dashboard.subscriptionStatus === "INACTIVE" && (
+          <div className="bg-[#F4EEE8] border border-[#E6E4DF] rounded-2xl p-6 md:p-8 mb-8 text-[#332520] shadow-sm relative overflow-hidden">
+            <div className="relative z-10">
+              <h2 className="text-[20px] md:text-[24px] font-bold text-[#332520] font-['Inter'] mb-2">Welcome! Let's get you started.</h2>
+              <p className="text-[#827873] text-[15px] mb-6 max-w-2xl font-['Inter']">
+                Complete these quick steps to start receiving delicious, home-style meals delivered right to your door.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Step 1: Add Money */}
+                <div className={`bg-white border border-[#E6E4DF] rounded-xl p-4 flex flex-col ${dashboard.walletBalance >= 100 ? 'opacity-60' : ''}`}>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 rounded-full bg-[#C04E2D] flex items-center justify-center font-bold text-white shrink-0">
+                      {dashboard.walletBalance >= 100 ? <CheckCircle2 size={16} /> : "1"}
+                    </div>
+                    <span className="font-bold text-[#332520] font-['Inter']">Add Funds</span>
+                  </div>
+                  <p className="text-[#827873] text-xs leading-relaxed mb-3 flex-1 font-['Inter']">
+                    Add money to your wallet to cover your daily meals. Minimum ₹100 required.
+                  </p>
+                  {dashboard.walletBalance < 100 && (
+                    <button onClick={() => navigate("/dashboard/wallet")} className="w-full bg-[#FAF8F5] border border-[#E6E4DF] text-[#332520] py-2.5 rounded-lg text-xs font-bold hover:bg-[#F4EEE8] transition-colors font-['Inter']">
+                      Go to Wallet
+                    </button>
+                  )}
+                </div>
+
+                {/* Step 2: Add Address */}
+                <div className={`bg-white border border-[#E6E4DF] rounded-xl p-4 flex flex-col ${dashboard.addresses?.length > 0 ? 'opacity-60' : ''}`}>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 rounded-full bg-[#C04E2D] flex items-center justify-center font-bold text-white shrink-0">
+                      {dashboard.addresses?.length > 0 ? <CheckCircle2 size={16} /> : "2"}
+                    </div>
+                    <span className="font-bold text-[#332520] font-['Inter']">Set Address</span>
+                  </div>
+                  <p className="text-[#827873] text-xs leading-relaxed mb-3 flex-1 font-['Inter']">
+                    Tell us where to deliver your hot dabba every day.
+                  </p>
+                  {!(dashboard.addresses?.length > 0) && (
+                    <button onClick={() => navigate("/dashboard/profile")} className="w-full bg-[#FAF8F5] border border-[#E6E4DF] text-[#332520] py-2.5 rounded-lg text-xs font-bold hover:bg-[#F4EEE8] transition-colors font-['Inter']">
+                      Add Address
+                    </button>
+                  )}
+                </div>
+
+                {/* Step 3: Start Subscription */}
+                <div className="bg-white border border-[#E6E4DF] rounded-xl p-4 flex flex-col">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 rounded-full bg-[#C04E2D] flex items-center justify-center font-bold text-white shrink-0">
+                      3
+                    </div>
+                    <span className="font-bold text-[#332520] font-['Inter']">Start Subscription</span>
+                  </div>
+                  <p className="text-[#827873] text-xs leading-relaxed mb-3 flex-1 font-['Inter']">
+                    Turn on daily deliveries once your wallet is funded and address is set.
+                  </p>
+                  <button onClick={() => navigate("/dashboard/subscription")} className="w-full bg-[#C04E2D] hover:bg-[#A33F23] text-white py-2.5 rounded-lg text-xs font-bold transition-colors font-['Inter']">
+                    Activate Deliveries
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ================= UPPER SECTION ================= */}
         <div className="grid lg:grid-cols-3 gap-6 mb-6">
@@ -147,10 +213,10 @@ function Dashboard() {
             {/* Image Side */}
             <div className={`w-full md:w-[45%] h-64 md:h-auto relative shrink-0 bg-[#F5F5F5] transition-all duration-300 ${dashboard.deliveryState === "MISSED_CUTOFF" || dashboard.deliveryState === "SKIPPED" ? "grayscale opacity-70" : ""}`}>
               {isLowBalance ? (
-                <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 bg-[#FCE8E8] border-r border-[#F8D0D0]">
-                  <Wallet size={40} className="text-[#991B1B] mb-3 opacity-80" />
-                  <h3 className="text-lg font-bold text-[#991B1B] font-['Fraunces'] mb-1">Low Balance</h3>
-                  <p className="text-[13px] text-[#991B1B]/80 font-medium leading-tight">
+                <div className="w-full h-full flex flex-col items-center justify-center text-center p-6 bg-[#F4EEE8] border-r border-[#E6E4DF]">
+                  <Wallet size={40} className="text-[#C04E2D] mb-3 opacity-80" />
+                  <h3 className="text-lg font-bold text-[#332520] font-['Inter'] mb-1">Low Balance</h3>
+                  <p className="text-[13px] text-[#827873] font-medium leading-tight">
                     No money! Add money in wallet to get your meal.
                   </p>
                 </div>
@@ -172,7 +238,7 @@ function Dashboard() {
                     <X size={12} strokeWidth={3} /> Meal Skipped
                   </div>
                 ) : dashboard.deliveryState === "DELIVERED" ? (
-                  <div className="absolute top-4 left-4 bg-[#114232] text-white text-xs font-bold px-3 py-1.5 rounded-md flex items-center gap-1.5 shadow-sm">
+                  <div className="absolute top-4 left-4 bg-[#C04E2D] text-white text-xs font-bold px-3 py-1.5 rounded-md flex items-center gap-1.5 shadow-sm">
                     <CheckCircle2 size={12} /> Meal Delivered
                   </div>
                 ) : dashboard.deliveryState === "PENDING_BEFORE_CUTOFF" ? (
@@ -195,17 +261,17 @@ function Dashboard() {
             {/* Content Side */}
             <div className="p-6 md:p-8 flex flex-col justify-center w-full">
               {isLowBalance ? (
-                <div className="flex flex-col items-center justify-center text-center h-full text-[#666666]">
-                  <h2 className="text-2xl font-bold text-[#1A1A1A] font-['Fraunces'] mb-3">Recharge Required</h2>
+                <div className="flex flex-col items-center justify-center text-center h-full text-[#827873]">
+                  <h2 className="text-2xl font-bold text-[#332520] font-['Inter'] mb-3">Recharge Required</h2>
                   <p className="text-[15px]">Please add funds to your wallet to view and receive today's meal.</p>
                 </div>
               ) : (!dashboard.deliveryAddress || dashboard.deliveryAddress === "No active delivery address") ? (
-                <div className="flex flex-col items-center justify-center text-center h-full text-[#666666]">
-                  <h2 className="text-2xl font-bold text-[#1A1A1A] font-['Fraunces'] mb-3">Address Required</h2>
+                <div className="flex flex-col items-center justify-center text-center h-full text-[#827873]">
+                  <h2 className="text-2xl font-bold text-[#332520] font-['Inter'] mb-3">Address Required</h2>
                   <p className="text-[15px] mb-4">Please add a delivery address to serve your meal to your place.</p>
                   <button 
                     onClick={() => navigate("/dashboard/profile")}
-                    className="bg-[#114232] hover:bg-[#0D3326] text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all"
+                    className="bg-[#C04E2D] hover:bg-[#A33F23] text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all"
                   >
                     Add Address
                   </button>
@@ -216,11 +282,11 @@ function Dashboard() {
                     <CheckCircle2 size={16} /> Cooked freshly today
                   </div>
                   
-                  <h2 className="text-2xl md:text-[28px] font-bold text-[#1A1A1A] font-['Fraunces'] mb-3 leading-tight line-clamp-3">
+                  <h2 className="text-2xl md:text-[28px] font-bold text-[#332520] font-['Inter'] mb-3 leading-tight line-clamp-3">
                     {dashboard.todayMenu || "No menu available for today"}
                   </h2>
                   
-                  <p className="text-[#666666] text-[15px] leading-relaxed mb-8 line-clamp-3">
+                  <p className="text-[#827873] text-[15px] leading-relaxed mb-8 line-clamp-3">
                     {dashboard.deliveryState === "SKIPPED"
                       ? "You have skipped your meal for today. The amount remains safely in your wallet." 
                       : dashboard.deliveryState === "PENDING_BEFORE_CUTOFF"
@@ -232,57 +298,52 @@ function Dashboard() {
                       : "Meal delivery is pending."}
                   </p>
 
-                  <div className="flex gap-4 mt-auto">
-                    {dashboard.deliveryState === "SKIPPED" ? (
-                      isBefore11 ? (
+                  {dashboard.deliveryState !== "DELIVERED" && (
+                    <div className="flex gap-4 mt-auto">
+                      {dashboard.deliveryState === "SKIPPED" ? (
+                        isBefore11 ? (
+                          <button
+                            onClick={handleCancelSkip}
+                            className="flex-1 bg-white hover:bg-[#FAF8F5] text-[#332520] border border-[#E6E4DF] font-semibold py-3 rounded-xl transition-all text-sm active:scale-95 cursor-pointer"
+                          >
+                            Cancel Skip
+                          </button>
+                        ) : (
+                          <button
+                            disabled
+                            className="flex-1 bg-[#F2F2F2] text-[#827873] font-semibold py-3 rounded-xl text-sm cursor-not-allowed border border-[#EBEBEB]"
+                          >
+                            Meal Skipped
+                          </button>
+                        )
+                      ) : dashboard.deliveryState === "PENDING_BEFORE_CUTOFF" ? (
                         <button
-                          onClick={handleCancelSkip}
-                          className="flex-1 bg-white hover:bg-[#FAF8F5] text-[#332520] border border-[#E6E4DF] font-semibold py-3 rounded-xl transition-all text-sm active:scale-95 cursor-pointer"
+                          onClick={handleSkipToday}
+                          className="flex-1 bg-[#FAF8F5] border border-[#E6E4DF] hover:bg-[#F4EEE8] text-[#332520] font-semibold py-3 rounded-xl transition-all text-sm active:scale-95 cursor-pointer"
                         >
-                          Cancel Skip
+                          Skip Today
                         </button>
                       ) : (
                         <button
                           disabled
                           className="flex-1 bg-[#F2F2F2] text-[#827873] font-semibold py-3 rounded-xl text-sm cursor-not-allowed border border-[#EBEBEB]"
                         >
-                          Meal Skipped
+                          Cutoff Passed
                         </button>
-                      )
-                    ) : dashboard.deliveryState === "PENDING_BEFORE_CUTOFF" ? (
-                      <button
-                        onClick={handleSkipToday}
-                        className="flex-1 bg-[#FAF8F5] border border-[#E6E4DF] hover:bg-[#F4EEE8] text-[#332520] font-semibold py-3 rounded-xl transition-all text-sm active:scale-95 cursor-pointer"
-                      >
-                        Skip Today
-                      </button>
-                    ) : dashboard.deliveryState === "MISSED_CUTOFF" ? (
-                      <button
-                        disabled
-                        className="flex-1 bg-[#F2F2F2] text-[#827873] font-semibold py-3 rounded-xl text-sm cursor-not-allowed border border-[#EBEBEB]"
-                      >
-                        Cutoff Passed
-                      </button>
-                    ) : (
-                      <button
-                        disabled
-                        className="flex-1 bg-[#F2F2F2] text-[#827873] font-semibold py-3 rounded-xl text-sm cursor-not-allowed border border-[#EBEBEB]"
-                      >
-                        Cutoff Passed
-                      </button>
-                    )}
+                      )}
 
-                    <button 
-                      disabled={dashboard.deliveryState === "SKIPPED"}
-                      className={`flex-1 font-semibold py-3 rounded-xl transition-all text-sm ${
-                          dashboard.deliveryState === "SKIPPED" 
-                          ? "bg-[#F5F5F5] text-[#CCCCCC] cursor-not-allowed border border-[#EBEBEB]"
-                          : "bg-[#114232] hover:bg-[#0D3326] text-white cursor-pointer active:scale-95"
-                      }`}
-                    >
-                      Track
-                    </button>
-                  </div>
+                      <button 
+                        disabled={dashboard.deliveryState === "SKIPPED"}
+                        className={`flex-1 font-semibold py-3 rounded-xl transition-all text-sm ${
+                            dashboard.deliveryState === "SKIPPED" 
+                            ? "bg-[#F5F5F5] text-[#CCCCCC] cursor-not-allowed border border-[#EBEBEB]"
+                            : "bg-[#C04E2D] hover:bg-[#A33F23] text-white cursor-pointer active:scale-95"
+                        }`}
+                      >
+                        Track
+                      </button>
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -295,7 +356,7 @@ function Dashboard() {
                 <Wallet size={16} /> Wallet Balance
               </div>
               
-              <h2 className="text-[42px] font-bold text-[#333333] font-['Inter'] leading-none mb-3 tracking-tight">
+              <h2 className="text-[42px] font-bold text-[#332520] font-['Inter'] leading-none mb-3 tracking-tight">
                 ₹{dashboard.walletBalance ?? 0}
               </h2>
               
@@ -303,13 +364,6 @@ function Dashboard() {
                 <AlertCircle size={12} /> Approx. {dashboard.remainingMeals ?? 0} meal remaining
               </div>
             </div>
-            
-            <button 
-              onClick={() => navigate("/dashboard/wallet")}
-              className="w-full bg-[#9A3B14] hover:bg-[#7A2E0F] text-white font-semibold py-3.5 rounded-xl transition-colors text-sm mt-8"
-            >
-              Add Funds
-            </button>
           </div>
         </div>
 
@@ -319,7 +373,7 @@ function Dashboard() {
           {/* SUBSCRIPTION CARD */}
           <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 shadow-sm flex flex-col justify-between">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-[18px] font-bold text-[#1A1A1A] font-['Inter']">Subscription</h3>
+              <h3 className="text-[18px] font-bold text-[#332520] font-['Inter']">Subscription</h3>
               <div className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
                 dashboard.subscriptionStatus === "ACTIVE" 
                   ? "bg-[#D1E7DD] text-[#0F5132]" 
@@ -331,7 +385,7 @@ function Dashboard() {
             
             <div className="bg-[#FAFAFA] border border-[#EBEBEB] rounded-xl p-4 mt-auto">
               <div className="flex justify-between items-center mb-1.5">
-                <div className="flex items-center gap-1.5 text-[#666666] text-xs font-medium font-['Inter']">
+                <div className="flex items-center gap-1.5 text-[#827873] text-xs font-medium font-['Inter']">
                   <MapPin size={13} /> Today's Delivery Address
                 </div>
                 {dashboard?.addresses?.length > 0 && dashboard.deliveryState !== "DELIVERED" && dashboard.deliveryState !== "SKIPPED" && (
@@ -346,7 +400,7 @@ function Dashboard() {
                   </button>
                 )}
               </div>
-              <p className="text-[#1A1A1A] font-semibold text-[15px] font-['Inter'] leading-normal">
+              <p className="text-[#332520] font-semibold text-[15px] font-['Inter'] leading-normal">
                 {dashboard.deliveryAddress || "No active delivery address"}
               </p>
               {dashboard?.todayAddressOverride && (
@@ -360,7 +414,7 @@ function Dashboard() {
           {/* RECENT ACTIVITY CARD */}
           <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 shadow-sm flex flex-col">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-[#1A1A1A] font-['Fraunces']">Recent Activity</h3>
+              <h3 className="text-xl font-bold text-[#332520] font-['Inter']">Recent Activity</h3>
               <button 
                 onClick={() => navigate("/dashboard/wallet")}
                 className="text-[#2E7D32] text-xs font-bold hover:underline"
@@ -387,16 +441,16 @@ function Dashboard() {
                             <span className="text-lg font-bold">+</span>
                           </div>
                         ) : (
-                          <div className="w-10 h-10 rounded-full bg-[#F5F5F5] flex items-center justify-center text-[#666666]">
+                          <div className="w-10 h-10 rounded-full bg-[#F5F5F5] flex items-center justify-center text-[#827873]">
                             <Utensils size={16} />
                           </div>
                         )}
                         <div>
-                          <p className="text-[#1A1A1A] font-semibold text-sm">{label}</p>
+                          <p className="text-[#332520] font-semibold text-sm">{label}</p>
                           <p className="text-[#808080] text-xs mt-0.5">{formatActivityTime(tx.createdAt)}</p>
                         </div>
                       </div>
-                      <div className={`font-bold text-sm ${isCredit ? "text-[#2E7D32]" : "text-[#1A1A1A]"}`}>
+                      <div className={`font-bold text-sm ${isCredit ? "text-[#2E7D32]" : "text-[#332520]"}`}>
                         {isCredit ? "+" : "-"}₹{tx.amount}
                       </div>
                     </div>
@@ -414,19 +468,19 @@ function Dashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-xl">
             <div className="p-6 border-b border-[#F5F5F5] flex justify-between items-center">
-              <h3 className="text-[18px] font-bold text-[#1A1A1A] font-['Fraunces']">
+              <h3 className="text-[18px] font-bold text-[#332520] font-['Inter']">
                 Change Address for Today
               </h3>
               <button 
                 onClick={() => setShowAddressModal(false)}
-                className="text-[#808080] hover:text-[#1A1A1A]"
+                className="text-[#808080] hover:text-[#332520]"
               >
                 ✕
               </button>
             </div>
             
             <div className="p-6 flex flex-col gap-3">
-              <p className="text-sm text-[#666666] mb-2">Select where you want your meal delivered today.</p>
+              <p className="text-sm text-[#827873] mb-2">Select where you want your meal delivered today.</p>
               
               {dashboard?.addresses?.map(addr => (
                 <div 
@@ -437,12 +491,12 @@ function Dashboard() {
                   }`}
                 >
                   <div className="flex justify-between items-center mb-1">
-                    <span className="font-bold text-[#1A1A1A] text-sm">{addr.tag}</span>
+                    <span className="font-bold text-[#332520] text-sm">{addr.tag}</span>
                     <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${selectedAddressId === addr._id ? 'border-[#9A3B14]' : 'border-[#CCCCCC]'}`}>
                       {selectedAddressId === addr._id && <div className="w-2 h-2 rounded-full bg-[#9A3B14]"></div>}
                     </div>
                   </div>
-                  <p className="text-xs text-[#666666] line-clamp-1">{addr.address}</p>
+                  <p className="text-xs text-[#827873] line-clamp-1">{addr.address}</p>
                 </div>
               ))}
             </div>
@@ -476,3 +530,5 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
+

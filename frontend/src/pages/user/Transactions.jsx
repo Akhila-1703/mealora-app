@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+﻿import React, { useEffect } from "react";
 import useWallet from "../../hooks/useWallet";
 
 import Loader from "../../components/common/Loader";
@@ -69,3 +69,4 @@ function Transactions() {
 }
 
 export default Transactions;
+

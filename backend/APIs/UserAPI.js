@@ -146,7 +146,18 @@ userRouter.get("/dashboard", verifyToken("USER"), async (req, res, next) => {
 
           if (skipped) return "SKIPPED";
           if (deliveryTx) return "DELIVERED";
-          if (hour >= cutoffHour) return "MISSED_CUTOFF";
+          
+          if (hour >= cutoffHour) {
+            const isEligible = subscription?.status === "ACTIVE" && 
+                               calculatedDeliveryAddress && 
+                               walletBalance >= (subscription?.mealPrice || 100);
+            
+            if (isEligible) {
+              return "DELIVERED";
+            }
+            return "MISSED_CUTOFF";
+          }
+          
           return "PENDING_BEFORE_CUTOFF";
         })()
       }

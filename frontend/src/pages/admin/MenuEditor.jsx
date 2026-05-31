@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import {
   getWeeklyMenu,
   addMenu,
@@ -243,8 +243,8 @@ if (!imageUrl) {
       {/* TOP MENU EDITOR HEADER */}
       <div className="w-full px-4 md:px-8 pt-8 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-6 max-w-7xl mx-auto border-b border-[#EBEBEB]">
         <div className="flex items-center gap-6 w-full md:w-auto">
-          <h1 className="text-[26px] font-bold text-[#1A1A1A] font-['Fraunces'] leading-none">
-            Menu Planner
+          <h1 className="text-[24px] md:text-[32px] font-bold tracking-tight text-[#332520] leading-[1.1] font-['Inter']">
+            Kitchen Menu
           </h1>
 
         </div>
@@ -277,7 +277,7 @@ if (!imageUrl) {
                     className={`flex flex-col items-center justify-center w-[54px] py-3 rounded-xl transition-all ${
                       isSelected 
                         ? 'bg-[#E08D60] text-white shadow-sm font-bold' 
-                        : 'bg-[#FAFAFA] hover:bg-[#F0F0F0] text-[#333333] border border-transparent'
+                        : 'bg-[#FAFAFA] hover:bg-[#F0F0F0] text-[#332520] border border-transparent'
                     }`}
                   >
                     <span className="text-[10px] tracking-wider uppercase mb-1 opacity-80">{item.shortName}</span>
@@ -288,17 +288,17 @@ if (!imageUrl) {
             </div>
 
             <div className="flex items-center gap-3 border-l border-[#F5F5F5] pl-4 whitespace-nowrap">
-              <span className="text-[14px] font-bold text-[#1A1A1A]">{currentMonthYear}</span>
+              <span className="text-[14px] font-bold text-[#332520]">{currentMonthYear}</span>
               <div className="flex gap-1">
                 <button 
                   onClick={() => setWeekOffset(prev => prev - 1)}
-                  className="p-1.5 hover:bg-[#FAFAFA] rounded-lg border border-[#E0E0E0] text-[#666666]"
+                  className="p-1.5 hover:bg-[#FAFAFA] rounded-lg border border-[#E0E0E0] text-[#827873]"
                 >
                   <ChevronLeft size={16} />
                 </button>
                 <button 
                   onClick={() => setWeekOffset(prev => prev + 1)}
-                  className="p-1.5 hover:bg-[#FAFAFA] rounded-lg border border-[#E0E0E0] text-[#666666]"
+                  className="p-1.5 hover:bg-[#FAFAFA] rounded-lg border border-[#E0E0E0] text-[#827873]"
                 >
                   <ChevronRight size={16} />
                 </button>
@@ -327,7 +327,7 @@ if (!imageUrl) {
                     </span>
 
                     <div>
-                      <h3 className="text-[26px] font-bold font-['Fraunces']">
+                      <h3 className="text-[26px] font-bold font-['Inter']">
                         {currentMenuObj?.title}
                       </h3>
 
@@ -361,7 +361,7 @@ if (!imageUrl) {
 
             {/* DYNAMIC IMAGE UPLOADER */}
             <div className="flex flex-col gap-2 border-b border-[#F5F5F5] pb-6">
-              <label className="text-[11px] font-bold uppercase tracking-widest text-[#666666]">
+              <label className="text-[11px] font-bold uppercase tracking-widest text-[#827873]">
                 Menu Image
               </label>
               
@@ -381,13 +381,13 @@ if (!imageUrl) {
                       className="w-16 h-16 object-cover rounded-xl border border-[#E0E0E0] shadow-sm"
                     />
                     <div>
-                      <p className="text-[13px] font-bold text-[#1A1A1A]">Custom Image Active</p>
+                      <p className="text-[13px] font-bold text-[#332520]">Custom Image Active</p>
                       <p className="text-[11px] text-[#808080]">Uploaded to Cloudinary</p>
                     </div>
                   </div>
                   
                   <div className="relative">
-                    <button className="bg-white hover:bg-[#FFF5F0] border border-[#E0E0E0] hover:border-[#C04E2D] hover:text-[#C04E2D] text-[#666666] font-bold text-xs px-4 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-2">
+                    <button className="bg-white hover:bg-[#FFF5F0] border border-[#E0E0E0] hover:border-[#C04E2D] hover:text-[#C04E2D] text-[#827873] font-bold text-xs px-4 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-2">
                       <Upload size={14} className="stroke-[2]" />
                       Replace Menu Image
                     </button>
@@ -408,7 +408,7 @@ if (!imageUrl) {
                     onChange={handleImageUpload}
                     className="absolute inset-0 opacity-0 cursor-pointer"
                   />
-                  <div className="flex flex-col items-center gap-2 text-[#666666] group-hover:text-[#C04E2D] transition-colors">
+                  <div className="flex flex-col items-center gap-2 text-[#827873] group-hover:text-[#C04E2D] transition-colors">
                     <Upload className="h-8 w-8 stroke-[1.5]" />
                     <div className="text-center">
                       <p className="text-[13px] font-bold">Click or drag image here to upload</p>
@@ -422,12 +422,12 @@ if (!imageUrl) {
             {/* MEAL CONFIGURATIONS */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-[#F5F5F5] pb-6 bg-[#FAFAFA]/50 p-4 rounded-2xl border border-[#EBEBEB]">
               <div className="md:col-span-2 flex items-center justify-between border-b border-[#EBEBEB] pb-2 mb-2">
-                <span className="text-[12px] font-bold uppercase tracking-wider text-[#1A1A1A]">Meal Configurations</span>
+                <span className="text-[12px] font-bold uppercase tracking-wider text-[#332520]">Meal Configurations</span>
                 
               </div>
 
               <div className="flex flex-col gap-1 md:col-span-2">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-[#666666]">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-[#827873]">
                   Meal Title *
                 </label>
                 <input
@@ -440,7 +440,7 @@ if (!imageUrl) {
               </div>
 
               <div className="flex flex-col gap-1 md:col-span-2">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-[#666666]">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-[#827873]">
                   Lunch Menu * (Comma-separated items)
                 </label>
                 <textarea
@@ -465,7 +465,7 @@ if (!imageUrl) {
 
             {/* DISHES LIST */}
             <div className="flex flex-col gap-3">
-              <h4 className="text-[11px] font-bold uppercase tracking-widest text-[#666666] mb-1">
+              <h4 className="text-[11px] font-bold uppercase tracking-widest text-[#827873] mb-1">
                 Assigned Dishes
               </h4>
 
@@ -480,7 +480,7 @@ if (!imageUrl) {
                         <Utensils size={15} />
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-bold text-[#1A1A1A] text-[14px]">
+                        <span className="font-bold text-[#332520] text-[14px]">
                           {dish}
                         </span>
                         <span className="text-[11px] text-[#808080]">
@@ -491,7 +491,7 @@ if (!imageUrl) {
                     
                     <button 
                       onClick={() => removeDishFromLunch(idx)}
-                      className="text-[#666666] hover:text-[#D32F2F] opacity-0 group-hover:opacity-100 transition-opacity p-1"
+                      className="text-[#827873] hover:text-[#D32F2F] opacity-0 group-hover:opacity-100 transition-opacity p-1"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -554,3 +554,4 @@ if (!imageUrl) {
 };
 
 export default MenuEditor;
+

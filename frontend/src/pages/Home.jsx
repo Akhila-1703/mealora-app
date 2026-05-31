@@ -59,7 +59,7 @@ const Home = () => {
               <UtensilsCrossed size={14} /> Bringing Families Together
             </motion.span>
             
-            <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tighter leading-[1.1] font-['Fraunces']">
+            <h1 className="text-[42px] md:text-[56px] font-black text-white mb-6 tracking-tighter leading-[1.1] font-['Inter']">
               Warm, comforting <br /> meals <span className="text-[#C04E2D] italic font-serif">delivered</span> <br /> <span className="text-[#C04E2D] italic font-serif">daily.</span>
             </h1>
             
@@ -124,7 +124,7 @@ const Home = () => {
                   </div>
                   <p className="text-sm font-bold text-[#332520]">5000+ Happy Users</p>
                 </div>
-                <p className={`text-5xl font-black text-[#C04E2D] mb-1 tracking-tighter font-['Fraunces']`}>100%</p>
+                <p className={`text-[42px] font-black text-[#C04E2D] mb-1 tracking-tighter font-['Inter']`}>100%</p>
                 <p className="text-xs font-black text-[#827873] uppercase tracking-widest">Home Cooked Promise</p>
               </div>
             </motion.div>
@@ -180,7 +180,7 @@ const Home = () => {
       <section className={`${groundedSection} bg-[#FAF8F5]`}>
         <div className="container mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-20">
-            <h2 className="text-4xl font-black text-[#332520] mb-4 font-['Fraunces']">Our Promise to You</h2>
+            <h2 className="text-[32px] md:text-[36px] font-black text-[#332520] mb-4 font-['Inter']">Our Promise to You</h2>
             <p className="text-[#827873] text-lg">
               Simple steps to bring wholesome, honest food to your table, backed by our commitment to quality.
             </p>
@@ -220,7 +220,7 @@ const Home = () => {
                 <div className="w-14 h-14 rounded-full bg-[#F4EEE8] flex items-center justify-center mb-6">
                   {p.icon}
                 </div>
-                <h3 className="text-xl font-bold text-[#332520] mb-4 font-['Fraunces']">{p.title}</h3>
+                <h3 className="text-xl font-bold text-[#332520] mb-4 font-['Inter']">{p.title}</h3>
                 <p className="text-[#827873] leading-relaxed">{p.desc}</p>
               </motion.div>
             ))}
@@ -232,7 +232,7 @@ const Home = () => {
       <section id="how-it-works" className={`${groundedSectionAlt} bg-white rounded-[60px] mx-4 lg:mx-12 my-12 shadow-sm border border-[#E6E4DF]`}>
         <div className="container mx-auto px-6 py-12">
           <div className="text-center mb-20">
-            <h2 className="text-4xl font-black text-[#332520] font-['Fraunces']">How It Works</h2>
+            <h2 className="text-[32px] md:text-[36px] font-black text-[#332520] font-['Inter']">How It Works</h2>
           </div>
 
           <div className="grid md:grid-cols-4 gap-8 relative max-w-5xl mx-auto">
@@ -253,7 +253,7 @@ const Home = () => {
                 transition={{ delay: i * 0.1 }}
                 className="text-center"
               >
-                <div className="w-20 h-20 mx-auto rounded-full bg-[#F4EEE8] flex items-center justify-center text-2xl font-black text-[#C04E2D] mb-6 shadow-sm border-4 border-white font-['Fraunces']">
+                <div className="w-20 h-20 mx-auto rounded-full bg-[#F4EEE8] flex items-center justify-center text-2xl font-black text-[#C04E2D] mb-6 shadow-sm border-4 border-white font-['Inter']">
                   {step.num}
                 </div>
                 <h3 className="text-lg font-bold text-[#332520] mb-2">{step.title}</h3>
@@ -299,7 +299,7 @@ const Home = () => {
                 viewport={{ once: true }}
                 className="bg-white rounded-[14px] p-6 border border-[#E6E4DF] shadow-sm"
               >
-                <h3 className="text-lg font-bold text-[#332520] mb-2 flex items-center gap-2 font-['Fraunces']">
+                <h3 className="text-lg font-bold text-[#332520] mb-2 flex items-center gap-2 font-['Inter']">
                   <span className="text-[#C04E2D]">Q.</span> {faq.q}
                 </h3>
                 <p className="text-[#827873] ml-6 leading-relaxed">{faq.a}</p>

@@ -86,15 +86,6 @@ function Sidebar() {
         </NavLink>
       </nav>
 
-      {/* BOTTOM */}
-      <div className="flex-shrink-0 pl-2 lg:pl-0">
-        <NavLink 
-          to="/dashboard/wallet"
-          className={`${primaryBtn} whitespace-nowrap text-center block`}
-        >
-          Add Funds
-        </NavLink>
-      </div>
     </div>
   );
 }

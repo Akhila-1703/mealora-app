@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import useSkip from "../../hooks/useSkip";
 import { 
   startOfMonth, endOfMonth, startOfWeek, endOfWeek, 
@@ -89,11 +89,11 @@ const SkipMeal = () => {
     return (
       <div className="w-full bg-[#FAF8F5] min-h-screen flex flex-col items-center justify-center p-6 text-center font-['Inter']">
         <div className="bg-white p-8 rounded-2xl border border-[#EBEBEB] shadow-sm max-w-md w-full">
-          <div className="w-16 h-16 bg-[#FCE8E8] rounded-full flex items-center justify-center mx-auto mb-4 text-[#991B1B]">
+          <div className="w-16 h-16 bg-[#F4EEE8] rounded-full flex items-center justify-center mx-auto mb-4 text-[#C04E2D]">
             <CalendarIcon size={32} />
           </div>
-          <h2 className="text-2xl font-bold text-[#1A1A1A] font-['Fraunces'] mb-2">Insufficient Balance</h2>
-          <p className="text-[#666666] text-sm mb-6 leading-relaxed">
+          <h2 className="text-2xl font-bold text-[#332520] font-['Inter'] mb-2">Insufficient Balance</h2>
+          <p className="text-[#827873] text-sm mb-6 leading-relaxed">
             Please add money to your wallet to view and manage your meal calendar.
           </p>
           <a 
@@ -114,23 +114,23 @@ const SkipMeal = () => {
         {/* ================= HEADER ================= */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-3xl md:text-[40px] font-bold text-[#1A1A1A] font-['Fraunces'] tracking-tight mb-2">
+            <h1 className="text-[24px] md:text-[32px] font-bold tracking-tight text-[#332520] leading-[1.1] font-['Inter'] mb-2">
               Manage Deliveries
             </h1>
-            <p className="text-[#666666] text-[15px]">
+            <p className="text-[#827873] text-[15px]">
               Plan your week. Skip days you don't need a meal. Cutoff is 11:00 AM for same-day changes.
             </p>
           </div>
           
           {/* MONTH SELECTOR */}
           <div className="flex items-center gap-4 bg-white border border-[#EBEBEB] rounded-full px-4 py-2.5 shadow-sm">
-            <button onClick={prevMonth} className="text-[#666666] hover:text-[#1A1A1A] transition-colors">
+            <button onClick={prevMonth} className="text-[#827873] hover:text-[#332520] transition-colors">
               <ChevronLeft size={20} />
             </button>
-            <span className="font-semibold text-[#1A1A1A] min-w-[120px] text-center">
+            <span className="font-semibold text-[#332520] min-w-[120px] text-center">
               {format(currentMonth, "MMMM yyyy")}
             </span>
-            <button onClick={nextMonth} className="text-[#666666] hover:text-[#1A1A1A] transition-colors">
+            <button onClick={nextMonth} className="text-[#827873] hover:text-[#332520] transition-colors">
               <ChevronRight size={20} />
             </button>
           </div>
@@ -140,7 +140,7 @@ const SkipMeal = () => {
         <div className="w-full bg-white rounded-2xl border border-[#EBEBEB] p-6 shadow-sm mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden">
           <div className="absolute left-0 top-0 bottom-0 w-2 bg-[#F4EEE8]"></div>
           <div className="pl-4">
-            <h3 className="text-lg font-bold text-[#1A1A1A] mb-1 font-['Fraunces']">Today's Status</h3>
+            <h3 className="text-lg font-bold text-[#332520] mb-1 font-['Inter']">Today's Status</h3>
             <p className="text-[#808080] text-xs font-bold uppercase tracking-widest mb-3">
               {format(today, "EEE, dd MMM, yyyy")}
             </p>
@@ -180,11 +180,11 @@ const SkipMeal = () => {
             <div className="bg-white rounded-2xl border border-[#EBEBEB] p-6 shadow-sm relative overflow-hidden">
               <div className="absolute top-0 right-0 w-24 h-24 bg-[#F4EEE8] rounded-bl-[100px] -z-0"></div>
               <div className="relative z-10">
-                <div className="flex items-center gap-2 text-[#114232] font-bold mb-4">
+                <div className="flex items-center gap-2 text-[#C04E2D] font-bold mb-4">
                   <CalendarIcon size={20} /> Skips This Month
                 </div>
                 <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-[40px] font-black text-[#1A1A1A] font-['Fraunces'] leading-none">
+                  <span className="text-[40px] font-black text-[#332520] font-['Inter'] leading-none">
                     {currentMonthSkips}
                   </span>
                 </div>
@@ -196,7 +196,7 @@ const SkipMeal = () => {
 
             {/* Status Legend */}
             <div className="bg-[#FCFBF9] rounded-2xl border border-[#EBEBEB] p-6 shadow-sm">
-              <h4 className="text-xs font-bold tracking-widest uppercase text-[#1A1A1A] mb-4 font-['Inter']">Status Legend</h4>
+              <h4 className="text-xs font-bold tracking-widest uppercase text-[#332520] mb-4 font-['Inter']">Status Legend</h4>
               <div className="flex flex-col gap-3 text-sm text-[#4F4F4F] font-medium">
                 <div className="flex items-center gap-3">
                   <div className="w-5 h-5 rounded bg-[#EBEBEB] border border-[#D1D1D1]"></div>
@@ -207,7 +207,7 @@ const SkipMeal = () => {
                   Bright Region (Upcoming)
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full bg-[#114232] text-white flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full bg-[#C04E2D] text-white flex items-center justify-center">
                     <Check size={12} strokeWidth={3} />
                   </div>
                   Delivered
@@ -258,12 +258,12 @@ const SkipMeal = () => {
                     className={`
                       border-b border-r border-[#EBEBEB] relative p-2 transition-colors duration-200
                       ${isShaded ? 'bg-[#FAFAFA]' : 'bg-white'}
-                      ${isTodayDay ? 'ring-2 ring-inset ring-[#114232] bg-[#F4F9F6]' : ''}
+                      ${isTodayDay ? 'ring-2 ring-inset ring-[#C04E2D] bg-[#FFF5F0]' : ''}
                       ${isInteractive ? 'cursor-pointer hover:bg-[#F8F8F8]' : 'cursor-default'}
                       ${!isCurrentMonth ? 'opacity-40' : ''}
                     `}
                   >
-                    <span className={`absolute top-2 right-2 text-sm font-semibold ${isTodayDay ? 'text-[#114232]' : 'text-[#4F4F4F]'}`}>
+                    <span className={`absolute top-2 right-2 text-sm font-semibold ${isTodayDay ? 'text-[#C04E2D]' : 'text-[#4F4F4F]'}`}>
                       {format(day, 'd')}
                     </span>
                     
@@ -275,7 +275,7 @@ const SkipMeal = () => {
                         </div>
                       )}
                       {isDelivered && (
-                        <div className="w-6 h-6 rounded-full bg-[#114232] text-white flex items-center justify-center shadow-sm">
+                        <div className="w-6 h-6 rounded-full bg-[#C04E2D] text-white flex items-center justify-center shadow-sm">
                           <Check size={14} strokeWidth={3} />
                         </div>
                       )}
@@ -293,3 +293,4 @@ const SkipMeal = () => {
 };
 
 export default SkipMeal;
+

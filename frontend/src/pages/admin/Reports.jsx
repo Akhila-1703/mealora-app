@@ -28,7 +28,7 @@ function Reports() {
   const { reports, fetchReports, loading } = useAdmin();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const handleRefresh = useCallback(async () => {
+  const handleRefresh = async () => {
     try {
       setIsRefreshing(true);
       await fetchReports();
@@ -38,11 +38,12 @@ function Reports() {
     } finally {
       setIsRefreshing(false);
     }
-  }, [fetchReports]);
+  };
 
   useEffect(() => {
-    handleRefresh();
-  }, [handleRefresh]);
+    // Silent fetch on mount
+    fetchReports().catch(() => {});
+  }, [fetchReports]);
 
   if (loading && !reports) return <Loader />;
 
@@ -52,10 +53,10 @@ function Reports() {
       {/* HEADER */}
       <div className="w-full px-4 md:px-8 pt-8 pb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 max-w-7xl mx-auto">
         <div className="flex flex-col">
-          <h1 className="text-[32px] font-bold text-[#1A1A1A] font-['Fraunces'] leading-none mb-2">
-            Analytics & Reports
+          <h1 className="text-[24px] md:text-[32px] font-bold tracking-tight text-[#332520] leading-[1.1] font-['Inter'] mb-2">
+            Operations Report
           </h1>
-          <p className="text-[#666666] text-[15px]">
+          <p className="text-[#827873] text-[15px]">
             Comprehensive insights into service popularity, customer growth, and revenue trends.
           </p>
         </div>
@@ -63,7 +64,7 @@ function Reports() {
         <button
           onClick={handleRefresh}
           disabled={isRefreshing || loading}
-          className="inline-flex items-center gap-2 border border-[#E0E0E0] hover:bg-white bg-[#FAFAFA] text-[#1A1A1A] px-5 py-3 rounded-xl text-[14px] font-semibold transition-all shadow-sm disabled:opacity-50"
+          className="inline-flex items-center gap-2 border border-[#E0E0E0] hover:bg-white bg-[#FAFAFA] text-[#332520] px-5 py-3 rounded-xl text-[14px] font-semibold transition-all shadow-sm disabled:opacity-50"
         >
           <RefreshCw size={16} className={isRefreshing ? "animate-spin" : ""} />
           Refresh Reports
@@ -83,8 +84,8 @@ function Reports() {
                 <span className="inline-flex p-3 rounded-2xl bg-[#FFF3E0] text-[#E65100] mb-3">
                   <TrendingUp size={20} />
                 </span>
-                <h3 className="text-[18px] font-bold text-[#1A1A1A]">Revenue Growth</h3>
-                <p className="text-[13px] text-[#666666]">Monthly aggregated recharge volume</p>
+                <h3 className="text-[18px] font-bold text-[#332520]">Revenue Growth</h3>
+                <p className="text-[13px] text-[#827873]">Monthly aggregated recharge volume</p>
               </div>
               <div className="h-[280px] w-full min-w-0">
                 <ResponsiveContainer width="99%" height="100%">
@@ -111,8 +112,8 @@ function Reports() {
                 <span className="inline-flex p-3 rounded-2xl bg-[#E8F5E9] text-[#2E7D32] mb-3">
                   <BarChart2 size={20} />
                 </span>
-                <h3 className="text-[18px] font-bold text-[#1A1A1A]">Meal Popularity</h3>
-                <p className="text-[13px] text-[#666666]">Served vs skipped ratio across weekday menus</p>
+                <h3 className="text-[18px] font-bold text-[#332520]">Meal Popularity</h3>
+                <p className="text-[13px] text-[#827873]">Served vs skipped ratio across weekday menus</p>
               </div>
               <div className="h-[280px] w-full min-w-0">
                 <ResponsiveContainer width="99%" height="100%">
@@ -135,8 +136,8 @@ function Reports() {
                 <span className="inline-flex p-3 rounded-2xl bg-[#E3F2FD] text-[#0D47A1] mb-3">
                   <Users size={20} />
                 </span>
-                <h3 className="text-[18px] font-bold text-[#1A1A1A]">Customer Base Growth</h3>
-                <p className="text-[13px] text-[#666666]">Cumulative signups over months</p>
+                <h3 className="text-[18px] font-bold text-[#332520]">Customer Base Growth</h3>
+                <p className="text-[13px] text-[#827873]">Cumulative signups over months</p>
               </div>
               <div className="h-[280px] w-full min-w-0">
                 <ResponsiveContainer width="99%" height="100%">
@@ -163,8 +164,8 @@ function Reports() {
                 <span className="inline-flex p-3 rounded-2xl bg-[#FFEBEE] text-[#C62828] mb-3">
                   <ShieldAlert size={20} />
                 </span>
-                <h3 className="text-[18px] font-bold text-[#1A1A1A]">Wallet Balance Segmentation</h3>
-                <p className="text-[13px] text-[#666666]">User segmentation by wallet health thresholds</p>
+                <h3 className="text-[18px] font-bold text-[#332520]">Wallet Balance Segmentation</h3>
+                <p className="text-[13px] text-[#827873]">User segmentation by wallet health thresholds</p>
               </div>
               <div className="h-[280px] w-full flex items-center justify-center min-w-0">
                 <ResponsiveContainer width="99%" height="100%">
@@ -198,3 +199,4 @@ function Reports() {
 }
 
 export default Reports;
+

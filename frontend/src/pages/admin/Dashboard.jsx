@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+﻿import React, { useEffect } from "react";
 import useAdmin from "../../hooks/useAdmin";
 import { CheckCircle, Calendar, Utensils, Wallet } from "lucide-react";
 
@@ -38,10 +38,10 @@ function AdminDashboard() {
       {/* HEADER SECTION */}
       <div className="w-full px-4 md:px-8 pt-8 pb-10 flex flex-col md:flex-row md:items-center justify-between gap-6 max-w-7xl mx-auto">
         <div className="flex flex-col">
-          <h1 className="text-[32px] font-bold text-[#1A1A1A] font-['Fraunces'] leading-none mb-2">
+          <h1 className="text-[24px] md:text-[32px] font-bold tracking-tight text-[#332520] leading-[1.1] font-['Inter'] mb-2">
             Operations Hub
           </h1>
-          <p className="text-[#666666] text-[15px]">
+          <p className="text-[#827873] text-[15px]">
             Daily overview and automated 2:00 PM billing management.
           </p>
         </div>
@@ -57,7 +57,7 @@ function AdminDashboard() {
               <CheckCircle size={18} />
               <span className="text-[11px] font-bold tracking-widest uppercase text-[#4F4F4F]">Active Subs</span>
             </div>
-            <span className="text-[36px] font-bold text-[#1A1A1A] leading-none">
+            <span className="text-[36px] font-bold text-[#332520] leading-none">
               {dashboard?.activeSubscriptions ?? 0}
             </span>
           </div>
@@ -68,7 +68,7 @@ function AdminDashboard() {
               <Calendar size={18} />
               <span className="text-[11px] font-bold tracking-widest uppercase text-[#4F4F4F]">Today's Skips</span>
             </div>
-            <span className="text-[36px] font-bold text-[#1A1A1A] leading-none">
+            <span className="text-[36px] font-bold text-[#332520] leading-none">
               {dashboard?.skippedMeals ?? 0}
             </span>
           </div>
@@ -79,13 +79,13 @@ function AdminDashboard() {
               <Utensils size={18} />
               <span className="text-[11px] font-bold tracking-widest uppercase">Prep Count</span>
             </div>
-            <span className="text-[36px] font-bold text-[#1A1A1A] leading-none">
+            <span className="text-[36px] font-bold text-[#332520] leading-none">
               {dashboard?.todayDeliveries ?? 0}
             </span>
           </div>
 
           {/* WALLET REVENUE */}
-          <div className="bg-[#2B5240] rounded-2xl p-6 flex flex-col justify-between shadow-sm h-[130px] text-white">
+          <div className="bg-[#C04E2D] rounded-2xl p-6 flex flex-col justify-between shadow-sm h-[130px] text-white">
             <div className="flex items-center gap-2 text-[#A6C4B4]">
               <Wallet size={18} />
               <span className="text-[11px] font-bold tracking-widest uppercase">Wallet Revenue</span>
@@ -113,22 +113,22 @@ function AdminDashboard() {
               {lowBalanceUsers.length}
             </span>
             <span className="text-[13px] font-bold text-[#D32F2F] tracking-wide uppercase text-center">Low Balance Users</span>
-            <p className="text-[#666666] text-xs text-center mt-2 leading-relaxed">
+            <p className="text-[#827873] text-xs text-center mt-2 leading-relaxed">
               Active subscribers with wallet balance under ₹100.
             </p>
           </div>
 
           <div className="flex-1 flex flex-col justify-between py-2">
             <div>
-              <h2 className="text-[20px] font-bold text-[#1A1A1A] mb-1">Insufficient Balance Alert</h2>
-              <p className="text-[#666666] text-sm mb-4">
+              <h2 className="text-[20px] font-bold text-[#332520] mb-1">Insufficient Balance Alert</h2>
+              <p className="text-[#827873] text-sm mb-4">
                 The following users' wallet balances are below the minimum threshold (₹100) required for their daily meal subscription.
               </p>
               
               {lowBalanceUsers.length > 0 ? (
                 <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto pr-2">
                   {lowBalanceUsers.map(u => (
-                    <span key={u._id} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FAFAFA] border border-[#EBEBEB] rounded-xl text-xs font-semibold text-[#333333]">
+                    <span key={u._id} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#FAFAFA] border border-[#EBEBEB] rounded-xl text-xs font-semibold text-[#332520]">
                       <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
                       {u.firstName} {u.lastName} (₹{(u.walletBalance ?? 0).toFixed(0)})
                     </span>
@@ -141,7 +141,7 @@ function AdminDashboard() {
               )}
             </div>
 
-            <div className="flex items-center justify-between border-t border-[#F5F5F5] pt-4 mt-4 text-xs text-[#666666]">
+            <div className="flex items-center justify-between border-t border-[#F5F5F5] pt-4 mt-4 text-xs text-[#827873]">
               <span>Status: <strong className="text-[#2E7D32] uppercase">Success</strong></span>
               <span>Last run: today at 1:00 PM</span>
             </div>
@@ -155,3 +155,4 @@ function AdminDashboard() {
 }
 
 export default AdminDashboard;
+

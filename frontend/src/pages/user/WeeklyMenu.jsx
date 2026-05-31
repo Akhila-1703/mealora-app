@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+﻿import React, { useEffect } from "react";
 import { format, isTomorrow, addDays } from "date-fns";
 import useMenu from "../../hooks/useMenu";
 import useSkip from "../../hooks/useSkip";
@@ -63,7 +63,7 @@ const WeeklyMenu = () => {
   if (!dashboard) {
     return (
       <div className="w-full bg-[#FAF8F5] min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#114232] border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-[#C04E2D] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -72,11 +72,11 @@ const WeeklyMenu = () => {
     return (
       <div className="w-full bg-[#FAF8F5] min-h-screen flex flex-col items-center justify-center p-6 text-center font-['Inter']">
         <div className="bg-white p-8 rounded-2xl border border-[#EBEBEB] shadow-sm max-w-md w-full">
-          <div className="w-16 h-16 bg-[#FCE8E8] rounded-full flex items-center justify-center mx-auto mb-4 text-[#991B1B]">
+          <div className="w-16 h-16 bg-[#F4EEE8] rounded-full flex items-center justify-center mx-auto mb-4 text-[#C04E2D]">
             <Utensils size={32} />
           </div>
-          <h2 className="text-2xl font-bold text-[#1A1A1A] font-['Fraunces'] mb-2">Insufficient Balance</h2>
-          <p className="text-[#666666] text-sm mb-6 leading-relaxed">
+          <h2 className="text-2xl font-bold text-[#332520] font-['Inter'] mb-2">Insufficient Balance</h2>
+          <p className="text-[#827873] text-sm mb-6 leading-relaxed">
             Please add money to your wallet to view the upcoming weekly menu.
           </p>
           <a 
@@ -95,9 +95,9 @@ const WeeklyMenu = () => {
       <div className="max-w-6xl w-full mx-auto px-6 py-10">
 
         {/* ================= TODAY'S DELIVERY ================= */}
-        <h2 className="text-3xl font-bold text-[#1A1A1A] font-['Fraunces'] tracking-tight mb-6">
+        <h1 className="text-[24px] md:text-[32px] font-bold tracking-tight text-[#332520] leading-[1.1] font-['Inter'] mb-6">
           Today's Delivery
-        </h2>
+        </h1>
 
         {todayMenu ? (
           <div className="bg-white rounded-2xl border border-[#EBEBEB] overflow-hidden flex flex-col md:flex-row shadow-sm mb-12">
@@ -139,8 +139,7 @@ const WeeklyMenu = () => {
                 ) : dashboard?.deliveryState === "DELIVERED" ? (
                   <div
                     className="
-                      bg-[#114232]
-                      text-white
+                      bg-[#C04E2D] text-white shadow-sm border border-[#C04E2D]
                       px-4
                       py-2
                       rounded-xl
@@ -197,7 +196,7 @@ const WeeklyMenu = () => {
 
 
               <div>
-                <h3 className="text-2xl md:text-[28px] font-bold text-[#1A1A1A] font-['Fraunces'] mb-1 pr-32 leading-tight flex items-center gap-2.5">
+                <h3 className="text-2xl md:text-[28px] font-bold text-[#332520] font-['Inter'] mb-1 pr-32 leading-tight flex items-center gap-2.5">
                   {todayMenu.title || todayMenu.mealName || todayMenu.lunchMenu || "Lunch Delivery"}
 
                 </h3>
@@ -205,7 +204,7 @@ const WeeklyMenu = () => {
                   {todayMenu.specialTag || getMockNutrition(0).tag}
                 </p>
 
-                <p className="text-[#666666] text-[15px] leading-relaxed mb-6">
+                <p className="text-[#827873] text-[15px] leading-relaxed mb-6">
                   {dashboard?.deliveryState === "SKIPPED"
                       ? "You have skipped today's meal. Your wallet balance remains unchanged."
                       : dashboard?.deliveryState === "DELIVERED"
@@ -233,15 +232,15 @@ const WeeklyMenu = () => {
                 {/* Nutrition Row */}
                 <div className="grid grid-cols-3 border-t border-b border-[#F2F2F2] py-4 mb-6 text-center">
                   <div>
-                    <p className="text-xl font-bold text-[#1A1A1A] font-['Fraunces']">{getMockNutrition(0).calories}</p>
+                    <p className="text-xl font-bold text-[#332520] font-['Inter']">{getMockNutrition(0).calories}</p>
                     <p className="text-xs text-[#808080] font-medium">Calories</p>
                   </div>
                   <div className="border-l border-r border-[#F2F2F2]">
-                    <p className="text-xl font-bold text-[#1A1A1A] font-['Fraunces']">{getMockNutrition(0).protein}</p>
+                    <p className="text-xl font-bold text-[#332520] font-['Inter']">{getMockNutrition(0).protein}</p>
                     <p className="text-xs text-[#808080] font-medium">Protein</p>
                   </div>
                   <div>
-                    <p className="text-xl font-bold text-[#1A1A1A] font-['Fraunces']">{getMockNutrition(0).carbs}</p>
+                    <p className="text-xl font-bold text-[#332520] font-['Inter']">{getMockNutrition(0).carbs}</p>
                     <p className="text-xs text-[#808080] font-medium">Carbs</p>
                   </div>
                 </div>
@@ -255,7 +254,7 @@ const WeeklyMenu = () => {
                   className="w-10 h-10 rounded-full object-cover border border-[#E0E0E0]"
                 />
                 <div>
-                  <p className="text-xs font-bold text-[#1A1A1A]">Today's Chef: Anjali M.</p>
+                  <p className="text-xs font-bold text-[#332520]">Today's Chef: Anjali M.</p>
                   <p className="text-xs text-[#808080] italic">"Slow-cooked the gravy today for extra richness. Enjoy!"</p>
                 </div>
               </div>
@@ -271,16 +270,16 @@ const WeeklyMenu = () => {
         {/* ================= NEXT 7 DAYS ================= */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-3xl font-bold text-[#1A1A1A] font-['Fraunces'] tracking-tight">
+            <h2 className="text-[18px] md:text-[22px] font-bold text-[#332520] tracking-tight font-['Inter']">
               Next 7 Days
             </h2>
             <p className="text-sm text-[#808080]">Plan your upcoming meals</p>
           </div>
           <div className="flex gap-2">
-            <button className="w-10 h-10 rounded-lg border border-[#EBEBEB] bg-white flex items-center justify-center text-[#666666] hover:bg-[#F5F5F5] transition-colors shadow-sm">
+            <button className="w-10 h-10 rounded-lg border border-[#EBEBEB] bg-white flex items-center justify-center text-[#827873] hover:bg-[#F5F5F5] transition-colors shadow-sm">
               <ChevronLeft size={18} />
             </button>
-            <button className="w-10 h-10 rounded-lg border border-[#EBEBEB] bg-white flex items-center justify-center text-[#666666] hover:bg-[#F5F5F5] transition-colors shadow-sm">
+            <button className="w-10 h-10 rounded-lg border border-[#EBEBEB] bg-white flex items-center justify-center text-[#827873] hover:bg-[#F5F5F5] transition-colors shadow-sm">
               <ChevronRight size={18} />
             </button>
           </div>
@@ -318,7 +317,7 @@ const WeeklyMenu = () => {
                   )}
 
                   {/* Date Badge */}
-                  <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-[#1A1A1A] text-[11px] font-bold px-2.5 py-1 rounded-md shadow-sm">
+                  <span className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-[#332520] text-[11px] font-bold px-2.5 py-1 rounded-md shadow-sm">
                     {isTomorrow(dayDate) ? "Tomorrow" : format(dayDate, "EEE, MMM dd")}
                   </span>
 
@@ -335,7 +334,7 @@ const WeeklyMenu = () => {
                 {/* Content */}
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
-                    <h4 className="text-lg font-bold text-[#1A1A1A] font-['Fraunces'] mb-1 line-clamp-2 leading-tight flex items-center justify-between gap-2">
+                    <h4 className="text-lg font-bold text-[#332520] font-['Inter'] mb-1 line-clamp-2 leading-tight flex items-center justify-between gap-2">
                       <span>{menuItem.title || menuItem.mealName || menuItem.lunchMenu}</span>
 
                     </h4>
@@ -343,7 +342,7 @@ const WeeklyMenu = () => {
                       {menuItem.specialTag || mockNutrition.tag}
                     </p>
                     {menuItem.description && (
-                      <p className="text-xs text-[#666666] line-clamp-2 mb-4">
+                      <p className="text-xs text-[#827873] line-clamp-2 mb-4">
                         {menuItem.description}
                       </p>
                     )}
@@ -358,14 +357,14 @@ const WeeklyMenu = () => {
                         </span>
                         <button 
                           onClick={() => handleSkipToggle(dateStr, true)}
-                          className="text-[#2E7D32] hover:underline font-bold"
+                          className="text-[#C04E2D] hover:underline font-bold"
                         >
                           Restore
                         </button>
                       </>
                     ) : (
                       <>
-                        <span className="text-[#2E7D32] font-semibold flex items-center gap-1">
+                        <span className="text-[#C04E2D] font-semibold flex items-center gap-1">
                           <Check size={16} /> Confirmed
                         </span>
                         <button 
@@ -390,3 +389,4 @@ const WeeklyMenu = () => {
 };
 
 export default WeeklyMenu;
+

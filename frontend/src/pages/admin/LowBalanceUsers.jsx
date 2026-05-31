@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+﻿import React, { useEffect } from "react";
 import useAdmin from "../../hooks/useAdmin";
 
 import {
-  heading,
+  pageTitle,
   subText,
   card,
   dangerBadge,
@@ -22,7 +22,7 @@ function LowBalanceUsers() {
     <div className="flex flex-col gap-6">
 
       <div>
-        <h1 className={heading}>Low Balance Users</h1>
+        <h1 className={pageTitle}>Low Balance Users</h1>
         <p className={subText}>
           Users needing recharge
         </p>
@@ -62,3 +62,4 @@ function LowBalanceUsers() {
 }
 
 export default LowBalanceUsers;
+
