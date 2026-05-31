@@ -1,6 +1,6 @@
 <div align="center">
 
-# Full-Stack Role-Based Meal Delivery Platform (MERN)
+# MealOra - Enterprise Home Meals Delivery Platform (MERN)
 
 [![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react&logoColor=white)](https://react.dev/)
 [![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
@@ -9,41 +9,42 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.0-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Vite](https://img.shields.io/badge/Vite-Bundler-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 
-A modern, responsive, and secure meal delivery (Dabba Service) platform built with the MERN Stack. Designed with a robust Role-Based Access Control (RBAC) architecture, automated billing, and wallet management to deliver distinct experiences for Customers and Kitchen Administrators.
+**MealOra** is a modern, full-stack Dabba (Tiffin) Service platform built with the MERN Stack. Designed to automate the logistics of daily meal deliveries, it features a robust Role-Based Access Control (RBAC) architecture, automated financial ledgers, cron-scheduled billing, and interactive calendar management.
 
 </div>
 
 ---
 
-## 1. Project Vision & Core Features
+## 1. Project Vision & Comprehensive Feature List
 
-This platform is engineered to handle complex recurring subscriptions, daily cutoffs, financial ledgers, and automated logistics processing.
+MealOra eliminates the manual tracking of daily food subscriptions. It provides a seamless experience where customers manage a prepaid wallet, automatically pay for meals they consume, and dynamically skip days they aren't home—while giving kitchen managers deep analytical oversight.
 
-### Security & Financial Persistence
-- **Stateless Authentication:** Implements JWT-based auth where tokens are stored in HTTP-Only cookies, mitigating XSS and session hijacking.
-- **Prepaid Wallet Ledger:** Tracks all CREDIT and DEBIT transactions securely through MongoDB.
-- **Automated Billing Engine:** Server-side Cron jobs evaluate subscription statuses, skip dates, and wallet balances to autonomously deduct daily meal costs (₹100) exactly at cutoff time.
+### 👤 Customer Features (User Dashboard)
+- **Prepaid Wallet Ledger:** Users deposit funds into their MealOra wallet (simulated via Razorpay/Stripe UI). The system maintains an immutable ledger of all `CREDIT` (recharges) and `DEBIT` (meal deductions) transactions.
+- **Dynamic Daily Dashboard:** The landing page calculates today's delivery state in real-time. It displays the day's menu, alerts the user if their meal is *Pending Before 1 PM*, *Skipped*, or *Delivered*, and warns them if their wallet balance is too low for tomorrow's meal.
+- **Subscription Toggles:** Users can globally pause or resume their daily meal subscription with a single click.
+- **Interactive "Skip Meal" Calendar:** Using `@fullcalendar/react`, users can visually select future dates where they will be out of town. The backend explicitly prevents them from being billed on these dates.
+- **Strict Cutoff Enforcement:** Users cannot skip today's meal after **11:00 AM IST**. The system enforces this timezone-aware cutoff globally.
+- **Profile & Address Book:** Users can maintain a list of delivery addresses (Home, Office) and set their active default address dynamically.
 
-### Logistics & User Engagement
-- **Dynamic Delivery States:** Dashboard calculates delivery states (Pending, Skipped, Delivered, Missed Cutoff) in real-time strictly adhering to Indian Standard Time (IST).
-- **Skip Meal Architecture:** Interactive calendar interface allowing users to pause subscriptions for specific future dates with strict 11:00 AM IST cutoffs.
-- **Transactional Notifications:** Automated SMTP NodeMailer integration alerts users the moment their meal is marked delivered.
-- **Cloud Media Hosting:** Integrated Cloudinary pipeline for dynamic daily menu image management and user profiles.
+### 👨‍🍳 Kitchen Manager Features (Admin Dashboard)
+- **Visual Analytics & Reports:** Integrated with `Recharts` to provide visual business intelligence. 
+  - *Revenue Growth Chart:* Tracks aggregate wallet recharges over time.
+  - *Meal Popularity Chart:* Bar graphs analyzing the ratio of Served vs. Skipped meals to predict kitchen inventory requirements.
+- **Dynamic Menu Editor:** Admins can author the daily menu (e.g., *Ghee Rice, Bagara Baingan*) and directly upload dish photography. Images are processed via `Multer` and hosted globally on a **Cloudinary CDN**.
+- **Customer CRM Table:** A comprehensive view of all registered customers, allowing admins to monitor live wallet balances, active addresses, and total meals served.
+- **Manual Billing Override:** While billing is automated, admins possess a master override switch to manually trigger the daily billing deduction pipeline if required.
+
+### ⚙️ Backend Automation & Logistics
+- **Automated Cron Engine:** Powered by `node-cron`, the backend runs autonomous scheduled tasks every single day.
+  - At exactly 1:00 PM IST, the cron job evaluates every user. If a user has an active subscription, has NOT skipped the date, and possesses sufficient wallet balance, it deducts ₹100 from their wallet and generates a ledger receipt.
+- **Transactional Email Alerts:** The exact moment a meal is successfully billed and dispatched, the backend triggers an automated SMTP (`NodeMailer`) email notifying the customer that their food has been delivered.
+- **Timezone-Proof Architecture:** To prevent cloud hosting issues, all critical logistics (like the 11 AM skip cutoff and the 1 PM delivery mark) are hardcoded to evaluate against **Indian Standard Time (IST)**, regardless of where the Vercel/Render servers are located globally.
+- **Stateless JWT Security:** Authentication is completely stateless. JWTs are encrypted and transmitted exclusively via `HTTP-Only` cookies, rendering the application highly resilient to XSS and session hijacking.
 
 ---
 
-## 2. Roles & Permissions (RBAC)
-
-The application features a Two-Tier role system that dictates the UI layout, API access, and financial capabilities.
-
-| Role | Permissions & Capability Scope |
-| :--- | :--- |
-| **USER (Customer)** | Can register, login, deposit funds into their wallet, manage delivery addresses, toggle daily subscription states, schedule skipped meals via the calendar, and track today's live delivery status. |
-| **ADMIN (Kitchen Manager)** | Full system oversight. Can monitor daily operations metrics (Revenue Growth, Meal Popularity ratios), author the daily menu (food items and images), monitor all user wallet balances, and manually trigger emergency billing runs. |
-
----
-
-## 3. System Architecture & Data Model
+## 2. System Architecture & Data Model
 
 ### High-Level Request Flow
 ```mermaid
@@ -66,9 +67,9 @@ graph TD
 
 ---
 
-## 4. How to Use (Installation & Setup)
+## 3. How to Use (Installation & Setup)
 
-Follow these steps to instantiate the repository on any computer.
+Follow these steps to instantiate the repository on your local machine.
 
 ### Prerequisites
 - Node.js (v18+)
@@ -118,7 +119,7 @@ Launch two separate terminals:
 
 ---
 
-## 5. Technical Documentation Links
+## 4. Technical Documentation Links
 
 For a granular look at the Project Structure, File Lists, and Package Details, please refer to the folder-specific manuals:
 
@@ -127,5 +128,5 @@ For a granular look at the Project Structure, File Lists, and Package Details, p
 
 ---
 <div align="center">
-  <i>Engineered with 20+ YOE standards for security, scalability, and UX.</i>
+  <i>Developed to strict architectural standards for maximum performance and UX.</i>
 </div>
