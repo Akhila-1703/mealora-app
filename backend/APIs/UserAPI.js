@@ -142,16 +142,25 @@ userRouter.get("/dashboard", verifyToken("USER"), async (req, res, next) => {
         message,
         recentTransactions: recentTransactions || [],
         deliveryState: (() => {
-          const hourStr = new Intl.DateTimeFormat("en-US", {
-            timeZone: "Asia/Kolkata",
-            hour: "numeric",
-            hour12: false
-          }).format(new Date());
-          const hour = parseInt(hourStr, 10) === 24 ? 0 : parseInt(hourStr, 10);
+          const nowInIST = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+          const hour = nowInIST.getHours();
           const cutoffHour = 13; // 1:00 PM IST
 
           if (skipped) return "SKIPPED";
           if (deliveryTx) return "DELIVERED";
+          
+          // check if they created their subscription just today after 11:00 AM IST
+          if (subscription && subscription.createdAt) {
+             const subCreatedAtIST = new Date(new Date(subscription.createdAt).toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+             
+             const isSubCreatedToday = subCreatedAtIST.getFullYear() === nowInIST.getFullYear() && 
+                                       subCreatedAtIST.getMonth() === nowInIST.getMonth() && 
+                                       subCreatedAtIST.getDate() === nowInIST.getDate();
+                                       
+             if (isSubCreatedToday && subCreatedAtIST.getHours() >= 11) {
+                 return "MISSED_CUTOFF"; // they missed today's kitchen prep cutoff
+             }
+          }
           
           if (hour >= cutoffHour) {
             const isEligible = subscription?.status === "ACTIVE" && 
