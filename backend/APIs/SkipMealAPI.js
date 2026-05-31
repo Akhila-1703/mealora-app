@@ -17,14 +17,13 @@ const getEndOfDay = (date) => {
   return d;
 };
 
-const getCutoffTime = (date) => {
-  const deliveryTime = new Date(date);
-
-  // 1 PM delivery
-  deliveryTime.setHours(13, 0, 0, 0);
-
-  // cutoff = 11 AM
-  return new Date(deliveryTime.getTime() - 2 * 60 * 60 * 1000);
+const getCurrentISTHour = () => {
+  const hourStr = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Kolkata",
+    hour: "numeric",
+    hour12: false
+  }).format(new Date());
+  return parseInt(hourStr, 10) === 24 ? 0 : parseInt(hourStr, 10);
 };
 
 const formatDate = (date) => {
@@ -75,9 +74,7 @@ skipMealRouter.post("/", verifyToken("USER"), async (req, res, next) => {
         formatDate(start) === formatDate(today);
 
       if (isToday) {
-        const cutoff = getCutoffTime(start);
-
-        if (now > cutoff) {
+        if (getCurrentISTHour() >= 11) {
           return res.status(400).json({
             success: false,
             message: "You cannot skip today's meal after 11:00 AM",
@@ -207,9 +204,7 @@ skipMealRouter.delete("/:date", verifyToken("USER"), async (req, res, next) => {
       formatDate(start) === formatDate(today);
 
     if (isToday) {
-      const cutoff = getCutoffTime(start);
-
-      if (now > cutoff) {
+      if (getCurrentISTHour() >= 11) {
         response.reason = "Cutoff time passed";
 
         return res.status(400).json(response);

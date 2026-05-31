@@ -141,8 +141,13 @@ userRouter.get("/dashboard", verifyToken("USER"), async (req, res, next) => {
         message,
         recentTransactions: recentTransactions || [],
         deliveryState: (() => {
-          const hour = new Date().getHours();
-          const cutoffHour = 13; // 1:00 PM
+          const hourStr = new Intl.DateTimeFormat("en-US", {
+            timeZone: "Asia/Kolkata",
+            hour: "numeric",
+            hour12: false
+          }).format(new Date());
+          const hour = parseInt(hourStr, 10) === 24 ? 0 : parseInt(hourStr, 10);
+          const cutoffHour = 13; // 1:00 PM IST
 
           if (skipped) return "SKIPPED";
           if (deliveryTx) return "DELIVERED";
