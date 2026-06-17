@@ -14,12 +14,12 @@ A robust Node.js server handling automated daily meal deductions, secure JWT aut
 
 ## Table of Contents
 
-- [Tech Stack](#-tech-stack)
-- [Database Architecture (ER Diagram)](#-database-architecture-er-diagram)
-- [Project Structure](#-project-structure)
-- [Installation & Quick Start](#-installation--quick-start)
-- [Environment Variables](#-environment-variables)
-- [API Reference](#-api-reference)
+- [Tech Stack](#tech-stack)
+- [Database Architecture (ER Diagram)](#database-architecture-er-diagram)
+- [Project Structure](#project-structure)
+- [Installation & Quick Start](#installation--quick-start)
+- [Environment Variables](#environment-variables)
+- [API Reference](#api-reference)
 
 ---
 
@@ -100,8 +100,9 @@ A deeply structured Express application separating business logic, routing, and 
 ```
 backend/
 ├── APIs/                      # Route controllers & logic handlers
-│   ├── AdminAPI.js            # Admin dashboards & menu updates
+│   ├── AdminAPI.js            # Admin dashboards, low balance checks & menu updates
 │   ├── AuthAPI.js             # Login, register, JWT issuance
+│   ├── MenuAPI.js             # Fetching daily menus
 │   ├── SkipMealAPI.js         # Date calculation logic for pausing meals
 │   ├── SubscriptionAPI.js     # Managing user subscriptions
 │   ├── UserAPI.js             # Dashboard, profile, avatar handling
@@ -109,19 +110,19 @@ backend/
 │
 ├── config/                    # 3rd-party integration setups
 │   ├── cloudinary.js          # Cloudinary API keys and setup
-│   ├── db.js                  # Mongoose MongoDB connection
+│   ├── cloudinaryUpload.js    # Image upload utility logic
 │   └── multer.js              # Multer memory storage config
 │
 ├── middleware/                # Route interceptors
-│   ├── authMiddleware.js      # Verifies HTTP-Only JWT cookies
-│   └── roleMiddleware.js      # Validates "ADMIN" vs "USER" privileges
+│   └── verifyToken.js         # Verifies HTTP-Only JWT cookies & Roles
 │
 ├── models/                    # Mongoose database schemas
+│   ├── BillingRunModel.js     # Automated billing run history
 │   ├── MenuModel.js           
 │   ├── SkipMealModel.js       
 │   ├── SubscriptionModel.js   
 │   ├── UserModel.js           
-│   └── WalletModel.js         
+│   └── WalletTransactionModel.js # Ledger for recharges/deductions
 │
 ├── server.js                  # Main Express entry point & middleware registration
 ├── package.json               # Package dependencies
@@ -193,19 +194,20 @@ FRONTEND_URL=http://localhost:5173
 ### User Profile
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| `GET` | `/user/dashboard` | | Get aggregated dashboard stats & delivery state |
-| `PUT` | `/user/update-profile` | | Update profile info (supports Multer file upload) |
+| `GET` | `/user/dashboard` | ✅ | Get aggregated dashboard stats & delivery state |
+| `PUT` | `/user/update-profile` | ✅ | Update profile info (supports Multer file upload) |
 
 ### Wallet & Subscription
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| `POST` | `/wallet/recharge` | | Add funds to user wallet |
-| `POST` | `/subscription/create` | | Initialize daily meal subscription |
-| `POST` | `/skip/meal` | | Skip a delivery date (refunds wallet, strictly enforced before 11 AM) |
+| `POST` | `/wallet/recharge` | ✅ | Add funds to user wallet |
+| `POST` | `/subscription/create` | ✅ | Initialize daily meal subscription |
+| `POST` | `/skip/meal` | ✅ | Skip a delivery date (refunds wallet, strictly enforced before 11 AM) |
 
 ### Admin (Gated)
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| `GET` | `/admin/dashboard` | Admin | Fetch live revenue, active users, and aggregate KPIs |
-| `POST` | `/admin/menu` | Admin | Update daily menu and upload images to Cloudinary |
-| `GET` | `/admin/customers` | Admin | List all users, balances, and subscription statuses |
+| `GET` | `/admin/dashboard` | ✅ Admin | Fetch live revenue, active users, and aggregate KPIs |
+| `POST` | `/admin/menu` | ✅ Admin | Update daily menu and upload images to Cloudinary |
+| `GET` | `/admin/customers` | ✅ Admin | List all users, balances, and subscription statuses |
+| `GET` | `/admin/reports` | ✅ Admin | View automated billing runs and total deductions |

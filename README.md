@@ -22,15 +22,15 @@
 
 ## Table of Contents
 
-- [About the Project](#-about-the-project)
-- [Live Deployments](#-live-deployments)
-- [System Architecture](#-system-architecture)
-- [Features](#-features)
-- [Project Workspaces](#-project-workspaces)
-- [High-Level Project Structure](#-high-level-project-structure)
-- [Quick Start](#-quick-start)
-- [Contributing](#-contributing)
-- [License](#-license)
+- [About the Project](#about-the-project)
+- [Live Deployments](#live-deployments)
+- [System Architecture](#system-architecture)
+- [Features](#features)
+- [Project Workspaces](#project-workspaces)
+- [High-Level Project Structure](#high-level-project-structure)
+- [Quick Start](#quick-start)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
@@ -41,10 +41,11 @@
 The project covers end-to-end functionality including:
 
 - **Secure Authentication** using stateless HTTP-Only JWT cookies.
-- **Wallet System** for seamless, automated daily meal deductions.
+- **Wallet System** for seamless, automated daily meal deductions via Razorpay.
 - **Delivery Routing** with default and override addresses.
 - **Time-Based Logistics** featuring a strict 11:00 AM IST kitchen prep cutoff.
 - **Interactive Calendar** allowing users to pause/skip specific delivery days.
+- **Automated Billing Runs** using Node-Cron to deduct wallet balances for active deliveries.
 - **Admin Command Center** with Recharts analytics and live aggregation pipelines.
 
 ---
@@ -56,8 +57,6 @@ The application is deployed across two robust cloud platforms to ensure maximum 
 - **Frontend Application (Vercel):** [https://mealora-app.vercel.app/](https://mealora-app.vercel.app/)
 - **Backend API Server (Render):** [https://mealora-app.onrender.com/](https://mealora-app.onrender.com/)
 
-> Try exploring the gamified onboarding flow, the 11 AM cutoff skip-meal calendar, and the admin analytics dashboard on the live site!
-
 ---
 
 ## System Architecture
@@ -65,15 +64,15 @@ The application is deployed across two robust cloud platforms to ensure maximum 
 MealOra operates on a highly decoupled client-server architecture. The frontend acts as a pure presentation layer while the backend acts as the secure source of truth.
 
 ```mermaid
-graph TD
-    Client[React + Vite Client\n(Vercel)] <-->|HTTPS + Cookie Auth| API[Node.js + Express API\n(Render)]
+flowchart TD
+    Client[React + Vite Client] <-->|HTTPS + Cookie Auth| API[Node.js + Express API]
     
-    API <-->|Mongoose ODM| DB[(MongoDB Atlas\nPrimary Data Store)]
-    API <-->|SDK Upload| Cloudinary[(Cloudinary\nImage CDN)]
-    API <-->|SDK Payment| Razorpay[(Razorpay\nPayment Gateway)]
+    API <-->|Mongoose ODM| DB[(MongoDB Atlas)]
+    API <-->|Image Uploads| Cloudinary[(Cloudinary)]
+    API <-->|Payment Intents| Razorpay[(Razorpay)]
     
-    cron[node-cron\n1:00 PM Trigger] --> API
-    API -->|Nodemailer| Email[SMTP Server\nTransactional Emails]
+    cron[node-cron trigger] --> API
+    API -->|Email Alerts| Email[SMTP Server]
 ```
 
 ---
@@ -82,14 +81,21 @@ graph TD
 
 ### Customer-Facing
 - **Weekly Menu:** Browse upcoming daily meals curated by the kitchen with Cloudinary images.
-- **Meal Wallet:** Pre-load funds via secure gateway to auto-deduct for daily meals.
-- **Skip Calendar:** Interactive calendar to skip meals (credits refunded instantly to wallet).
-- **Cutoff Engine:** Blocks skipping meals or creating same-day subscriptions after 11:00 AM IST.
+- **Meal Wallet:** Pre-load funds via Razorpay to auto-deduct for daily meals.
+- **Transactions History:** View a complete ledger of all wallet recharges and daily meal deductions.
+- **Subscription Management:** Start, pause, or monitor your meal delivery status.
+- **Skip Calendar:** Interactive FullCalendar to skip meals (credits refunded instantly to wallet).
+- **Cutoff Engine:** System strictly blocks skipping meals or creating same-day subscriptions after 11:00 AM IST.
+- **User Support:** Dedicated support module for user inquiries.
+- **User Profile:** Manage personal info, delivery addresses, and avatar uploads.
 
 ### Admin-Facing
 - **Dashboard KPIs:** Live aggregation of revenue, meals served, active subscriptions.
-- **Visualized Data:** Beautiful, interactive Area and Bar charts powered by Recharts.
-- 👥 **User Management:** View complete customer details, wallet balances, and active subscriptions.
+- **Menu Editor:** Upload, edit, and schedule daily menus with Cloudinary integration.
+- **Billing Reports:** Track automated billing runs and total daily deductions.
+- **User Management:** Complete directory to manage users, view order histories, and update roles.
+- **Low Balance Tracking:** Instantly view users who have insufficient wallet funds for upcoming deliveries.
+- **Visualized Data:** Beautiful, interactive charts powered by Recharts.
 
 ---
 
@@ -106,20 +112,24 @@ This project is a monorepo divided into two main environments. Click into their 
 
 ```
 MealOra/
-├── frontend/                      # User Interface layer
-│   ├── src/                       # React components, pages, and state
-│   ├── public/                    # Static UI assets
-│   └── package.json               # Frontend dependencies
+├── frontend/                      
+│   ├── src/                       
+│   │   ├── api/                   # Axios interceptors
+│   │   ├── components/            # Reusable UI & Route Guards
+│   │   ├── pages/                 # Admin & User views
+│   │   ├── store/                 # Zustand global state
+│   │   └── App.jsx                
+│   └── package.json               
 │
-├── backend/                       # REST API Server layer
-│   ├── APIs/                      # Route controllers
-│   ├── models/                    # Mongoose database schemas
-│   ├── middleware/                # Security and Role guards
-│   └── package.json               # Backend dependencies
+├── backend/                       
+│   ├── APIs/                      # Route controllers (AuthAPI, WalletAPI, etc.)
+│   ├── config/                    # Cloudinary & Multer config
+│   ├── middleware/                # JWT verifyToken middleware
+│   ├── models/                    # Mongoose Models (UserModel, SubscriptionModel)
+│   └── server.js                  
 │
-└── README.md                      # High-level documentation
+└── README.md                      
 ```
-*(For detailed, file-by-file directory trees, please see the individual READMEs in the `/frontend` and `/backend` folders).*
 
 ---
 

@@ -15,14 +15,14 @@ A lightning-fast Single Page Application (SPA) utilizing modern React paradigms,
 
 ## Table of Contents
 
-- [Tech Stack](#-tech-stack)
-- [Project Structure](#-project-structure)
-- [Installation & Quick Start](#-installation--quick-start)
-- [Pages & Routes](#-pages--routes)
-- [Core Components](#-core-components)
-- [Core Architecture](#-core-architecture)
-- [Environment Variables](#-environment-variables)
-- [Design System](#-design-system)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Installation & Quick Start](#installation--quick-start)
+- [Pages & Routes](#pages--routes)
+- [Core Components](#core-components)
+- [Core Architecture](#core-architecture)
+- [Environment Variables](#environment-variables)
+- [Design System](#design-system)
 
 ---
 
@@ -45,7 +45,7 @@ A lightning-fast Single Page Application (SPA) utilizing modern React paradigms,
 
 ## Project Structure
 
-A highly modularized React SPA folder tree.
+A highly modularized React SPA folder tree representing the real architecture.
 
 ```
 frontend/
@@ -60,17 +60,33 @@ frontend/
 │   │   ├── AdminRoute.jsx     # Route guard preventing standard users
 │   │   ├── Navbar.jsx         # Responsive top navigation bar
 │   │   ├── ProtectedRoute.jsx # Route guard enforcing authentication
-│   │   └── SkipMealCalendar.jsx # The interactive 11 AM cutoff calendar
+│   │   └── ThemeContext.jsx   # Global theming provider
 │   │
 │   ├── hooks/                 
 │   │   └── useAuth.js         # Custom hooks wrapping Zustand logic
 │   │
 │   ├── pages/                 
-│   │   ├── admin/             # Admin interface pages (Dashboard, Users, Menu)
-│   │   ├── user/              # User interface pages (Dashboard, Skip Meal, Profile)
-│   │   ├── LandingPage.jsx    # Unauthenticated marketing entry
+│   │   ├── admin/             # Admin interface
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── LowBalanceUsers.jsx
+│   │   │   ├── MenuEditor.jsx
+│   │   │   ├── Reports.jsx
+│   │   │   └── Users.jsx
+│   │   │
+│   │   ├── user/              # User interface
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── Profile.jsx
+│   │   │   ├── SkipMeal.jsx   # The interactive 11 AM cutoff calendar
+│   │   │   ├── Subscription.jsx
+│   │   │   ├── Support.jsx
+│   │   │   ├── Transactions.jsx
+│   │   │   ├── Wallet.jsx
+│   │   │   └── WeeklyMenu.jsx
+│   │   │
+│   │   ├── Home.jsx           # Landing page marketing entry
 │   │   ├── Login.jsx          # Auth entry
-│   │   └── Register.jsx       # Auth registration
+│   │   ├── Register.jsx       # Auth registration
+│   │   └── Menu.jsx           # Public weekly menu
 │   │
 │   ├── store/                 
 │   │   └── authStore.js       # Zustand global state (Auth status, Wallet balance)
@@ -83,7 +99,6 @@ frontend/
 │
 ├── .env                       # Environment Variables (Ignored by Git)
 ├── package.json               # Package dependencies
-├── tailwind.config.js         # Tailwind theme customizations
 └── vite.config.js             # Vite bundler configurations
 ```
 
@@ -120,21 +135,32 @@ To run the frontend application locally, follow these precise steps:
 
 | Route | Page | Description |
 |---|---|---|
-| `/` | `LandingPage` | Marketing homepage with Hero and Call to Actions. |
-| `/login` | `Login` | User authentication via HTTP-Only cookies. |
-| `/register` | `Register` | User account creation. |
-| `/dashboard` | `UserDashboard` | Core hub displaying wallet balance, meals left, and today's delivery state. |
-| `/skip-meal` | `SkipMeal` | Interactive calendar to pause delivery and refund credits. |
-| `/profile` | `Profile` | Form to update details and upload an avatar. |
-| `/wallet` | `Wallet` | Interface to add funds and view deduction history. |
+| `/` | `Home.jsx` | Marketing homepage with Hero and Call to Actions. |
+| `/login` | `Login.jsx` | User authentication via HTTP-Only cookies. |
+| `/register` | `Register.jsx` | User account creation. |
+| `/menu` | `Menu.jsx` | Publicly viewable weekly menu page. |
+
+### Protected Customer Routes
+| Route | Page | Description |
+|---|---|---|
+| `/dashboard` | `user/Dashboard.jsx` | Core hub displaying wallet balance, meals left, and today's delivery state. |
+| `/skip-meal` | `user/SkipMeal.jsx` | Interactive calendar to pause delivery and refund credits. |
+| `/profile` | `user/Profile.jsx` | Form to update details and upload an avatar. |
+| `/wallet` | `user/Wallet.jsx` | Interface to add funds. |
+| `/transactions` | `user/Transactions.jsx` | View ledger of past wallet deductions and recharges. |
+| `/subscription` | `user/Subscription.jsx` | Subscription status and renewal portal. |
+| `/support` | `user/Support.jsx` | User support ticketing/contact page. |
+| `/weekly-menu` | `user/WeeklyMenu.jsx` | Authenticated view of the upcoming meals. |
 
 ### Admin Routes (Guarded)
 
 | Route | Page | Description |
 |---|---|---|
-| `/admin` | `AdminDashboard` | Aggregated analytics with Recharts graphs. |
-| `/admin/users` | `AdminUsers` | Directory of all users, their wallets, and active states. |
-| `/admin/menu` | `AdminMenu` | UI to upload daily menus to Cloudinary. |
+| `/admin` | `admin/Dashboard.jsx` | Aggregated analytics with Recharts graphs. |
+| `/admin/users` | `admin/Users.jsx` | Directory of all users, their wallets, and active states. |
+| `/admin/menu` | `admin/MenuEditor.jsx` | UI to upload daily menus to Cloudinary. |
+| `/admin/reports` | `admin/Reports.jsx` | Log of automated billing runs and deduction totals. |
+| `/admin/low-balance` | `admin/LowBalanceUsers.jsx` | Real-time monitoring of users needing a wallet recharge. |
 
 > **Route Guards:** `<ProtectedRoute>` securely redirects non-authenticated users to `/login`. `<AdminRoute>` completely blocks standard users from loading the admin components.
 
@@ -142,7 +168,7 @@ To run the frontend application locally, follow these precise steps:
 
 ## Core Components
 
-### `SkipMealCalendar`
+### `SkipMeal` (Calendar)
 The crown jewel of the user experience. Uses `date-fns` to generate an interactive month view. 
 - Past dates are disabled.
 - The 11:00 AM IST cutoff rule visually locks the *current* day if the cutoff time has passed.
@@ -150,12 +176,6 @@ The crown jewel of the user experience. Uses `date-fns` to generate an interacti
 
 ### `Navbar`
 A dual-state responsive header. For guests, it shows login options. For authenticated users, it displays wallet balance, an avatar dropdown, and navigation links.
-
-### `OnboardingWizard`
-A Gamified 3-step setup for new users:
-1. Complete Profile (Phone, Avatar)
-2. Add Delivery Address
-3. Recharge Wallet to unlock the subscription.
 
 ---
 
