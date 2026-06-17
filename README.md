@@ -1,132 +1,157 @@
 <div align="center">
 
-# MealOra - Enterprise Home Meals Delivery Platform (MERN)
+# MealOra
 
-[![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react&logoColor=white)](https://react.dev/)
-[![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![Express.js](https://img.shields.io/badge/Express.js-Framework-000000?logo=express&logoColor=white)](https://expressjs.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.0-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Vite](https://img.shields.io/badge/Vite-Bundler-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+### *Your Premium Home-Style Meal Delivery Platform*
 
-**MealOra** is a modern, full-stack Dabba (Tiffin) Service platform built with the MERN Stack. Designed to automate the logistics of daily meal deliveries, it features a robust Role-Based Access Control (RBAC) architecture, automated financial ledgers, cron-scheduled billing, and interactive calendar management.
+> A full-stack MERN application delivering fresh, home-cooked meals through a seamless subscription model. Featuring wallet-based payments, dynamic daily menus, and an intelligent 11:00 AM cutoff delivery system.
+
+<br/>
+
+[![React](https://img.shields.io/badge/React-v19-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-v16+-339933?style=flat-square&logo=node.js)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
+[![Express.js](https://img.shields.io/badge/Express.js-Framework-000000?style=flat-square&logo=express)](https://expressjs.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
+[![Vite](https://img.shields.io/badge/Vite-Bundler-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
 </div>
 
 ---
 
-## 1. Project Vision & Comprehensive Feature List
+## Table of Contents
 
-MealOra eliminates the manual tracking of daily food subscriptions. It provides a seamless experience where customers manage a prepaid wallet, automatically pay for meals they consume, and dynamically skip days they aren't home—while giving kitchen managers deep analytical oversight.
-
-### Customer Features (User Dashboard)
-- **Prepaid Wallet Ledger:** Users deposit funds into their MealOra wallet (simulated via Razorpay/Stripe UI). The system maintains an immutable ledger of all `CREDIT` (recharges) and `DEBIT` (meal deductions) transactions.
-- **Dynamic Daily Dashboard:** The landing page calculates today's delivery state in real-time. It displays the day's menu, alerts the user if their meal is *Pending Before 1 PM*, *Skipped*, or *Delivered*, and warns them if their wallet balance is too low for tomorrow's meal.
-- **Subscription Toggles:** Users can globally pause or resume their daily meal subscription with a single click.
-- **Interactive "Skip Meal" Calendar:** Using `@fullcalendar/react`, users can visually select future dates where they will be out of town. The backend explicitly prevents them from being billed on these dates.
-- **Strict Cutoff Enforcement:** Users cannot skip today's meal after **11:00 AM IST**. The system enforces this timezone-aware cutoff globally.
-- **Profile & Address Book:** Users can maintain a list of delivery addresses (Home, Office) and set their active default address dynamically.
-
-### Kitchen Manager Features (Admin Dashboard)
-- **Visual Analytics & Reports:** Integrated with `Recharts` to provide visual business intelligence. 
-  - *Revenue Growth Chart:* Tracks aggregate wallet recharges over time.
-  - *Meal Popularity Chart:* Bar graphs analyzing the ratio of Served vs. Skipped meals to predict kitchen inventory requirements.
-- **Dynamic Menu Editor:** Admins can author the daily menu (e.g., *Ghee Rice, Bagara Baingan*) and directly upload dish photography. Images are processed via `Multer` and hosted globally on a **Cloudinary CDN**.
-- **Customer CRM Table:** A comprehensive view of all registered customers, allowing admins to monitor live wallet balances, active addresses, and total meals served.
-- **Manual Billing Override:** While billing is automated, admins possess a master override switch to manually trigger the daily billing deduction pipeline if required.
-
-### Backend Automation & Logistics
-- **Automated Cron Engine:** Powered by `node-cron`, the backend runs autonomous scheduled tasks every single day.
-  - At exactly 1:00 PM IST, the cron job evaluates every user. If a user has an active subscription, has NOT skipped the date, and possesses sufficient wallet balance, it deducts ₹100 from their wallet and generates a ledger receipt.
-- **Transactional Email Alerts:** The exact moment a meal is successfully billed and dispatched, the backend triggers an automated SMTP (`NodeMailer`) email notifying the customer that their food has been delivered.
-- **Timezone-Proof Architecture:** To prevent cloud hosting issues, all critical logistics (like the 11 AM skip cutoff and the 1 PM delivery mark) are hardcoded to evaluate against **Indian Standard Time (IST)**, regardless of where the Vercel/Render servers are located globally.
-- **Stateless JWT Security:** Authentication is completely stateless. JWTs are encrypted and transmitted exclusively via `HTTP-Only` cookies, rendering the application highly resilient to XSS and session hijacking.
+- [About the Project](#-about-the-project)
+- [Live Deployments](#-live-deployments)
+- [System Architecture](#-system-architecture)
+- [Features](#-features)
+- [Project Workspaces](#-project-workspaces)
+- [High-Level Project Structure](#-high-level-project-structure)
+- [Quick Start](#-quick-start)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
-## 2. System Architecture & Data Model
+## About the Project
 
-### High-Level Request Flow
+**MealOra** is a sophisticated full-stack food delivery web application built with the MERN stack. It specializes in offering daily home-style meals via an automated subscription and wallet deduction system.
+
+The project covers end-to-end functionality including:
+
+- **Secure Authentication** using stateless HTTP-Only JWT cookies.
+- **Wallet System** for seamless, automated daily meal deductions.
+- **Delivery Routing** with default and override addresses.
+- **Time-Based Logistics** featuring a strict 11:00 AM IST kitchen prep cutoff.
+- **Interactive Calendar** allowing users to pause/skip specific delivery days.
+- **Admin Command Center** with Recharts analytics and live aggregation pipelines.
+
+---
+
+## Live Deployments
+
+The application is deployed across two robust cloud platforms to ensure maximum uptime and performance:
+
+- **Frontend Application (Vercel):** [https://mealora-app.vercel.app/](https://mealora-app.vercel.app/)
+- **Backend API Server (Render):** [https://mealora-app.onrender.com/](https://mealora-app.onrender.com/)
+
+> Try exploring the gamified onboarding flow, the 11 AM cutoff skip-meal calendar, and the admin analytics dashboard on the live site!
+
+---
+
+## System Architecture
+
+MealOra operates on a highly decoupled client-server architecture. The frontend acts as a pure presentation layer while the backend acts as the secure source of truth.
+
 ```mermaid
 graph TD
-    Client[Client Browser / React App] -->|HTTPS| Vite[Frontend / Vercel]
-    Vite -->|REST API| Express[Backend / Render]
+    Client[React + Vite Client\n(Vercel)] <-->|HTTPS + Cookie Auth| API[Node.js + Express API\n(Render)]
     
-    subgraph Core Engine
-        Express -->|JWT Check| Auth[Middleware]
-        Auth -->|Business Logic| Controllers[Logic Layer]
-        Controllers -->|Persistence| DB[(MongoDB Atlas)]
-        CronJobs[Automated Node Cron] --> Controllers
-    end
+    API <-->|Mongoose ODM| DB[(MongoDB Atlas\nPrimary Data Store)]
+    API <-->|SDK Upload| Cloudinary[(Cloudinary\nImage CDN)]
+    API <-->|SDK Payment| Razorpay[(Razorpay\nPayment Gateway)]
     
-    subgraph Third-Party Integrations
-        Controllers -->|Binary Stream| Cloudinary[Image CDN]
-        Controllers -->|SMTP Email| NodeMailer[Mail Server]
-    end
+    cron[node-cron\n1:00 PM Trigger] --> API
+    API -->|Nodemailer| Email[SMTP Server\nTransactional Emails]
 ```
 
 ---
 
-## 3. How to Use (Installation & Setup)
+## Features
 
-Follow these steps to instantiate the repository on your local machine.
+### Customer-Facing
+- **Weekly Menu:** Browse upcoming daily meals curated by the kitchen with Cloudinary images.
+- **Meal Wallet:** Pre-load funds via secure gateway to auto-deduct for daily meals.
+- **Skip Calendar:** Interactive calendar to skip meals (credits refunded instantly to wallet).
+- **Cutoff Engine:** Blocks skipping meals or creating same-day subscriptions after 11:00 AM IST.
 
-### Prerequisites
-- Node.js (v18+)
-- MongoDB Atlas Account
-- Cloudinary Account
-- SMTP Email Credentials (e.g., Gmail App Passwords)
+### Admin-Facing
+- **Dashboard KPIs:** Live aggregation of revenue, meals served, active subscriptions.
+- **Visualized Data:** Beautiful, interactive Area and Bar charts powered by Recharts.
+- 👥 **User Management:** View complete customer details, wallet balances, and active subscriptions.
 
-### 1. Initial Setup
+---
+
+## Project Workspaces
+
+This project is a monorepo divided into two main environments. Click into their respective directories to view deep-dive documentation:
+
+- **[Frontend Client (`/frontend`)](./frontend)**: React UI, Tailwind design system, and Zustand global state.
+- **[Backend API (`/backend`)](./backend)**: Express architecture, MongoDB aggregations, and business logic.
+
+---
+
+## High-Level Project Structure
+
+```
+MealOra/
+├── frontend/                      # User Interface layer
+│   ├── src/                       # React components, pages, and state
+│   ├── public/                    # Static UI assets
+│   └── package.json               # Frontend dependencies
+│
+├── backend/                       # REST API Server layer
+│   ├── APIs/                      # Route controllers
+│   ├── models/                    # Mongoose database schemas
+│   ├── middleware/                # Security and Role guards
+│   └── package.json               # Backend dependencies
+│
+└── README.md                      # High-level documentation
+```
+*(For detailed, file-by-file directory trees, please see the individual READMEs in the `/frontend` and `/backend` folders).*
+
+---
+
+## Quick Start
+
+To run the entire platform locally, you will need to install dependencies and start both servers.
+
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/Akhila-1703/mealora-app.git
 cd mealora-app
 ```
 
-### 2. Configure Backend
+### 2. Start the Backend
 ```bash
 cd backend
 npm install
-```
-Create a `.env` file in the `backend` folder:
-```env
-PORT=4000
-DB_URL=your_mongodb_uri
-JWT_SECRET_KEY=your_secret
-CLOUDINARY_CLOUD_NAME=your_name
-CLOUDINARY_API_KEY=your_key
-CLOUDINARY_API_SECRET=your_secret
-FRONTEND_URL=http://localhost:5173
-SMTP_HOST=your_smtp_host
-SMTP_USER=your_email
-SMTP_PASS=your_email_password
+npm run dev
 ```
 
-### 3. Configure Frontend
+### 3. Start the Frontend
+Open a new terminal:
 ```bash
-cd ../frontend
+cd frontend
 npm install
+npm run dev
 ```
-Create a `.env` file in the `frontend` folder:
-```env
-VITE_API_BASE_URL=http://localhost:4000
-```
-
-### 4. Running the Project
-Launch two separate terminals:
-- **Terminal 1:** `cd backend && npm start`
-- **Terminal 2:** `cd frontend && npm run dev`
 
 ---
 
-## 4. Technical Documentation Links
+## Contributing
+Contributions of all kinds are welcome! Create a feature branch, commit your changes, and open a Pull Request.
 
-For a granular look at the Project Structure, File Lists, and Package Details, please refer to the folder-specific manuals:
-
-- [Backend Internal Docs](./backend/README.md): Details the API logic, automated cron jobs, file tree, and server packages.
-- [Frontend Internal Docs](./frontend/README.md): Details the UI tree, Zustand state logic, and client packages.
-
----
-<div align="center">
-  <i>Developed to strict architectural standards for maximum performance and UX.</i>
-</div>
+## License
+This project is licensed under the **MIT License**.

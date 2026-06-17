@@ -1,106 +1,37 @@
 <div align="center">
 
-# Backend Architecture & API Documentation
+# MealOra Backend API
 
-[![Node.js](https://img.shields.io/badge/Node.js-Runtime-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![Express.js](https://img.shields.io/badge/Express.js-Framework-000000?logo=express&logoColor=white)](https://expressjs.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-[![Mongoose](https://img.shields.io/badge/Mongoose-ODM-880000?logo=mongoose&logoColor=white)](https://mongoosejs.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-v16+-339933?style=flat-square&logo=node.js)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
+[![Express.js](https://img.shields.io/badge/Express.js-Framework-000000?style=flat-square&logo=express)](https://expressjs.com/)
 
-This document serves as the authoritative technical manual for the MealOra (Home Meals Delivered) backend. It details the internal engine: the data models, security paradigms, routing logic, and complete API contract.
+A robust Node.js server handling automated daily meal deductions, secure JWT authentication, and intelligent time-based delivery logic.
 
 </div>
 
 ---
 
-## 1. Architecture & System Flow
+## Table of Contents
 
-This backend operates on a robust, highly modular Node.js/Express foundation designed for scalability and strict security.
-
-- **Ingress & Security:** All incoming requests are filtered through CORS (restricted to specific frontend origins) and Cookie Parsers.
-- **Stateless Auth Guard:** Protected routes are intercepted by the `verifyToken` middleware, which cryptographically validates JWTs stored in HTTP-Only cookies.
-- **Controller-Service Split:** API Controllers (`*API.js`) handle HTTP lifecycles (req/res), delegating heavy business logic (like scheduled billing and emails) to Services.
-- **Data Integrity Layer:** Mongoose enforces strict schema rules before data touches MongoDB.
-- **Automated Cron Jobs:** Scheduled cron jobs (`node-cron`) automatically process daily meal deductions and mark meal deliveries at 1:00 PM IST.
-- **Global Error Sink:** A centralized error-handling middleware catches all thrown exceptions.
+- [Tech Stack](#-tech-stack)
+- [Database Architecture (ER Diagram)](#-database-architecture-er-diagram)
+- [Project Structure](#-project-structure)
+- [Installation & Quick Start](#-installation--quick-start)
+- [Environment Variables](#-environment-variables)
+- [API Reference](#-api-reference)
 
 ---
 
-## 2. Local Installation & Setup
-
-To run the backend server independently:
-
-1. **Install Dependencies**:
-   ```bash
-   cd backend
-   npm install
-   ```
-2. **Environment Configuration**:
-   Create a `.env` file in the backend directory. The required variables are:
-   ```env
-   PORT=4000
-   DB_URL=your_mongodb_atlas_connection_string
-   JWT_SECRET_KEY=your_super_secret_jwt_key
-   CLOUDINARY_CLOUD_NAME=your_cloudinary_name
-   CLOUDINARY_API_KEY=your_cloudinary_api_key
-   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-   FRONTEND_URL=http://localhost:5173
-   STRIPE_SECRET_KEY=your_stripe_secret_key
-   SMTP_HOST=your_smtp_host
-   SMTP_USER=your_smtp_user
-   SMTP_PASS=your_smtp_password
-   ```
-3. **Start the Server**:
-   ```bash
-   npm start
-   ```
-
-**Production Deployment Link:** [https://mealora-app.onrender.com](https://mealora-app.onrender.com)
-
----
-
-## 3. Backend Project Structure (Exhaustive)
-```text
-backend/
-├── APIs/                   # API Routes & Controllers
-│   ├── AdminAPI.js         # Routes for Admin management & reports
-│   ├── AuthAPI.js          # Authentication & Registration
-│   ├── MenuAPI.js          # Daily menu fetching and editing
-│   ├── SkipMealAPI.js      # User meal skipping logic (with 11 AM IST cutoff)
-│   ├── SubscriptionAPI.js  # Subscription toggles and plans
-│   ├── UserAPI.js          # User dashboard, profile, and addresses
-│   └── WalletAPI.js        # Wallet balances and transaction history
-├── models/                 # Mongoose Data Schemas
-│   ├── UserModel.js
-│   ├── WalletTransactionModel.js
-│   ├── SubscriptionModel.js
-│   ├── SkipMealModel.js
-│   ├── MenuModel.js
-│   └── BillingRunModel.js
-├── middleware/             # Global request interceptors
-│   └── verifyToken.js      # JWT validation logic
-├── config/                 # Setup scripts
-│   ├── cloudinaryConfig.js # CDN configuration
-│   └── cronJobs.js         # Automated billing scripts
-├── services/               # Reusable Business Logic
-│   ├── emailService.js     # SMTP NodeMailer setup
-│   └── mealProcessor.js    # Logic to deduct money and mark deliveries
-├── .env                    # Environment configuration
-├── server.js               # Server bootstrap & global error handling
-└── package.json            # Manifest of dependencies and run scripts
-```
-
----
-
-## 4. Technology Stack & Package Evaluation
+## Tech Stack
 
 | Package | Version | Technical Purpose & Strategic Use |
-| :--- | :--- | :--- |
+|---|---|---|
 | `express` | `^5.2.1` | Chosen for its flexible routing and middleware ecosystem. Handles the REST API layer. |
 | `mongoose` | `^9.4.1` | ODM for MongoDB. Enforces type safety, validation, and schema relationships. |
-| `jsonwebtoken`| `^9.0.3` | Implementation of signed tokens for secure, stateless sessions. |
+| `jsonwebtoken` | `^9.0.3` | Implementation of signed tokens for secure, stateless sessions. |
 | `bcryptjs` | `^3.0.3` | Cryptographic hashing of passwords to ensure data security at rest. |
-| `cookie-parser`| `^1.4.7` | Critical for extracting tokens from `HTTP-Only` cookies to prevent XSS. |
+| `cookie-parser` | `^1.4.7` | Critical for extracting tokens from HTTP-Only cookies to prevent XSS. |
 | `multer` | `^2.1.1` | Efficiently handles `multipart/form-data` uploads (e.g., profile pictures and menu images) via memory-buffering. |
 | `cloudinary` | `^2.9.0` | Global CDN used to host and serve optimized images. |
 | `cors` | `^2.8.6` | Configured with `credentials: true` to enable secure frontend-backend session communication. |
@@ -111,7 +42,9 @@ backend/
 
 ---
 
-## 5. Entity-Relationship (ER) Data Model
+## Database Architecture (ER Diagram)
+
+The following Entity-Relationship diagram outlines the relationships driving the MealOra logic engine:
 
 ```mermaid
 erDiagram
@@ -160,45 +93,119 @@ erDiagram
 
 ---
 
-## 6. API Reference & Full Contract
+## Project Structure
 
-### Auth API (`/api/auth`)
-| Method | Endpoint | Auth | Purpose |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/register` | None | Registers a standard Customer (USER). |
-| `POST` | `/login` | None | Authenticates user & sets secure HTTP-only cookie. |
-| `GET` | `/logout` | None | Clears the session cookie. |
-| `GET` | `/verify` | ANY | Validates token and returns user payload & role. |
+A deeply structured Express application separating business logic, routing, and configuration.
 
-### User API (`/api/user`)
-| Method | Endpoint | Auth | Purpose |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/dashboard` | USER | Fetches daily delivery state, active menu, and user stats. |
-| `PUT` | `/update-profile` | USER | Updates user profile and handles image uploads. |
-| `POST` | `/address` | USER | Adds a new delivery address to the user's profile. |
-
-### Wallet API (`/api/wallet`)
-| Method | Endpoint | Auth | Purpose |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/history` | USER | Fetches paginated wallet transaction history. |
-| `POST` | `/recharge` | USER | Processes mock/real recharge logic and credits wallet. |
-
-### Subscription & Skip API (`/api/subscription`, `/api/skip`)
-| Method | Endpoint | Auth | Purpose |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/toggle` | USER | Activates or deactivates daily deliveries. |
-| `POST` | `/` (skip) | USER | Skips a meal for a given future date. |
-| `DELETE` | `/:date` (skip) | USER | Cancels a skip request before 11:00 AM IST cutoff. |
-
-### Admin API (`/api/admin`)
-| Method | Endpoint | Auth | Purpose |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/reports` | ADMIN | Fetches overall stats, aggregated revenue, and skips. |
-| `GET` | `/users` | ADMIN | Fetches all system users with their balances. |
-| `POST` | `/menus` | ADMIN | Adds or updates the daily menu and uploads images. |
-| `POST` | `/process-billing` | ADMIN | Manually triggers the billing/deduction pipeline. |
+```
+backend/
+├── APIs/                      # Route controllers & logic handlers
+│   ├── AdminAPI.js            # Admin dashboards & menu updates
+│   ├── AuthAPI.js             # Login, register, JWT issuance
+│   ├── SkipMealAPI.js         # Date calculation logic for pausing meals
+│   ├── SubscriptionAPI.js     # Managing user subscriptions
+│   ├── UserAPI.js             # Dashboard, profile, avatar handling
+│   └── WalletAPI.js           # Wallet recharge logic (Razorpay)
+│
+├── config/                    # 3rd-party integration setups
+│   ├── cloudinary.js          # Cloudinary API keys and setup
+│   ├── db.js                  # Mongoose MongoDB connection
+│   └── multer.js              # Multer memory storage config
+│
+├── middleware/                # Route interceptors
+│   ├── authMiddleware.js      # Verifies HTTP-Only JWT cookies
+│   └── roleMiddleware.js      # Validates "ADMIN" vs "USER" privileges
+│
+├── models/                    # Mongoose database schemas
+│   ├── MenuModel.js           
+│   ├── SkipMealModel.js       
+│   ├── SubscriptionModel.js   
+│   ├── UserModel.js           
+│   └── WalletModel.js         
+│
+├── server.js                  # Main Express entry point & middleware registration
+├── package.json               # Package dependencies
+└── .env                       # Secret environment variables (ignored by Git)
+```
 
 ---
-<div align="center">
-  <i>Developed to strict architectural standards for MealOra.</i>
-</div>
+
+## Installation & Quick Start
+
+To run the backend server locally, follow these precise steps:
+
+1. **Navigate to the Backend directory:**
+   ```bash
+   cd backend
+   ```
+
+2. **Install all required packages:**
+   ```bash
+   npm install express mongoose jsonwebtoken bcryptjs cookie-parser multer cloudinary cors dotenv node-cron nodemailer razorpay
+   ```
+
+3. **Configure Environment Variables:**
+   Create a `.env` file in the root of the `backend` folder and populate it (see section below).
+
+4. **Start the Development Server:**
+   ```bash
+   npm run dev
+   ```
+   *The server will start on `http://localhost:4000` and establish a connection to your MongoDB instance.*
+
+---
+
+## Environment Variables
+
+```env
+PORT=4000
+MONGO_URI=<your_mongodb_connection_string>
+JWT_SECRET=<your_jwt_signing_secret>
+
+# Cloudinary Setup for Image Uploads
+CLOUDINARY_CLOUD_NAME=<your_cloud_name>
+CLOUDINARY_API_KEY=<your_api_key>
+CLOUDINARY_API_SECRET=<your_api_secret>
+
+# Payment Gateway
+RAZORPAY_KEY_ID=<your_razorpay_key_id>
+RAZORPAY_KEY_SECRET=<your_razorpay_key_secret>
+
+# Frontend URL for CORS
+FRONTEND_URL=http://localhost:5173
+```
+
+---
+
+## API Reference
+
+**Base URL:** `http://localhost:4000/api`
+
+> All protected routes require an HTTP-Only cookie containing a valid JWT.
+
+### Auth
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `POST` | `/auth/register` | — | Register user and initialize wallet |
+| `POST` | `/auth/login` | — | Authenticate and attach HTTP-Only JWT cookie |
+| `POST` | `/auth/logout` | — | Clear JWT cookie session |
+
+### User Profile
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/user/dashboard` | | Get aggregated dashboard stats & delivery state |
+| `PUT` | `/user/update-profile` | | Update profile info (supports Multer file upload) |
+
+### Wallet & Subscription
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `POST` | `/wallet/recharge` | | Add funds to user wallet |
+| `POST` | `/subscription/create` | | Initialize daily meal subscription |
+| `POST` | `/skip/meal` | | Skip a delivery date (refunds wallet, strictly enforced before 11 AM) |
+
+### Admin (Gated)
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/admin/dashboard` | Admin | Fetch live revenue, active users, and aggregate KPIs |
+| `POST` | `/admin/menu` | Admin | Update daily menu and upload images to Cloudinary |
+| `GET` | `/admin/customers` | Admin | List all users, balances, and subscription statuses |
