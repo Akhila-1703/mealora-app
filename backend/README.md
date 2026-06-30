@@ -6,7 +6,7 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
 [![Express.js](https://img.shields.io/badge/Express.js-Framework-000000?style=flat-square&logo=express)](https://expressjs.com/)
 
-A robust Node.js server handling automated daily meal deductions, secure JWT authentication, and intelligent time-based delivery logic.
+A robust, enterprise-grade Node.js service governing session authentication, financial ledger transactions, database consistency, and automated daily meal allocation and logistics cutoff logic.
 
 </div>
 
@@ -20,6 +20,7 @@ A robust Node.js server handling automated daily meal deductions, secure JWT aut
 - [Installation & Quick Start](#installation--quick-start)
 - [Environment Variables](#environment-variables)
 - [API Reference](#api-reference)
+- [Operational Design & Automation Rules](#operational-design--automation-rules)
 
 ---
 
@@ -36,7 +37,7 @@ A robust Node.js server handling automated daily meal deductions, secure JWT aut
 | `cloudinary` | `^2.9.0` | Global CDN used to host and serve optimized images. |
 | `cors` | `^2.8.6` | Configured with `credentials: true` to enable secure frontend-backend session communication. |
 | `dotenv` | `^17.4.1` | Ensures environment variables are securely loaded at runtime. |
-| `node-cron` | `^4.2.1` | Automated task scheduling for running daily wallet deductions at 1:00 PM IST cutoff. |
+| `node-cron` | `^4.2.1` | Automated task scheduling for running daily wallet deductions at the designated daily logistics run cutoff. |
 | `nodemailer` | `^8.0.9` | Handles sending real-time transactional emails to users (e.g., meal delivered notifications). |
 | `razorpay` | `^2.9.6` | Used as the foundational SDK to process user wallet recharges securely. |
 
@@ -142,7 +143,7 @@ To run the backend server locally, follow these precise steps:
 
 2. **Install all required packages:**
    ```bash
-   npm install express mongoose jsonwebtoken bcryptjs cookie-parser multer cloudinary cors dotenv node-cron nodemailer razorpay
+   npm install
    ```
 
 3. **Configure Environment Variables:**
@@ -202,7 +203,7 @@ FRONTEND_URL=http://localhost:5173
 |--------|----------|------|-------------|
 | `POST` | `/wallet/recharge` | ✅ | Add funds to user wallet |
 | `POST` | `/subscription/create` | ✅ | Initialize daily meal subscription |
-| `POST` | `/skip/meal` | ✅ | Skip a delivery date (refunds wallet, strictly enforced before 11 AM) |
+| `POST` | `/skip/meal` | ✅ | Skip a delivery date (refunds wallet, strictly enforced before cutoff limits) |
 
 ### Admin (Gated)
 | Method | Endpoint | Auth | Description |
@@ -211,3 +212,20 @@ FRONTEND_URL=http://localhost:5173
 | `POST` | `/admin/menu` | ✅ Admin | Update daily menu and upload images to Cloudinary |
 | `GET` | `/admin/customers` | ✅ Admin | List all users, balances, and subscription statuses |
 | `GET` | `/admin/reports` | ✅ Admin | View automated billing runs and total deductions |
+
+---
+
+## Operational Design & Automation Rules
+
+### 1. The Billing Automation Engine
+A node-cron routine triggers daily to compute scheduled order requirements and verify customer account balances. If a customer has an active subscription and has not explicitly scheduled a "skip" for that day, the engine deducts the meal cost from their pre-paid wallet.
+
+### 2. Transaction Auditing & Safety
+Every database operation involving balance modifications (credits, debits, refunds) generates an immutable transaction log record. The backend applies MongoDB transactions where necessary to guarantee that balance updates and transaction registration complete atomically.
+
+### 3. Future Backend Roadmap: Delivery Agent Integration
+* **New Database Schemas**: Add `OrderModel` (storing order status state machine, driver assignment link, timestamps for each lifecycle stage) and `DeliveryAgentProfileModel` (tracking agent status like `ONLINE`, `BUSY`, `OFFLINE`).
+* **Authentication Updates**: Expand `verifyToken.js` middleware to support role checks for `DELIVERY_AGENT` to gate new routes.
+* **WebSocket Server**: Integrate Socket.io on top of the Express HTTP server to handle room subscriptions (e.g., driver rooms, client tracking rooms) and broadcast events dynamically.
+* **Payout Ledger Actions**: Implement secure transactional ledger debits to payout drivers upon successful `OrderModel` delivery events.
+
