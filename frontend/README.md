@@ -1,13 +1,20 @@
 <div align="center">
 
-# MealOra Frontend Client
+# MealOra
+
+### *Your Premium Home-Style Meal Delivery Platform*
+
+> A robust, production-grade MERN stack enterprise application delivering fresh, home-cooked meals via a seamless, automated subscription model. Engineered with secure wallet-based transaction systems, dynamic menu allocation, and an intelligent same-day logistics cutoff engine.
+
+<br/>
 
 [![React](https://img.shields.io/badge/React-v19-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-v16+-339933?style=flat-square&logo=node.js)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
+[![Express.js](https://img.shields.io/badge/Express.js-Framework-000000?style=flat-square&logo=express)](https://expressjs.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 [![Vite](https://img.shields.io/badge/Vite-Bundler-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
-[![Zustand](https://img.shields.io/badge/Zustand-State-black?style=flat-square&logo=react)](https://zustand-demo.pmnd.rs/)
-
-A highly optimized Single Page Application (SPA) utilizing modern React concurrent features, utility-first CSS configurations, and declarative global state synchronization.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
 </div>
 
@@ -15,211 +22,196 @@ A highly optimized Single Page Application (SPA) utilizing modern React concurre
 
 ## Table of Contents
 
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Installation & Quick Start](#installation--quick-start)
-- [Pages & Routes](#pages--routes)
-- [Core Components](#core-components)
-- [Core Architecture](#core-architecture)
-- [Environment Variables](#environment-variables)
-- [Design System](#design-system)
+- [About the Project](#about-the-project)
+- [Key Architectural Design Decisions](#key-architectural-design-decisions)
+- [Live Deployments](#live-deployments)
+- [System Architecture](#system-architecture)
+- [Features](#features)
+  - [Customer-Facing Features](#customer-facing-features)
+  - [Admin-Facing Features](#admin-facing-features)
+- [Project Workspaces](#project-workspaces)
+- [High-Level Project Structure](#high-level-project-structure)
+- [Quick Start & Installation](#quick-start--installation)
+  - [Prerequisites](#prerequisites)
+  - [Step-by-Step Local Deployment](#step-by-step-local-deployment)
+- [Security & Core Constraints](#security--core-constraints)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
-## Tech Stack
+## About the Project
 
-| Package | Version | Technical Purpose & Strategic Use |
-|---|---|---|
-| `react` | `^19.0.0` | Core UI library optimized for concurrent rendering. |
-| `react-router-dom` | `^6.22.3` | Declarative routing allowing for nested layouts and strict route guarding based on auth state. |
-| `zustand` | `^4.5.2` | Minimalist global state management. Used primarily for syncing the user's Auth and Wallet context securely without deep prop-drilling. |
-| `tailwindcss` | `^4.0.0` | Utility-first CSS framework enabling ultra-fast UI prototyping and absolute layout consistency. |
-| `vite` | `^6.0.0` | Next-generation build tool chosen for its instantaneous Hot Module Replacement (HMR). |
-| `axios` | `^1.6.8` | HTTP client configured globally with `withCredentials: true` to seamlessly pass secure HTTP-Only cookies to the backend. |
-| `date-fns` | `^3.6.0` | Provides bulletproof calendar date math to enforce strict same-day logistics cutoff limits for skipping meals. |
-| `framer-motion` | `^11.0.8` | Adds physics-based micro-interactions and smooth page transitions to create a premium application feel. |
-| `recharts` | `^2.12.3` | Composable charting library used to generate the data-rich analytics graphs in the Admin Dashboard. |
-| `lucide-react` | `^0.359.0` | Clean, modern vector icons matching the luxury design aesthetic. |
+**MealOra** is a highly scalable, subscription-oriented meal delivery platform built with the MERN stack. Designed with reliability, absolute security, and seamless user experiences in mind, it automates the kitchen-to-doorstep workflow. It provides users with a flexible dashboard to manage their subscriptions, credit wallets, and delivery schedules, while giving kitchen administrators complete operational oversight.
+
+The system encapsulates professional-grade engineering paradigms including:
+- **Stateless HTTP-Only Cookie Authentication**: Protecting user sessions against XSS and CSRF attacks.
+- **Double-Entry Style Wallet Ledger**: Securely tracking wallet balances, credit card recharges via Razorpay, and subscription deductions.
+- **Dynamic Addressing & Routing**: Permitting distinct delivery coordinates per run, with secondary override support.
+- **Time-Sensitive Business Rules**: An integrated, timezone-aware logistics engine enforcing strict same-day subscription and cancellation cutoffs.
+- **Interactive Visual Calendar**: Allowing clients to skip upcoming deliveries and instantly credit refunds back to their balance.
+- **Cron-Driven Billing Engine**: Robust background scheduler to automatically compile delivery sheets and settle balances.
+- **Admin Analytics Dashboard**: High-fidelity operational intelligence powered by Recharts.
 
 ---
 
-## Project Structure
+## Key Architectural Design Decisions
 
-A highly modularized React SPA folder tree representing the real architecture.
+1. **State Hydration Strategy**: The React SPA hydrates its global authentication and wallet balance state directly from a secure backend endpoint using Zustand. This avoids stale UI state and mitigates synchronization flaws inherent in local-storage storage.
+2. **Decoupled Security Context**: Authentication tokens are not stored in memory or client-accessible web storage. They are encapsulated in HTTP-Only, Secure, SameSite-restricted cookies, shielding API calls from standard client scripts.
+3. **Database Normalization & Ledger Integrity**: Financial ledger transactions are stored as separate documents, linking every wallet update to a specific subscription run, manual recharge, or refund action. This ensures auditability.
 
-```
-frontend/
-├── public/                    # Static assets
-│   └── favicon.ico            
-│
-├── src/                       # Application Source Code
-│   ├── api/                   
-│   │   └── axios.js           # Centralized Axios instance with credential interceptors
-│   │
-│   ├── components/            # Reusable UI Blocks
-│   │   ├── AdminRoute.jsx     # Route guard preventing standard users
-│   │   ├── Navbar.jsx         # Responsive top navigation bar
-│   │   ├── ProtectedRoute.jsx # Route guard enforcing authentication
-│   │   └── ThemeContext.jsx   # Global theming provider
-│   │
-│   ├── hooks/                 
-│   │   └── useAuth.js         # Custom hooks wrapping Zustand logic
-│   │
-│   ├── pages/                 
-│   │   ├── admin/             # Admin interface
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── LowBalanceUsers.jsx
-│   │   │   ├── MenuEditor.jsx
-│   │   │   ├── Reports.jsx
-│   │   │   └── Users.jsx
-│   │   │
-│   │   ├── user/              # User interface
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── Profile.jsx
-│   │   │   ├── SkipMeal.jsx   # The interactive calendar with same-day cutoff validation
-│   │   │   ├── Subscription.jsx
-│   │   │   ├── Support.jsx
-│   │   │   ├── Transactions.jsx
-│   │   │   ├── Wallet.jsx
-│   │   │   └── WeeklyMenu.jsx
-│   │   │
-│   │   ├── Home.jsx           # Landing page marketing entry
-│   │   ├── Login.jsx          # Auth entry
-│   │   ├── Register.jsx       # Auth registration
-│   │   └── Menu.jsx           # Public weekly menu
-│   │
-│   ├── store/                 
-│   │   └── authStore.js       # Zustand global state (Auth status, Wallet balance)
-│   │
-│   ├── styles/                
-│   │   └── index.css          # Tailwind base layer imports
-│   │
-│   ├── App.jsx                # Root Router configuration
-│   └── main.jsx               # React DOM rendering entry point
-│
-├── .env                       # Environment Variables (Ignored by Git)
-├── package.json               # Package dependencies
-└── vite.config.js             # Vite bundler configurations
+---
+
+## Live Deployments
+
+The platform is continuously integrated and deployed across redundant cloud environments:
+
+- **Frontend Client (Vercel):** [https://mealora-app.vercel.app/](https://mealora-app.vercel.app/)
+- **Backend API Gateway (Render):** [https://mealora-app.onrender.com/](https://mealora-app.onrender.com/)
+
+---
+
+## System Architecture
+
+MealOra utilizes a modern client-server architecture with dedicated external integrations. The following flowchart maps the system topology:
+
+```mermaid
+flowchart TD
+    Client[React + Vite Client] <-->|HTTPS + Secure Cookie Auth| API[Node.js + Express API Gateway]
+    
+    API <-->|Mongoose ODM| DB[(MongoDB Atlas)]
+    API <-->|Image Optimization CDN| Cloudinary[(Cloudinary CDN)]
+    API <-->|Payment Gateway API| Razorpay[(Razorpay SDK)]
+    
+    cron[node-cron billing trigger] --> API
+    API -->|Transactional Emails| Email[SMTP Server]
 ```
 
 ---
 
-## Installation & Quick Start
+## Features
 
-To run the frontend application locally, follow these precise steps:
+### Customer-Facing Features
+* **Weekly Menu Catalog**: View upcoming daily meals curated dynamically by the kitchen staff, complete with optimized high-resolution images served via Cloudinary.
+* **Pre-paid Meal Wallet**: Pre-load funds via the Razorpay payment gateway to authorize automatic daily deductions for upcoming meals.
+* **Transaction Ledger**: Access a detailed, transparent history of every debit, credit, refund, and payment request.
+* **Flexible Subscriptions**: Activate, toggle, or cancel subscriptions without lock-in periods.
+* **Granular Skip Calendar**: An interactive monthly planner (built with FullCalendar) that enables users to skip meals on specific dates, triggering automatic, real-time refunds to the wallet.
+* **Same-Day Cutoff Enforcer**: Prevents order skips or new subscription activations after the daily kitchen preparation cutoff time has passed for that day.
+* **Support Desk Module**: Integrated contact and ticketing interface to resolve customer inquiries directly.
+* **Personalized Profiles**: Manage profile information, upload user avatars, and configure default delivery locations.
 
-1. **Navigate to the Frontend directory:**
+### Admin-Facing Features
+* **Operations Dashboard**: Real-time KPI summary widgets displaying current revenue, meals served, and active subscriber metrics.
+* **Dynamic Menu Scheduler**: Upload recipes, configure daily items, and schedule release dates using a built-in media management console.
+* **Automated Run Logs**: Review logs for billing automation runs, daily order counts, and total system deductions.
+* **Customer Directory**: Inspect user records, adjust balances manually for resolution, and review individual histories.
+* **Risk Management Indicators**: Easily identify customers with low wallet balances before scheduled delivery runs.
+* **Business Analytics**: High-quality data charts built with Recharts, mapping subscription growth, revenue trends, and operational capacity.
+
+---
+
+## Project Workspaces
+
+MealOra is maintained as a clean client-server codebase:
+
+* **[Frontend Client (`/frontend`)](./frontend)**: React client application featuring the Tailwind design system, Zustand state management, and Framer Motion.
+* **[Backend API (`/backend`)](./backend)**: Node.js/Express server containing database controllers, MongoDB aggregation queries, and payment webhooks.
+
+---
+
+## High-Level Project Structure
+
+```
+MealOra/
+├── frontend/                      # User Interface & Frontend Client
+│   ├── src/                       
+│   │   ├── api/                   # Centralized API configuration (Axios interceptor)
+│   │   ├── components/            # Reusable components & React Router guards
+│   │   ├── pages/                 # User dashboard, settings, and Admin pages
+│   │   ├── store/                 # Zustand global application state
+│   │   └── App.jsx                # Layout definitions and route setup
+│   └── package.json               
+│
+├── backend/                       # REST API & Database Middleware
+│   ├── APIs/                      # Route handlers and business logic controllers
+│   ├── config/                    # Cloudinary, Multer, and database connection setups
+│   ├── middleware/                # JWT parsing & route authentication guards
+│   ├── models/                    # Mongoose schemas (User, Subscription, Menu, Skips)
+│   └── server.js                  # Main server entrypoint
+│
+└── README.md                      # Core documentation
+```
+
+---
+
+## Quick Start & Installation
+
+### Prerequisites
+Before setting up the environment, ensure you have the following installed:
+* **Node.js** (v16.0.0 or higher)
+* **MongoDB** (Local instance or MongoDB Atlas cluster connection string)
+* **npm** (v7.0.0 or higher)
+
+### Step-by-Step Local Deployment
+
+1. **Clone the Repository**
    ```bash
-   cd frontend
+   git clone https://github.com/Akhila-1703/mealora-app.git
+   cd mealora-app
    ```
 
-2. **Install all required packages:**
+2. **Configure and Run the Backend API**
+   Navigate to the backend directory, install its node modules, configure environmental variables, and run the developer daemon:
    ```bash
+   cd backend
    npm install
-   ```
-
-3. **Configure Environment Variables:**
-   Create a `.env` file in the root of the `frontend` folder and populate it (see section below).
-
-4. **Start the Development Server:**
-   ```bash
+   # Create and configure .env file (refer to backend/README.md for details)
    npm run dev
    ```
-   *The server will start on `http://localhost:5173`. Make sure the backend server is also running to populate data.*
+
+3. **Configure and Run the Frontend Client**
+   Open a separate shell terminal, navigate to the frontend directory, install its dependencies, configure local API settings, and start the development bundler:
+   ```bash
+   cd ../frontend
+   npm install
+   # Create and configure .env file (refer to frontend/README.md for details)
+   npm run dev
+   ```
 
 ---
 
-## Pages & Routes
+## Security & Core Constraints
 
-### Public / Customer Routes
-
-| Route | Page | Description |
-|---|---|---|
-| `/` | `Home.jsx` | Marketing homepage with Hero and Call to Actions. |
-| `/login` | `Login.jsx` | User authentication via HTTP-Only cookies. |
-| `/register` | `Register.jsx` | User account creation. |
-| `/menu` | `Menu.jsx` | Publicly viewable weekly menu page. |
-
-### Protected Customer Routes
-| Route | Page | Description |
-|---|---|---|
-| `/dashboard` | `user/Dashboard.jsx` | Core hub displaying wallet balance, meals left, and today's delivery state. |
-| `/skip-meal` | `user/SkipMeal.jsx` | Interactive calendar to pause delivery and refund credits. |
-| `/profile` | `user/Profile.jsx` | Form to update details and upload an avatar. |
-| `/wallet` | `user/Wallet.jsx` | Interface to add funds. |
-| `/transactions` | `user/Transactions.jsx` | View ledger of past wallet deductions and recharges. |
-| `/subscription` | `user/Subscription.jsx` | Subscription status and renewal portal. |
-| `/support` | `user/Support.jsx` | User support ticketing/contact page. |
-| `/weekly-menu` | `user/WeeklyMenu.jsx` | Authenticated view of the upcoming meals. |
-
-### Admin Routes (Guarded)
-
-| Route | Page | Description |
-|---|---|---|
-| `/admin` | `admin/Dashboard.jsx` | Aggregated analytics with Recharts graphs. |
-| `/admin/users` | `admin/Users.jsx` | Directory of all users, their wallets, and active states. |
-| `/admin/menu` | `admin/MenuEditor.jsx` | UI to upload daily menus to Cloudinary. |
-| `/admin/reports` | `admin/Reports.jsx` | Log of automated billing runs and deduction totals. |
-| `/admin/low-balance` | `admin/LowBalanceUsers.jsx` | Real-time monitoring of users needing a wallet recharge. |
-
-> **Route Guards:** `<ProtectedRoute>` securely redirects non-authenticated users to `/login`. `<AdminRoute>` completely blocks standard users from loading the admin components.
+* **CSRF & XSS Mitigation**: Session authentication utilizes signed JSON Web Tokens (JWT) wrapped in `httpOnly` secure cookies.
+* **Ledger Consistency**: Mongoose middlewares validate that wallets cannot drop below zero unless authorized, preserving ledger integrity.
+* **Timezone Safety**: Dates and logistics constraints are stored and calculated in Coordinated Universal Time (UTC) and converted to regional timezones (e.g., IST) at runtime, preventing timezone-based cutoff bypasses.
 
 ---
 
-## Core Components
+## Future Roadmap: On-Demand Logistics & Delivery Agent Ecosystem
 
-### `SkipMeal` (Calendar)
-The core scheduling tool for client users. Built with `date-fns` and full-calendar systems to render a customizable monthly viewport.
-- Past calendar cells are locked and read-only.
-- The cutoff validation engine visually locks the *current* day if the daily logistics preparation window has closed.
-- Integrates status markers showing delivered meals with confirmation checkmarks, and cancelled meals with skip indicators.
+To scale MealOra into a real-world, dynamic delivery platform, the system is designed to accommodate a transition from pre-scheduled subscription cutoffs to an on-demand logistics ecosystem:
 
-### `Navbar`
-A dual-state responsive header. For guests, it shows login options. For authenticated users, it displays wallet balance, an avatar dropdown, and navigation links.
+* **Delivery Agent Role (`DELIVERY_AGENT`)**: A dedicated user class within our Role-Based Access Control (RBAC) system. Agents will log into a specialized dashboard to manage active delivery queues, accept/reject pickup orders, and update delivery states.
+* **On-Demand Order Lifecycle**: Migrating from static daily cron preparation cycles to a dynamic, state-driven order model. Orders will transition through standard real-time states: `Placed` ➔ `Preparing` ➔ `Ready for Pickup` ➔ `Out for Delivery` ➔ `Completed`.
+* **Real-Time Websocket Updates**: Transitioning status updates and agent geolocation tracking to a push-based model using WebSockets (Socket.io) to ensure clients and kitchen admins receive instantaneous order milestones.
+* **Dynamic Driver Allocation**: An assignment queue matching open delivery requests to online agents in the vicinity, complete with wallet-integrated payouts for completed deliveries.
 
 ---
 
-## Core Architecture
+## Contributing
 
-### 1. Role-Based Access Control (RBAC)
-The routing layer heavily utilizes `<ProtectedRoute>` and `<AdminRoute>` wrapper components. Standard users are physically prevented from accessing admin routes, ensuring that sensitive data and UI elements are completely gated off from unauthorized access.
-
-### 2. Hydration & Global State (`useAuthStore`)
-Instead of directly hydrating the UI from volatile `localStorage` (which causes UI flickering and security flaws), the app relies on the `authStore.js` (Zustand) to securely hydrate the session via the backend's `/auth/check` endpoint utilizing HTTP-Only cookies. A global `isCheckingAuth` spinner handles the brief loading state gracefully.
-
-### 3. Axios Interceptor
-All API requests flow through a centralized Axios instance configured with `withCredentials: true`. This guarantees the browser silently attaches the secure JWT session cookie to every outbound request.
+We welcome contributions! Please follow this workflow:
+1. Fork the repository.
+2. Create a clean feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes with descriptive messages.
+4. Push your branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request for code review.
 
 ---
 
-## Environment Variables
+## License
 
-Create a `.env` file in this `/frontend` directory before starting the application:
-
-```env
-# The URL where your backend API is running
-VITE_API_URL=http://localhost:4000
-```
-
----
-
-## Future Frontend Roadmap: Delivery Agent Portal & Order Tracking
-
-* **Delivery Agent Portal**: A dedicated set of responsive routes under `/delivery/*` (e.g., Dashboard, Active Deliveries, Earnings Ledger) specifically optimized for mobile-first viewports.
-* **Real-time Order Tracker**: A consumer tracking dashboard with a visual step-by-step progress stepper (from kitchen preparation through dispatch and completion).
-* **Live Maps Integration**: Integrating Mapbox or Google Maps API to show the active delivery agent's route and delivery progress dynamically.
-* **State Syncing via WebSockets**: Integrating `socket.io-client` with Zustand to update order logs and notify both agents and customers without full-page reloads.
-
----
-
-## Design System
-
-MealOra uses a curated, appetizing design language aimed at feeling premium and welcoming.
-
-### Typography
-- **Headings & Body:** Modern sans-serif stacks (Inter, system-ui) optimized for high legibility.
-
-### Theming & Animations
-- **Colors:** Deep branding hues (warm oranges and earth browns) mixed with stark whites and subtle grays to make food imagery pop.
-- **Micro-interactions:** Extensive use of `hover:`, `transition-all`, and **Framer Motion** ensures every button click, page load, and modal pop-in feels alive and responsive.
-- **Forms:** Controlled components with clear, real-time error states, utilizing Tailwind's `focus:ring` utilities to guide the user seamlessly through onboarding.
+This project is licensed under the **MIT License** - see the `LICENSE` file for details.
