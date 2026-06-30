@@ -7,7 +7,7 @@
 [![Vite](https://img.shields.io/badge/Vite-Bundler-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
 [![Zustand](https://img.shields.io/badge/Zustand-State-black?style=flat-square&logo=react)](https://zustand-demo.pmnd.rs/)
 
-A lightning-fast Single Page Application (SPA) utilizing modern React paradigms, utility-first CSS, and boilerplate-free state management to deliver a premium user experience.
+A highly optimized Single Page Application (SPA) utilizing modern React concurrent features, utility-first CSS configurations, and declarative global state synchronization.
 
 </div>
 
@@ -36,7 +36,7 @@ A lightning-fast Single Page Application (SPA) utilizing modern React paradigms,
 | `tailwindcss` | `^4.0.0` | Utility-first CSS framework enabling ultra-fast UI prototyping and absolute layout consistency. |
 | `vite` | `^6.0.0` | Next-generation build tool chosen for its instantaneous Hot Module Replacement (HMR). |
 | `axios` | `^1.6.8` | HTTP client configured globally with `withCredentials: true` to seamlessly pass secure HTTP-Only cookies to the backend. |
-| `date-fns` | `^3.6.0` | Provides bulletproof calendar date math to enforce the strict 11:00 AM IST cutoff rule for skipping meals. |
+| `date-fns` | `^3.6.0` | Provides bulletproof calendar date math to enforce strict same-day logistics cutoff limits for skipping meals. |
 | `framer-motion` | `^11.0.8` | Adds physics-based micro-interactions and smooth page transitions to create a premium application feel. |
 | `recharts` | `^2.12.3` | Composable charting library used to generate the data-rich analytics graphs in the Admin Dashboard. |
 | `lucide-react` | `^0.359.0` | Clean, modern vector icons matching the luxury design aesthetic. |
@@ -76,7 +76,7 @@ frontend/
 │   │   ├── user/              # User interface
 │   │   │   ├── Dashboard.jsx
 │   │   │   ├── Profile.jsx
-│   │   │   ├── SkipMeal.jsx   # The interactive 11 AM cutoff calendar
+│   │   │   ├── SkipMeal.jsx   # The interactive calendar with same-day cutoff validation
 │   │   │   ├── Subscription.jsx
 │   │   │   ├── Support.jsx
 │   │   │   ├── Transactions.jsx
@@ -115,7 +115,7 @@ To run the frontend application locally, follow these precise steps:
 
 2. **Install all required packages:**
    ```bash
-   npm install react react-router-dom zustand tailwindcss @tailwindcss/vite vite axios date-fns framer-motion recharts lucide-react
+   npm install
    ```
 
 3. **Configure Environment Variables:**
@@ -169,10 +169,10 @@ To run the frontend application locally, follow these precise steps:
 ## Core Components
 
 ### `SkipMeal` (Calendar)
-The crown jewel of the user experience. Uses `date-fns` to generate an interactive month view. 
-- Past dates are disabled.
-- The 11:00 AM IST cutoff rule visually locks the *current* day if the cutoff time has passed.
-- Highlights delivered meals with a green checkmark and skipped meals with a red 'X'.
+The core scheduling tool for client users. Built with `date-fns` and full-calendar systems to render a customizable monthly viewport.
+- Past calendar cells are locked and read-only.
+- The cutoff validation engine visually locks the *current* day if the daily logistics preparation window has closed.
+- Integrates status markers showing delivered meals with confirmation checkmarks, and cancelled meals with skip indicators.
 
 ### `Navbar`
 A dual-state responsive header. For guests, it shows login options. For authenticated users, it displays wallet balance, an avatar dropdown, and navigation links.
@@ -200,6 +200,15 @@ Create a `.env` file in this `/frontend` directory before starting the applicati
 # The URL where your backend API is running
 VITE_API_URL=http://localhost:4000
 ```
+
+---
+
+## Future Frontend Roadmap: Delivery Agent Portal & Order Tracking
+
+* **Delivery Agent Portal**: A dedicated set of responsive routes under `/delivery/*` (e.g., Dashboard, Active Deliveries, Earnings Ledger) specifically optimized for mobile-first viewports.
+* **Real-time Order Tracker**: A consumer tracking dashboard with a visual step-by-step progress stepper (from kitchen preparation through dispatch and completion).
+* **Live Maps Integration**: Integrating Mapbox or Google Maps API to show the active delivery agent's route and delivery progress dynamically.
+* **State Syncing via WebSockets**: Integrating `socket.io-client` with Zustand to update order logs and notify both agents and customers without full-page reloads.
 
 ---
 
